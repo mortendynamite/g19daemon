@@ -1,7 +1,0 @@
-<!DOCTYPE RCC><RCC version="1.0">
-<qresource prefix="/pavolume">
-    <file alias="sound.png">images/sound.png</file>
-	<file alias="icon.png">images/icon.png</file>
-	<file alias="menu_icon.png">images/icon.png</file>
-</qresource>
-</RCC>
