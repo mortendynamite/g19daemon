@@ -1,0 +1,126 @@
+/*
+ * <one line to give the program's name and a brief idea of what it does.>
+ * Copyright (C) 2014  <copyright holder> <email>
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ */
+
+#ifndef G19_H
+#define G19_H
+
+#include <QtCore/QObject>
+#include <QtConcurrent/QtConcurrent>
+#include <QDebug>
+#include <QtGui/QImage>
+#include <libusb.h>
+
+using namespace std;
+
+#define BUFF_SIZE	154112			//	154112 = 320x240 x 2 bytes/pixel + header of 512 bytes
+
+enum G19Keys
+{
+	G19_KEY_G1		= 1 << 0,
+	G19_KEY_G2		= 1 << 1,
+	G19_KEY_G3		= 1 << 2,
+	G19_KEY_G4		= 1 << 3,
+	G19_KEY_G5		= 1 << 4,
+	G19_KEY_G6		= 1 << 5,
+	G19_KEY_G7		= 1 << 6,
+	G19_KEY_G8		= 1 << 7,
+	G19_KEY_G9		= 1 << 8,
+	G19_KEY_G10		= 1 << 9,
+	G19_KEY_G11		= 1 << 10,
+	G19_KEY_G12		= 1 << 11,
+	
+	G19_KEY_M1		= 1 << 12,
+	G19_KEY_M2		= 1 << 13,
+	G19_KEY_M3		= 1 << 14,
+	G19_KEY_MR		= 1 << 15,
+
+	G19_KEY_LHOME	= 1 << 16,
+	G19_KEY_LCANCEL	= 1 << 17,
+	G19_KEY_LMENU	= 1 << 18,
+	G19_KEY_LOK		= 1 << 19,
+	G19_KEY_LRIGHT	= 1 << 20,
+	G19_KEY_LLEFT	= 1 << 21,
+	G19_KEY_LDOWN	= 1 << 22,
+	G19_KEY_LUP		= 1 << 23,
+	G19_KEY_LIGHT   = 1 << 24
+};
+
+
+typedef void (*G19KeysCallback)(unsigned int keys);
+
+class G19Device : public QObject
+{
+	Q_OBJECT
+	public:
+		int rawkey;
+		
+		G19Device();
+		~G19Device();
+		
+		void initializeDevice();
+		void openDevice();
+		void closeDevice();
+		void eventThread();
+		
+		void updateLcd(QImage *img);
+		void setKeysBacklight(unsigned char red, unsigned char green, unsigned char blue);
+		void setMKeys(bool m1, bool m2, bool m3, bool mr);
+		void setDisplayBrightness(unsigned char brightness);
+
+		void GKeyCallback(unsigned int keys);
+		void LKeyCallback(unsigned int keys);
+		
+		unsigned int getKeys();
+
+        bool GKeys_transfer_cancelled;
+        bool LKeys_transfer_cancelled;
+
+	private:
+		unsigned int lastkeys;
+		bool isDeviceConnected, isInitialized;
+		bool enableEventThread;
+		bool isTransfering;
+		QString cstatus;
+		
+		libusb_transfer *GKeys_transfer;
+		libusb_transfer *LKeys_transfer;
+		libusb_transfer *data_transfer;
+		
+		unsigned char GKeysBuffer[4];
+		unsigned char LKeysBuffer[2];
+		
+		libusb_context *context;
+		libusb_device_handle *deviceHandle;
+		libusb_device_descriptor deviceDesc;
+		libusb_device **devs;
+		libusb_device *dev;
+//		int usbInterfaceNumber;
+		
+		QFuture<void> future;
+		
+		unsigned char *data_buff;
+	
+	signals:
+		void GKey();
+		void LKey();
+		
+	public slots:
+};
+
+#endif // G19_H

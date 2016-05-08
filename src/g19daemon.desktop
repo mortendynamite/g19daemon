@@ -1,0 +1,8 @@
+[Desktop Entry]
+Type=Application
+Name=g19daemon
+Comment=Daemon for the Logitech G19 Keyboard
+Terminal=false
+Exec=g19daemon
+Icon=input-keyboard
+

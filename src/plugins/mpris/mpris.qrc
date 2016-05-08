@@ -1,0 +1,11 @@
+<!DOCTYPE RCC><RCC version="1.0">
+<qresource prefix="/mpris">
+    <file alias="icon.png">images/icon.png</file>
+	<file alias="menu_icon.png">images/menu_icon.png</file>
+	<file alias="play.png">images/start.png</file>
+	<file alias="pause.png">images/pause.png</file>
+	<file alias="stop.png">images/stop.png</file>
+	<file alias="repeat.png">images/repeat.png</file>
+	<file alias="shuffle.png">images/shuffle.png</file>
+</qresource>
+</RCC>

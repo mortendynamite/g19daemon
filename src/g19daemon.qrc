@@ -1,0 +1,7 @@
+<!DOCTYPE RCC><RCC version="1.0">
+<qresource>
+    <file alias="tray_icon.png">images/tray_icon.png</file>
+	<file alias="off.png">images/off.png</file>
+	<file alias="menu_icon.png">images/menu.png</file>
+</qresource>
+</RCC>

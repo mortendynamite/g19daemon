@@ -1,0 +1,4 @@
+[Project]
+Name=plugin_template
+Manager=KDevCMakeManager
+VersionControl=

@@ -1,0 +1,1 @@
+/usr/bin/c++  -fPIC -std=c++11 -g -Wall -ggdb -Wall -ggdb  -shared  -o libkeybacklight.so CMakeFiles/keybacklight.dir/keybacklight.cpp.o CMakeFiles/keybacklight.dir/qrc_keybacklight.cpp.o CMakeFiles/keybacklight.dir/keybacklight_automoc.cpp.o /usr/lib/libQt5Gui.so.5.6.0 /usr/lib/libQt5Core.so.5.6.0 
