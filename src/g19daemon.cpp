@@ -21,7 +21,7 @@
 #include "plugininterface.hpp"
 #include "ui_g19daemon.h"
 #include "gscreen.hpp"
-#include "Config.h"
+#include "config.h"
 #include <QFont>
 #include <QPainter>
 #include <QPluginLoader>
@@ -34,11 +34,24 @@
 #include <QWidget>
 #include <QMainWindow>
 #include <QtMath>
+#include <QtCore/QSharedMemory>
 
 g19daemon::g19daemon(QWidget *parent):
     QMainWindow(parent),
-	ui(new Ui::g19daemon)
+	ui(new Ui::g19daemon),
+	sharedMemory("G19Daemon")
 {
+    Shared = false;
+    
+    if (!sharedMemory.create(sizeof(Shared)))
+    {
+        if (sharedMemory.error() == QSharedMemory::AlreadyExists)
+        {
+            Shared = true;
+            return;
+        }
+    }   
+    
 	QImage micon;
 	
 	ui->setupUi(this);
@@ -104,6 +117,11 @@ g19daemon::~g19daemon()
 
 	device->closeDevice();
 	delete device;
+}
+
+bool g19daemon::isShared()
+{
+    return Shared;
 }
 
 // call this routine to quit the application

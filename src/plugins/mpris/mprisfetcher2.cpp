@@ -12,9 +12,9 @@ MprisFetcher2::MprisFetcher2(const QString &APlayerName)
 		return;
 	}
 
-	if (APlayerName == "spotify")
-		spotify = true;
-	else
+//	if (APlayerName == "spotify")
+//		spotify = true;
+//	else
 		spotify = false;
 	
 	FPlayerName = APlayerName;
@@ -163,9 +163,9 @@ void MprisFetcher2::onPlayerNameChange(const QString &AName)
 		return;
 	}
 
-	if (AName == "spotify")
-		spotify = true;
-	else
+//	if (AName == "spotify")
+//		spotify = true;
+//	else
 		spotify = false;
 
 	FPlayerName = AName;

@@ -37,7 +37,7 @@ set(CMAKE_AUTOUIC ON)
 
 set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -Wall -ggdb")
 
-configure_file(src/Config.h.in Config.h)
+configure_file(src/config.h.in config.h)
 
 set(g19daemon_SRC
   src/main.cpp

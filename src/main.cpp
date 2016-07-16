@@ -20,16 +20,23 @@
 #include <QApplication>
 #include <QtCore/QtCore>
 #include "g19daemon.hpp"
+#include "config.h"
 
 
 int main(int argc, char** argv)
 {
     QApplication app(argc, argv);
-	QCoreApplication::setApplicationName("G19");
-	QCoreApplication::setApplicationVersion("0.1");
+    QCoreApplication::setApplicationName("G19");
+	QCoreApplication::setApplicationVersion(VERSION);
 
 	// create the main class
 	g19daemon task;
+    
+    // Check if allready running
+    if (task.isShared())
+    {
+        return 0;
+    }
 	 // connect up the signals
     QObject::connect(&task, SIGNAL(finished()), &app, SLOT(quit()));
     QObject::connect(&app, SIGNAL(aboutToQuit()), &task, SLOT(aboutToQuitApp()));
