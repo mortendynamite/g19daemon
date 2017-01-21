@@ -255,7 +255,6 @@ void g19daemon::menu()
 	int menuStart, menuEnd, pages, page;
 
 	p = menuScreen->Begin();
-	
 	// How many pages will there be
 	pages = qCeil(plugins.count() / 3);
 
@@ -272,13 +271,13 @@ void g19daemon::menu()
 
 		if (menuSelect == i)
 		{
-			p->fillRect(54, y, 250, 68, menuScreen->getTextRgb());
-			p->setPen(menuScreen->getBackgroundRgb());
+			p->fillRect(0, y, 304, 68, qRgb(0, 165, 219));
+            p->setPen(qRgb(0, 0, 0));
 		}
 		else
-		{
-			p->setPen(menuScreen->getTextRgb());
-		}
+        {
+            p->setPen(qRgb(255, 255, 255));
+        }
 
 		p->drawImage(3, y + 10, plugins[i]->getIcon());
 		p->drawText(59, y, 245, 68, Qt::AlignVCenter | Qt::AlignLeft, name);

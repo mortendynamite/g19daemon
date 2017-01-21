@@ -41,10 +41,9 @@ class gScreen : public QObject
 		QFont getTextFont();
 		QFontMetrics getTextFontMetrics();
 		QRgb getTextRgb();
-		QRgb getBackgroundRgb();
 		QRgb getControlBackroundRgb();
 		QRgb getControlRgb();
-		
+        
 		QImage *getScreen();
 		
 		QImage *Draw();
@@ -66,8 +65,6 @@ class gScreen : public QObject
 		QFont fontHeader;
 		QFont fontText;
 		QPainter *userPainter;
-		QRgb rgbBackground;
-		QRgb rgbHeader;
 		QRgb rgbText;
 		QRgb rgbHeaderText;
 		QRgb rgbControlBackground;

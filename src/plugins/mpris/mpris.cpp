@@ -265,15 +265,15 @@ void Mpris::menu()
 	
 	for (int i = menuStart; i <= menuEnd ; i++)
 	{
-		if (menuSelect == i)
+        if (menuSelect == i)
 		{
-			p->fillRect(0, y, 304, 40, screen->getTextRgb());
-			p->setPen(screen->getBackgroundRgb());
+			p->fillRect(0, y, 304, 40, qRgb(0, 165, 219));
+            p->setPen(qRgb(0, 0, 0));
 		}
 		else
-		{
-			p->setPen(screen->getTextRgb());
-		}
+        {
+            p->setPen(qRgb(255, 255, 255));
+        }
 
 		p->drawText(5, y, 299, 40, Qt::AlignVCenter | Qt::AlignLeft, players[i]);
 		y += 40;
@@ -315,7 +315,7 @@ void Mpris::paint()
 				break;
 		}
 		
-		p->drawImage((320 - bkg.width()) / 2, (171 - bkg.height()) / 2, bkg);
+		p->drawImage((320 - bkg.width()) / 2, (230 - bkg.height()) / 2, bkg);
 	}
 
 	if (mediadata->album.isEmpty())
@@ -435,7 +435,7 @@ void Mpris::paint()
 		pos = (100.0 / mediadata->length) * pos2;
 		screen->drawVGuage(5, 171, 310, 30, pos);
 		s = QDateTime::fromTime_t(pos2).toString("mm:ss") + " / " + QDateTime::fromTime_t(mediadata->length).toString("mm:ss");
-		p->setPen(screen->getBackgroundRgb());
+		p->setPen(qRgb(0, 0, 0));
 		p->drawText(5, 171, 310, 30, Qt::AlignCenter, s);
 	}
 	else

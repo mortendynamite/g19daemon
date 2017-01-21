@@ -34,10 +34,8 @@ gScreen::gScreen(const QImage &Icon, const QString &Name)
 	name = Name;
 	
 	fontName = "Noto Sans";
-	rgbBackground = qRgb(239, 240, 241);
-	rgbHeader = qRgb(77, 87, 95);
-	rgbText = qRgb(61, 66, 70);
-	rgbHeaderText = qRgb(239, 240, 241);
+	rgbText = qRgb(255, 255, 255);
+	rgbHeaderText = qRgb(255, 255, 255);
 	rgbControlBackground = qRgb(183, 184, 187);
 	rgbControl = qRgb(116, 119, 123);
 	fontHeader =  QFont(fontName, 16);
@@ -72,11 +70,6 @@ QRgb gScreen::getTextRgb()
 	return rgbText;
 }
 
-QRgb gScreen::getBackgroundRgb()
-{
-	return rgbBackground;
-}
-
 QRgb gScreen::getControlRgb()
 {
 	return rgbControl;
@@ -100,13 +93,18 @@ QFontMetrics gScreen::getTextFontMetrics()
 QImage *gScreen::Draw()
 {
 	QPainter painter;
-	
+	QLinearGradient background(0, 0, 0, 240);
+    QLinearGradient header(0, 0, 0, 30);
+    
+    background.setColorAt(0, qRgb(0, 0, 0));
+    background.setColorAt(1, qRgb(0, 115, 153));
+    header.setColorAt(0, qRgb(137, 182, 196));
+    header.setColorAt(0.5, qRgb(0, 165, 219));
+    header.setColorAt(1, qRgb(0, 105, 140));
 	painter.begin(screen);
-	painter.fillRect(0, 0, 320, 240, rgbBackground);
-	painter.fillRect(31, 0, 289, 30, rgbHeader);
+    painter.fillRect(0, 0, 320, 240, background);
+    painter.fillRect(0, 0, 320, 30, header);
 	painter.drawImage(3, 3, *icon, 0, 0, 24, 24);
-	painter.setPen(rgbHeader);
-	painter.drawRect(0, 0, 30, 29);
 	painter.setFont(fontHeader);
 	painter.setPen(rgbHeaderText);
 	painter.drawText(35, 0, 290, 30, Qt::AlignVCenter | Qt::AlignLeft, name);

@@ -218,7 +218,7 @@ void PAVolume::paint()
 	}
 	
 	screen->drawVGuage(5, 171, 310, 30, pos);
-	p->setPen(screen->getBackgroundRgb());
+	p->setPen(qRgb(255, 255, 255));
 	p->drawText(5, 171, 310, 30, Qt::AlignCenter, s);
 	screen->End();
 	emit doAction(displayScreen, screen);
