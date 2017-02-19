@@ -26,6 +26,7 @@
 #include <QPainter>
 #include <QPluginLoader>
 #include <QDir>
+#include <QFile>
 #include <QSettings>
 #include <QLinearGradient>
 #include <QMenu>
@@ -38,19 +39,21 @@
 
 g19daemon::g19daemon(QWidget *parent):
     QMainWindow(parent),
-	ui(new Ui::g19daemon),
-	sharedMemory("G19Daemon")
+	ui(new Ui::g19daemon)
 {
-    Shared = false;
+    QFile isRunning_file("~/.g19daemon_running");
     
-    if (!sharedMemory.create(sizeof(Shared)))
+    if (isRunning_file.exists())
     {
-        if (sharedMemory.error() == QSharedMemory::AlreadyExists)
-        {
-            Shared = true;
-            return;
-        }
-    }   
+        _isRunning = true;
+    }
+    else
+    {
+        isRunning_file.open(QIODevice::WriteOnly);
+        isRunning_file.write("Running\n", 8);
+        isRunning_file.close();
+        _isRunning = false;
+    }
     
 	QImage micon;
 	
@@ -117,11 +120,15 @@ g19daemon::~g19daemon()
 
 	device->closeDevice();
 	delete device;
+    
+    QFile isRunning_file("~/.g19daemon_running");
+    isRunning_file.remove();
+
 }
 
-bool g19daemon::isShared()
+bool g19daemon::isRunning()
 {
-    return Shared;
+    return _isRunning;
 }
 
 // call this routine to quit the application
@@ -162,6 +169,11 @@ void g19daemon::ResetLcdBacklight()
 
 void g19daemon::run()
 {
+	if (isRunning())
+	{
+		quit();
+	}
+
 	if (menuActive)
 		menu();
 	else

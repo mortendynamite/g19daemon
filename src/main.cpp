@@ -32,12 +32,7 @@ int main(int argc, char** argv)
 	// create the main class
 	g19daemon task;
     
-    // Check if allready running
-    if (task.isShared())
-    {
-        return 0;
-    }
-	 // connect up the signals
+	// connect up the signals
     QObject::connect(&task, SIGNAL(finished()), &app, SLOT(quit()));
     QObject::connect(&app, SIGNAL(aboutToQuit()), &task, SLOT(aboutToQuitApp()));
 	

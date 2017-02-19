@@ -29,7 +29,6 @@
 #include <QAction>
 #include <QWidget>
 #include <QMainWindow>
-#include <QtCore/QSharedMemory>
 #include "g19device.hpp"
 #include "plugininterface.hpp"
 #include "gscreen.hpp"
@@ -56,7 +55,7 @@ class g19daemon : public QMainWindow
 		// This is the slot that gets called from main to start everything
 		// but, everthing is set up in the Constructor
 		void run();
-        bool isShared();
+        bool isRunning();
 
 		// slot that get signal when that application is about to quit
 		void aboutToQuitApp();
@@ -71,8 +70,7 @@ class g19daemon : public QMainWindow
 		
 	private:
 		Ui::g19daemon *ui;
-		QSharedMemory sharedMemory;
-        bool Shared;
+        bool _isRunning;
         
 		G19Device *device;
 		QVector<PluginInterface *> plugins;

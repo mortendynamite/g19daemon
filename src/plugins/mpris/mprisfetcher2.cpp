@@ -1,5 +1,7 @@
 #include <QtDBus/QtDBus>
-
+#include <QDBusError>
+#include <QtDBus/QDBusConnection>
+#include <QtDebug>
 #include "mprisfetcher2.hpp"
 
 MprisFetcher2::MprisFetcher2(const QString &APlayerName)
@@ -12,20 +14,14 @@ MprisFetcher2::MprisFetcher2(const QString &APlayerName)
 		return;
 	}
 
-//	if (APlayerName == "spotify")
-//		spotify = true;
-//	else
-		spotify = false;
-	
 	FPlayerName = APlayerName;
 	FPlayerInterface = createPlayerInterface();
 
-	if (FPlayerInterface->lastError().type() != QDBusError::NoError)
+	if (FPlayerInterface->isValid())
 	{
-		return;
+		connectToBus();
+		updateStatus();
 	}
-
-	connectToBus();
 }
 
 MprisFetcher2::~MprisFetcher2()
@@ -50,11 +46,6 @@ QDBusInterface *MprisFetcher2::createPlayerInterface()
 	return new QDBusInterface("org.mpris.MediaPlayer2." + FPlayerName, "/org/mpris/MediaPlayer2", "org.mpris.MediaPlayer2.Player", QDBusConnection::sessionBus(), this);
 }
 
-bool MprisFetcher2::isSpotify()
-{
-	return spotify;
-}
-
 void MprisFetcher2::playerPlay() const
 {
 	if (!FPlayerInterface || !FPlayerInterface->isValid())
@@ -63,7 +54,6 @@ void MprisFetcher2::playerPlay() const
 	}
 
 	FPlayerInterface->call(QLatin1String("PlayPause"));
-	Q_ASSERT(FPlayerInterface->lastError().type() == QDBusError::NoError);
 }
 
 void MprisFetcher2::playerStop() const
@@ -74,7 +64,6 @@ void MprisFetcher2::playerStop() const
 	}
 
 	FPlayerInterface->call(QLatin1String("Stop"));
-	Q_ASSERT(FPlayerInterface->lastError().type() == QDBusError::NoError);
 }
 
 void MprisFetcher2::playerPrev() const
@@ -85,7 +74,6 @@ void MprisFetcher2::playerPrev() const
 	}
 
 	FPlayerInterface->call(QLatin1String("Previous"));
-	Q_ASSERT(FPlayerInterface->lastError().type() == QDBusError::NoError);
 }
 
 void MprisFetcher2::playerNext() const
@@ -96,7 +84,6 @@ void MprisFetcher2::playerNext() const
 	}
 
 	FPlayerInterface->call(QLatin1String("Next"));
-	Q_ASSERT(FPlayerInterface->lastError().type() == QDBusError::NoError);
 }
 
 void MprisFetcher2::playerSeek(int sec) const
@@ -107,7 +94,6 @@ void MprisFetcher2::playerSeek(int sec) const
 	}
 
 	FPlayerInterface->call("Seek", (sec * 1000000));
-	Q_ASSERT(FPlayerInterface->lastError().type() == QDBusError::NoError);
 }
 
 void MprisFetcher2::updateStatus()
@@ -124,25 +110,17 @@ void MprisFetcher2::updateStatus()
 			parseTrackInfo(qdbus_cast<QVariantMap>(argument));
 		}
 
-		if (!spotify)
-		{
-			QDBusReply<QVariant> playbackStatus = interface.call("Get", "org.mpris.MediaPlayer2.Player", "PlaybackStatus");
+        QDBusReply<QVariant> playbackStatus = interface.call("Get", "org.mpris.MediaPlayer2.Player", "PlaybackStatus");
 
-			if (playbackStatus.isValid())
-			{
-				parsePlaybackStatus(playbackStatus.value().toString());
-			}
-		}
+        if (playbackStatus.isValid())
+        {
+            parsePlaybackStatus(playbackStatus.value().toString());
+        }
 	}
-
-	Q_ASSERT(FPlayerInterface->lastError().type() == QDBusError::NoError);
 }
 
 long MprisFetcher2::getPlayerPosition()
 {
-	if (spotify)
-		return 0;
-	
 	if (FPlayerInterface && FPlayerInterface->isValid())
 	{
 		QDBusInterface interface("org.mpris.MediaPlayer2." + FPlayerName, "/org/mpris/MediaPlayer2", "org.freedesktop.DBus.Properties", QDBusConnection::sessionBus(), this);
@@ -163,11 +141,6 @@ void MprisFetcher2::onPlayerNameChange(const QString &AName)
 		return;
 	}
 
-//	if (AName == "spotify")
-//		spotify = true;
-//	else
-		spotify = false;
-
 	FPlayerName = AName;
 
 	if (FPlayerInterface)
@@ -178,12 +151,11 @@ void MprisFetcher2::onPlayerNameChange(const QString &AName)
 	}
 
 	FPlayerInterface = createPlayerInterface();
-	Q_ASSERT(FPlayerInterface && FPlayerInterface->isValid());
 
 	if (FPlayerInterface->isValid())
 	{
-		updateStatus();
 		connectToBus();
+		updateStatus();
 	}
 }
 
@@ -267,14 +239,12 @@ void MprisFetcher2::onPropertyChange(QDBusMessage AMsg)
 	{
 		if (iter->canConvert<QDBusArgument>())
 		{
-			//QVariant -> QDBusArgument -> QVariantMap
 			map.unite(qdbus_cast<QVariantMap>(iter->value<QDBusArgument>()));
 		}
 	}
 
 	if (map.contains(QLatin1String("Metadata")))
 	{
-		// QVariantMap -> QVariant -> QDBusArgument -> QVariantMap
 		const QVariantMap trackInfo = qdbus_cast<QVariantMap>(map[QLatin1String("Metadata")]);
 		parseTrackInfo(trackInfo);
 	}

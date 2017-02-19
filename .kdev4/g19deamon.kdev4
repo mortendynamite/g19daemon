@@ -5,6 +5,7 @@ BuildItems=@Variant(\x00\x00\x00\t\x00\x00\x00\x00\x00)
 Build Directory Count=2
 Current Build Directory Index=1
 ProjectRootRelative=./
+Temporary Build Directory Index=1
 
 [CMake][CMake Build Directory 0]
 Build Directory Path=file:///home/morten/Projects/g19daemon/build
