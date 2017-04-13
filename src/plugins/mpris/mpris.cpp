@@ -32,6 +32,11 @@
 #include <QFontMetrics>
 #include <QtDBus/QtDBus>
 #include <QTimer>
+#include <QNetworkAccessManager>
+#include <QNetworkRequest>
+#include <QNetworkReply>
+#include <QUrl>
+#include <QList>
 #include <iostream>
 
 Mpris::Mpris()
@@ -51,6 +56,11 @@ Mpris::Mpris()
 	mpris = new MprisFetcher2(player);
 	mediadata = new MediaData();
 	playerstatus = new PlayerStatus();
+	
+	albumArt = new QImage();
+	
+	m_netwManager = new QNetworkAccessManager(this);
+	connect(m_netwManager, SIGNAL(finished(QNetworkReply*)), this, SLOT(loadImage(QNetworkReply*)));
 	
 	timer = new QTimer(this);
 	connect(timer, SIGNAL(timeout()), this, SLOT(onTimer()));
@@ -211,12 +221,17 @@ void Mpris::onStatusChanged(PlayerStatus pl)
 
 void Mpris::onTrackChanged(MediaData md)
 {
+	QNetworkReply *reply;
+	
 	mediadata->artist = md.artist;
 	mediadata->length = md.length;
 	mediadata->title = md.title;
 	mediadata->track = md.track;
 	mediadata->album = md.album;
 	mediadata->url = md.url;
+	
+	QUrl url(mediadata->url);
+	doDownload(url);
 	
 	LastPos[0] = 0;
 	LastPos[1] = 0;
@@ -292,32 +307,37 @@ void Mpris::paint()
 	QImage bkg;
 	int pos, pos2;
 	int w, y = 30;
+	int xx, yy;
 	
 	if (!isActive)
 		return;
 	
 	p = screen->Begin();
 
-	p->setCompositionMode(QPainter::CompositionMode_Xor);
+	// p->setCompositionMode(QPainter::CompositionMode_Xor);
 
-	if (!mpris->isSpotify())
+	switch (playerstatus->Play)
 	{
-		switch (playerstatus->Play)
-		{
-			case PlaybackStatus::Playing:
-				bkg.load(":/mpris/play.png");
-				break;
-			case PlaybackStatus::Paused:
-				bkg.load(":/mpris/pause.png");
-				break;
-			case PlaybackStatus::Stopped:
-				bkg.load(":/mpris/stop.png");
-				break;
-		}
-		
-		p->drawImage((320 - bkg.width()) / 2, (230 - bkg.height()) / 2, bkg);
+		case PlaybackStatus::Playing:
+			bkg.load(":/mpris/play.png");
+			break;
+		case PlaybackStatus::Paused:
+			bkg.load(":/mpris/pause.png");
+			break;
+		case PlaybackStatus::Stopped:
+			bkg.load(":/mpris/stop.png");
+			break;
 	}
-
+	
+	if (!albumArt->isNull())
+	{
+		QImage tmp;
+		tmp = albumArt->scaled(320, 206, Qt::KeepAspectRatio, Qt::SmoothTransformation);
+		p->drawImage((320 - tmp.width()) / 2, (206 - tmp.height()) / 2, tmp);
+	}
+	
+	p->drawImage((320 - bkg.width()) / 2, (230 - bkg.height()) / 2, bkg);
+	
 	if (mediadata->album.isEmpty())
 	{
 		w = screen->getTextFontMetrics().width(mediadata->album);
@@ -340,8 +360,16 @@ void Mpris::paint()
 			}
 				
 		}
+
+		p->setPen(qRgb(0, 0, 0));
+		for (xx = LastPos[0] - 2; xx <= LastPos[0] + 2; xx++)
+		{
+			for (yy = y - 2; yy <= y + 2; yy++)
+				p->drawText(xx, yy, mediadata->album);
+		}
+		p->setPen(screen->getTextRgb());
 		p->drawText(LastPos[0], y, mediadata->album);
-		y += 40;
+		y += 30;
 	}
 	
 	if (!mediadata->title.isEmpty())
@@ -371,8 +399,15 @@ void Mpris::paint()
 			}
 				
 		}
+		p->setPen(qRgb(0, 0, 0));
+		for (xx = LastPos[1] - 2; xx <= LastPos[1] + 2; xx++)
+		{
+			for (yy = y - 2; yy <= y + 2; yy++)
+				p->drawText(xx, yy, s);
+		}
+		p->setPen(screen->getTextRgb());
 		p->drawText(LastPos[1], y, s);
-		y += 40;
+		y += 30;
 	}
 
 
@@ -398,8 +433,15 @@ void Mpris::paint()
 			}
 				
 		}
+		p->setPen(qRgb(0, 0, 0));
+		for (xx = LastPos[2] - 2; xx <= LastPos[2] + 2; xx++)
+		{
+			for (yy = y - 2; yy <= y + 2; yy++)
+				p->drawText(xx, yy, mediadata->artist);
+		}
+		p->setPen(screen->getTextRgb());
 		p->drawText(LastPos[2], y, mediadata->artist);
-		y += 40;
+		y += 30;
 	}
 	
 	if (!mediadata->url.isEmpty() && mediadata->title.isEmpty())
@@ -424,25 +466,26 @@ void Mpris::paint()
 			}
 				
 		}
+		p->setPen(qRgb(0, 0, 0));
+		for (xx = LastPos[3] - 2; xx <= LastPos[3] + 2; xx++)
+		{
+			for (yy = y - 2; yy <= y + 2; yy++)
+				p->drawText(xx, yy, mediadata->url);
+		}
+		p->setPen(screen->getTextRgb());
 		p->drawText(LastPos[3], y, mediadata->url);
 	}
 	
 	p->setCompositionMode(QPainter::CompositionMode_SourceOver);
 
-	if (!mpris->isSpotify())
-	{
-		pos2 = mpris->getPlayerPosition();
-		pos = (100.0 / mediadata->length) * pos2;
-		screen->drawVGuage(5, 171, 310, 30, pos);
-		s = QDateTime::fromTime_t(pos2).toString("mm:ss") + " / " + QDateTime::fromTime_t(mediadata->length).toString("mm:ss");
-		p->setPen(qRgb(0, 0, 0));
-		p->drawText(5, 171, 310, 30, Qt::AlignCenter, s);
-	}
-	else
-	{
-		s = QDateTime::fromTime_t(mediadata->length).toString("mm:ss");
-		p->drawText(5, 171, 310, 30, Qt::AlignCenter, s);
-	}
+	pos2 = mpris->getPlayerPosition();
+	pos = (100.0 / mediadata->length) * pos2;
+	p->setOpacity(0.6);
+	screen->drawVGuage(5, 171, 310, 30, pos);
+	p->setOpacity(1);
+	s = QDateTime::fromTime_t(pos2).toString("mm:ss") + " / " + QDateTime::fromTime_t(mediadata->length).toString("mm:ss");
+	p->setPen(qRgb(0, 0, 0));
+	p->drawText(5, 171, 310, 30, Qt::AlignCenter, s);
 
 	screen->End();
 	
@@ -467,4 +510,47 @@ QObject *Mpris::getQObject()
 QString Mpris::getName()
 {
     return tr("Media Player");
+}
+
+void Mpris::doDownload(const QUrl &url)
+{
+    QNetworkRequest request(url);
+    QNetworkReply *reply = m_netwManager->get(request);
+
+    connect(reply, SIGNAL(sslErrors(QList<QSslError>)), SLOT(sslErrors(QList<QSslError>)));
+	
+    currentDownloads.append(reply);
+}
+
+
+void Mpris::loadImage(QNetworkReply *reply)
+{
+	QUrl url;
+
+	url = reply->attribute(QNetworkRequest::RedirectionTargetAttribute).toUrl();
+	
+	if (!url.isEmpty())
+	{
+		doDownload(url);
+	}
+	else if (reply->error())
+	{
+		qDebug() << "Error in" <<  qPrintable(reply->url().toEncoded().constData()) << ":" << reply->error() << " - " <<  qPrintable(reply->errorString());
+	}
+	else
+	{
+		QByteArray jpegData = reply->readAll();
+		albumArt->loadFromData(jpegData);
+	}
+	
+	currentDownloads.removeAll(reply);
+    reply->deleteLater();
+}
+
+void Mpris::sslErrors(const QList<QSslError> &sslErrors)
+{
+    foreach (const QSslError &error, sslErrors)
+	{
+        qDebug() << "SSL error: " << qPrintable(error.errorString());
+	}
 }

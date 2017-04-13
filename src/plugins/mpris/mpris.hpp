@@ -28,6 +28,10 @@
 #include <QFont>
 #include <QFontMetrics>
 #include <QSettings>
+#include <QUrl>
+#include <QNetworkAccessManager>
+#include <QNetworkReply>
+#include <QImage>
 #include "../../plugininterface.hpp"
 #include "../../gscreen.hpp"
 #include "mprisfetcher2.hpp"
@@ -37,7 +41,7 @@ class Mpris : public QObject, PluginInterface
 		Q_OBJECT
 		Q_INTERFACES(PluginInterface)
 
-		Q_PLUGIN_METADATA(IID "your-string-here" FILE "")
+		Q_PLUGIN_METADATA(IID "MPRIS Plugin" FILE "")
 
 	public:
 		Mpris();
@@ -64,15 +68,23 @@ class Mpris : public QObject, PluginInterface
 		bool menuActive;
 		int menuSelect;
 		QSettings *settings;
+		QNetworkAccessManager *m_netwManager;
+		QList<QNetworkReply *> currentDownloads;
+		QImage *albumArt;
 		
 		QStringList getPlayersList();
 		void paint();
 		void menu();
+		void doDownload(const QUrl &url);
 
 	public slots:
 		void onStatusChanged(PlayerStatus);
 		void onTrackChanged(MediaData);
 		void onTimer();
+
+	private slots:
+		void loadImage(QNetworkReply *reply);
+		void sslErrors(const QList<QSslError> &sslErrors);
 
 	signals:
 		void doAction(gAction action, void *data);			// Signal to draw img on screen

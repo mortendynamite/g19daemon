@@ -36,25 +36,12 @@
 #include <QMainWindow>
 #include <QtMath>
 #include <QtCore/QSharedMemory>
+#include <QErrorMessage>
 
 g19daemon::g19daemon(QWidget *parent):
     QMainWindow(parent),
 	ui(new Ui::g19daemon)
 {
-    QFile isRunning_file("~/.g19daemon_running");
-    
-    if (isRunning_file.exists())
-    {
-        _isRunning = true;
-    }
-    else
-    {
-        isRunning_file.open(QIODevice::WriteOnly);
-        isRunning_file.write("Running\n", 8);
-        isRunning_file.close();
-        _isRunning = false;
-    }
-    
 	QImage micon;
 	
 	ui->setupUi(this);
@@ -120,15 +107,6 @@ g19daemon::~g19daemon()
 
 	device->closeDevice();
 	delete device;
-    
-    QFile isRunning_file("~/.g19daemon_running");
-    isRunning_file.remove();
-
-}
-
-bool g19daemon::isRunning()
-{
-    return _isRunning;
 }
 
 // call this routine to quit the application
@@ -166,14 +144,8 @@ void g19daemon::ResetLcdBacklight()
 	
 }
 
-
 void g19daemon::run()
 {
-	if (isRunning())
-	{
-		quit();
-	}
-
 	if (menuActive)
 		menu();
 	else
@@ -206,7 +178,6 @@ void g19daemon::GKeys()
 		device->setMKeys(false, false, false, true);
 	}
 }
-
 
 void g19daemon::LKeys()
 {
@@ -311,47 +282,46 @@ void g19daemon::loadPlugins()
 	
 	name = settings->value("ActivePlugin").toString();
 	pluginsDir.cd(PLUGINS_DIR);
-	QDirIterator iterator(pluginsDir.absolutePath(), QDirIterator::Subdirectories);
+	QDirIterator iterator(pluginsDir.absolutePath(), QStringList() << "*.so", QDir::Files, QDirIterator::NoIteratorFlags);
 
 	while (iterator.hasNext())
 	{
 		iterator.next();
-
-		if (!iterator.fileInfo().isDir())
+		QString filename = iterator.fileName();
+		
+		QPluginLoader pluginLoader(iterator.filePath());
+		pluginLoader.setLoadHints(QLibrary::ResolveAllSymbolsHint);
+		QObject *plugin = pluginLoader.instance();
+		
+		if (plugin)
 		{
-			QString filename = iterator.fileName();
-
-			if (filename.endsWith(".so"))
+			pluginint = qobject_cast<PluginInterface *>(plugin);
+			
+			if (pluginint)
 			{
-				QPluginLoader pluginLoader(iterator.filePath());
-				pluginLoader.setLoadHints(QLibrary::ResolveAllSymbolsHint);
-				QObject *plugin = pluginLoader.instance();
-				
-				if (plugin)
+				QObject *signalsource = pluginint->getQObject();
+				connect(signalsource, SIGNAL(doAction(gAction, void *)), this, SLOT(doAction(gAction, void *)));
+
+				if (pluginint->isPopup())
 				{
-					pluginint = qobject_cast<PluginInterface *>(plugin);
-					
-					if (pluginint)
+					PopupPlugins.append(pluginint);
+				}
+				else
+				{
+					plugins.append(pluginint);
+
+					if (pluginint->getName().compare(name) == 0)
 					{
-						QObject *signalsource = pluginint->getQObject();
-						connect(signalsource, SIGNAL(doAction(gAction, void *)), this, SLOT(doAction(gAction, void *)));
-
-						if (pluginint->isPopup())
-						{
-							PopupPlugins.append(pluginint);
-						}
-						else
-						{
-							plugins.append(pluginint);
-
-							if (pluginint->getName().compare(name) == 0)
-							{
-								activePlugin = plugins.indexOf(pluginint);
-							}
-						}
+						activePlugin = plugins.indexOf(pluginint);
 					}
 				}
 			}
+		}
+		else
+		{
+			QErrorMessage err(this);
+			err.showMessage(pluginLoader.errorString());
+			qDebug() << "\tError: " << pluginLoader.errorString();
 		}
 	}
 }

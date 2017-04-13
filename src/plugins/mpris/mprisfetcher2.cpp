@@ -199,9 +199,9 @@ void MprisFetcher2::parseTrackInfo(const QVariantMap &ATrackInfo)
 		data.track = ATrackInfo["xesam:trackNumber"].toString();
 	}
 
-	if (ATrackInfo.contains("xesam:url"))
+	if (ATrackInfo.contains("mpris:artUrl"))
 	{
-		data.url = ATrackInfo["xesam:url"].toString();
+		data.url = ATrackInfo["mpris:artUrl"].toString();
 	}
 
 	emit trackChanged(data);

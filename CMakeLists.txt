@@ -3,8 +3,8 @@ cmake_minimum_required(VERSION 3.1)
 project(g19daemon)
 
 set(VERSION_MAJOR 0 CACHE STRING "Major version" FORCE)
-set(VERSION_MINOR 0 CACHE STRING "Minor version" FORCE)
-set(VERSION_REVISION 9 CACHE STRING "Revison" FORCE)
+set(VERSION_MINOR 1 CACHE STRING "Minor version" FORCE)
+set(VERSION_REVISION 2 CACHE STRING "Revison" FORCE)
 
 set(PLUGINS_DIR lib/g19daemon/${VERSION_MAJOR}.${VERSION_MINOR}/plugins CACHE PATH "Path to installed plugins")
 set(THEMES_DIR lib/g19daemon/${VERSION_MAJOR}.${VERSION_MINOR}/themes CACHE PATH "Path to installed themes")
