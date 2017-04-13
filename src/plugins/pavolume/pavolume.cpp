@@ -25,6 +25,7 @@
 #include <QPainter>
 #include <QString>
 #include <QDebug>
+#include <QSettings>
 #include <pulse/pulseaudio.h>
 #include <pulse/thread-mainloop.h>
 #include <QtConcurrent/QtConcurrent>
@@ -140,10 +141,17 @@ PAVolume::PAVolume()
 	
 	connect(this, SIGNAL(volumeChanged()), this, SLOT(doVolumeChanged()));
 	connect(this, SIGNAL(Release()), this, SLOT(doRelease()));
+
+	settings = new QSettings("Dynamite", "G19Daemon");
+	timer = new QTimer(this);
+	connect(timer, SIGNAL(timeout()), this, SLOT(BlinkKeyBackground()));
+	
 }
 
 PAVolume::~PAVolume()
 {
+	timer->stop();
+	
 	if (pa_ctx)
 	{
 		pa_context_disconnect(pa_ctx);
@@ -153,6 +161,8 @@ PAVolume::~PAVolume()
 	pa_threaded_mainloop_free(pa_ml);
 
 	delete screen;
+	delete timer;
+	delete settings;
 }
 
 void PAVolume::setVolume(int vol, bool mute)
@@ -171,10 +181,48 @@ void PAVolume::setVolume(int vol, bool mute)
 void PAVolume::doVolumeChanged()
 {
 	emit doAction(grabFocus, NULL);
+
+	if (!isMuted)
+	{
+		if (timer->isActive())
+		{
+			timer->stop();
+		}
+		setKeybackground();
+	}
 	paint();
+	
+	if (isMuted)
+	{
+		timer->start(100);
+	}
 }
 	
+void PAVolume::setKeybackground()
+{
+	QColor color;
 
+	color.setBlue(0);
+
+	if (volume < 50)
+	{
+		color.setRed(volume * 5.1);
+		color.setGreen(255);
+	}
+	else if (volume > 50)
+	{
+		color.setRed(255);
+		color.setGreen(255 - ((volume - 50) * 5.1));
+	}
+	else
+	{
+		color.setRed(255);
+		color.setGreen(255);
+	}
+
+	emit doAction(setKeyBackground, &color);
+
+}
 
 QString PAVolume::getName()
 {
@@ -227,14 +275,50 @@ void PAVolume::paint()
 void PAVolume::eventThread()
 {
 	QTime t = QTime::currentTime();
-	
+	QColor color;
+
 	while (t < ftime)
 	{
 		t = QTime::currentTime();
 	}
 	future.cancel();
 	emit Release();
+
+	color.setRed(settings->value("KeyBacklight_Red").toInt());
+	color.setGreen(settings->value("KeyBacklight_Green").toInt());
+	color.setBlue(settings->value("KeyBacklight_Blue").toInt());
+	emit doAction(setKeyBackground, &color);
 }
+
+void PAVolume::BlinkKeyBackground()
+{
+	static int red = 0;
+	static bool up = true;
+	QColor color;
+	
+	if (up & (red < 255))
+		red += 20;
+	else
+		red -= 20;
+	
+	if (red >= 255)
+	{
+		up = false;
+		red = 255;
+	}
+	
+	if (red <= 0)
+	{
+		up = true;
+		red = 0;
+	}
+		
+	color.setRed(red);
+	color.setGreen(0);
+	color.setBlue(0);
+	emit doAction(setKeyBackground, &color);
+}
+
 
 void PAVolume::doRelease()
 {

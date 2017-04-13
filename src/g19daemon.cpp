@@ -46,6 +46,8 @@ g19daemon::g19daemon(QWidget *parent):
 	
 	ui->setupUi(this);
 
+	qRegisterMetaType<gAction>("gAction");
+	
 	device = new G19Device;
 	device->initializeDevice();
 	device->openDevice();

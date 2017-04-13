@@ -36,8 +36,6 @@ int main(int argc, char** argv)
 	file = QStandardPaths::writableLocation(QStandardPaths::RuntimeLocation) + "/g19daemon.pid";
     QFile isRunning_file(file);
     
-	qDebug() << isRunning_file.fileName();
-	
     if (!isRunning_file.exists())
     {
         if (!isRunning_file.open(QIODevice::WriteOnly))
@@ -72,6 +70,7 @@ int main(int argc, char** argv)
     }
     else
 	{
+		qDebug() << "App is running";
 		app.exit;
 		return 0;
 	}	

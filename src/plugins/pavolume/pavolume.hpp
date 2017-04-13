@@ -22,6 +22,7 @@
 
 #include <QtCore>
 #include <QtPlugin>
+#include <QSettings>
 #include <QtConcurrent/QtConcurrent>
 #include "../../plugininterface.hpp"
 #include "../../gscreen.hpp"
@@ -53,15 +54,21 @@ class PAVolume : public QObject, public PluginInterface
 		void eventThread();
 		
 	private:
+		QSettings *settings;
 		gScreen *screen;
 		bool isActive;
 		int volume;
 		bool isMuted;
 		QFuture<void> future;
 		QTime ftime;
+		QTimer *timer;
 
 		void paint();
-	
+		void setKeybackground();
+		
+	private slots:
+		void BlinkKeyBackground();
+
 	public slots:
 		void doVolumeChanged();
 		void doRelease();
