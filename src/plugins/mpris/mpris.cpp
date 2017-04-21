@@ -306,15 +306,13 @@ void Mpris::paint()
 	QString s;
 	QImage bkg;
 	int pos, pos2;
-	int w, y = 30;
+	int w, y = 25;
 	int xx, yy;
 	
 	if (!isActive)
 		return;
 	
 	p = screen->Begin();
-
-	// p->setCompositionMode(QPainter::CompositionMode_Xor);
 
 	switch (playerstatus->Play)
 	{
@@ -336,7 +334,7 @@ void Mpris::paint()
 		p->drawImage((320 - tmp.width()) / 2, (206 - tmp.height()) / 2, tmp);
 	}
 	
-	p->drawImage((320 - bkg.width()) / 2, (230 - bkg.height()) / 2, bkg);
+	//p->drawImage((320 - bkg.width()) / 2, (230 - bkg.height()) / 2, bkg);
 	
 	if (mediadata->album.isEmpty())
 	{
@@ -369,7 +367,7 @@ void Mpris::paint()
 		}
 		p->setPen(screen->getTextRgb());
 		p->drawText(LastPos[0], y, mediadata->album);
-		y += 30;
+		y += 25;
 	}
 	
 	if (!mediadata->title.isEmpty())
@@ -407,7 +405,7 @@ void Mpris::paint()
 		}
 		p->setPen(screen->getTextRgb());
 		p->drawText(LastPos[1], y, s);
-		y += 30;
+		y += 25;
 	}
 
 
@@ -441,7 +439,7 @@ void Mpris::paint()
 		}
 		p->setPen(screen->getTextRgb());
 		p->drawText(LastPos[2], y, mediadata->artist);
-		y += 30;
+		y += 25;
 	}
 	
 	if (!mediadata->url.isEmpty() && mediadata->title.isEmpty())
@@ -486,6 +484,7 @@ void Mpris::paint()
 	s = QDateTime::fromTime_t(pos2).toString("mm:ss") + " / " + QDateTime::fromTime_t(mediadata->length).toString("mm:ss");
 	p->setPen(qRgb(0, 0, 0));
 	p->drawText(5, 171, 310, 30, Qt::AlignCenter, s);
+	p->drawImage(10, 176, bkg);
 
 	screen->End();
 	
