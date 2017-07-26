@@ -32,7 +32,7 @@ class Backlight : public QObject, public PluginInterface
 		Q_OBJECT
 		Q_INTERFACES(PluginInterface)
 
-		Q_PLUGIN_METADATA(IID "Backlight" FILE "")
+		Q_PLUGIN_METADATA(IID "Backlight")
 
 	public:
 		Backlight();

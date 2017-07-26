@@ -41,7 +41,7 @@ class Mpris : public QObject, PluginInterface
 		Q_OBJECT
 		Q_INTERFACES(PluginInterface)
 
-		Q_PLUGIN_METADATA(IID "MPRIS Plugin" FILE "")
+		Q_PLUGIN_METADATA(IID "MPRIS Plugin")
 
 	public:
 		Mpris();

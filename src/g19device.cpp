@@ -401,19 +401,20 @@ void G19Device::updateLcd(QImage* imgin)
 	libusb_submit_transfer(data_transfer);
 }
 
-void G19Device::setKeysBacklight(unsigned char red, unsigned char green, unsigned char blue)
+void G19Device::setKeysBacklight(QColor color)
 {
 	if (!isDeviceConnected)
 	{
 		return;
 	}
 	
+	BackLight = color;
 	
 	memset(data_buff, '\0', BUFF_SIZE);
 	data_buff[8] = 255;
-	data_buff[9] = red;
-	data_buff[10] = green;
-	data_buff[11] = blue;
+	data_buff[9] = (unsigned char) color.red();
+	data_buff[10] = (unsigned char) color.green();
+	data_buff[11] = (unsigned char) color.blue();
 	
 	while (isTransfering)
 		;
@@ -424,6 +425,12 @@ void G19Device::setKeysBacklight(unsigned char red, unsigned char green, unsigne
 	libusb_fill_control_transfer(data_transfer, deviceHandle, data_buff, _TransferCallback, &isTransfering, 0);
 	libusb_submit_transfer(data_transfer);
 }
+
+QColor G19Device::getKeysBacklight()
+{
+    return BackLight;
+}
+
 
 void G19Device::setMKeys(bool m1, bool m2, bool m3, bool mr)
 {

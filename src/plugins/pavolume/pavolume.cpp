@@ -283,11 +283,7 @@ void PAVolume::eventThread()
 	}
 	future.cancel();
 	emit Release();
-
-	color.setRed(settings->value("KeyBacklight_Red").toInt());
-	color.setGreen(settings->value("KeyBacklight_Green").toInt());
-	color.setBlue(settings->value("KeyBacklight_Blue").toInt());
-	emit doAction(setKeyBackground, &color);
+	emit doAction(restoreKeyBackground, NULL);
 }
 
 void PAVolume::BlinkKeyBackground()

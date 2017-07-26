@@ -33,7 +33,7 @@ class PAVolume : public QObject, public PluginInterface
 	Q_OBJECT
 	Q_INTERFACES(PluginInterface)
 
-	Q_PLUGIN_METADATA(IID "your-string-here" FILE "")
+	Q_PLUGIN_METADATA(IID "your-string-here")
 
 	public:
 		pa_threaded_mainloop *pa_ml;

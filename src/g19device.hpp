@@ -23,6 +23,7 @@
 #include <QtCore/QObject>
 #include <QtConcurrent/QtConcurrent>
 #include <QDebug>
+#include <QColor>
 #include <QtGui/QImage>
 #include <libusb.h>
 
@@ -79,7 +80,8 @@ class G19Device : public QObject
 		void eventThread();
 		
 		void updateLcd(QImage *img);
-		void setKeysBacklight(unsigned char red, unsigned char green, unsigned char blue);
+		void setKeysBacklight(QColor color);
+		QColor getKeysBacklight();
 		void setMKeys(bool m1, bool m2, bool m3, bool mr);
 		void setDisplayBrightness(unsigned char brightness);
 
@@ -115,6 +117,8 @@ class G19Device : public QObject
 		QFuture<void> future;
 		
 		unsigned char *data_buff;
+        
+        QColor BackLight;
 	
 	signals:
 		void GKey();

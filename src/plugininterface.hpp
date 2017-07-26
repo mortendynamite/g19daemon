@@ -31,7 +31,8 @@ enum gAction
 	setKeyBackground,
 	setLcdBrightness,
 	grabFocus,
-	releaseFocus
+	releaseFocus,
+    restoreKeyBackground
 };
 
 class PluginInterface

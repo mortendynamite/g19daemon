@@ -43,7 +43,8 @@ g19daemon::g19daemon(QWidget *parent):
 	ui(new Ui::g19daemon)
 {
 	QImage micon;
-	
+	QColor BackLight;
+    
 	ui->setupUi(this);
 
 	qRegisterMetaType<gAction>("gAction");
@@ -52,8 +53,6 @@ g19daemon::g19daemon(QWidget *parent):
 	device->initializeDevice();
 	device->openDevice();
 
-	int r, g, b;
-	
 	settings =  new QSettings("Dynamite", "G19Daemon");
 	
 	activePlugin = -1;
@@ -73,11 +72,11 @@ g19daemon::g19daemon(QWidget *parent):
 	else
 		menuActive = true;
 	
-	r = settings->value("KeyBacklight_Red", "255").toInt();
-	g = settings->value("KeyBacklight_Green", "255").toInt();
-	b = settings->value("KeyBacklight_Blue", "255").toInt();
+	BackLight.setRed(settings->value("KeyBacklight_Red", "255").toInt());
+	BackLight.setGreen(settings->value("KeyBacklight_Green", "255").toInt());
+	BackLight.setBlue(settings->value("KeyBacklight_Blue", "255").toInt());
 	
-	device->setKeysBacklight((unsigned char) r, (unsigned char) g, (unsigned char) b);
+	device->setKeysBacklight(BackLight);
 	device->setDisplayBrightness(settings->value("Backlight", "255").toInt());
 	device->setMKeys(true, false, false, false);
 
@@ -364,7 +363,7 @@ void g19daemon::doAction(gAction action, void *data)
 			device->updateLcd(((gScreen *) data)->Draw());
 			break;
 		case setKeyBackground:
-			device->setKeysBacklight(((QColor *) data)->red(), ((QColor *) data)->green(), ((QColor *) data)->blue());
+			device->setKeysBacklight(*((QColor *) data));
 			break;
 		case grabFocus:
 			if (!menuActive)
@@ -381,6 +380,13 @@ void g19daemon::doAction(gAction action, void *data)
 			b = *((int *) data);
 			device->setDisplayBrightness(b);
 			break;
+        case restoreKeyBackground:
+            QColor BackLight;
+            BackLight.setRed(settings->value("KeyBacklight_Red", "255").toInt());
+            BackLight.setGreen(settings->value("KeyBacklight_Green", "255").toInt());
+            BackLight.setBlue(settings->value("KeyBacklight_Blue", "255").toInt());
+            device->setKeysBacklight(BackLight);
+            break;
 	}
 	
 }
