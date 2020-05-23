@@ -62,4 +62,5 @@ add_subdirectory(src/plugins/keybacklight)
 add_subdirectory(src/plugins/backlight)
 add_subdirectory(src/plugins/pavolume)
 add_subdirectory(src/plugins/mpris)
+add_subdirectory(src/plugins/clock)
 
