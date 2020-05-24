@@ -46,6 +46,7 @@ class g19daemon : public QMainWindow
 		~g19daemon();
 
 		void menu();
+        void menuSettings();
 
 	signals:
 		// Signal to finish, this is connected to Application Quit
@@ -79,6 +80,7 @@ class g19daemon : public QMainWindow
 		int isActive;
 		int menuSelect;
 		bool menuActive;
+        bool menuSettingsActive;
 		
 		gScreen *menuScreen;
 		
@@ -89,6 +91,7 @@ class g19daemon : public QMainWindow
 		
 		QSettings *settings;
 		
+        QVector<PluginInterface *> getActivePlugins();
 		void loadPlugins();
 		void unloadPlugins();
 		
