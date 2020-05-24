@@ -1,0 +1,15 @@
+#!/usr/bin/make -f
+
+clean:
+	dh_clean
+	sudo rm -Rf $(CURDIR)/build
+
+build:
+	mkdir $(CURDIR)/build
+	cd $(CURDIR)/build && cmake -DCMAKE_INSTALL_PREFIX:PATH=/usr ..
+	cd $(CURDIR)/build && make
+	cd $(CURDIR)/build && make DESTDIR=../debian/g19daemon install
+
+binary:
+	dh_gencontrol
+	dh_builddeb

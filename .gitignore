@@ -1,2 +1,7 @@
 build/
 release/
+debian/g19daemon
+
+debian/g19daemon.debhelper.log
+
+debian/g19daemon.substvars
