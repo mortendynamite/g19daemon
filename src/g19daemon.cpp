@@ -286,7 +286,7 @@ void g19daemon::menu()
             p->setPen ( qRgb ( 255, 255, 255 ) );
         }
 
-        p->drawImage ( 3, y + 10, plugins[i]->getIcon() );
+        p->drawImage ( 3, y + 10, activePlugins[i]->getIcon() );
         p->drawText ( 59, y, 245, 68, Qt::AlignVCenter | Qt::AlignLeft, name );
         y += 68;
     }
