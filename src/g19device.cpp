@@ -197,7 +197,7 @@ void G19Device::initializeDevice()
 	
 	future = QtConcurrent::run (this, &G19Device::eventThread);
 	
-	libusb_set_debug(context, LIBUSB_LOG_LEVEL_INFO);
+    libusb_set_option(context, LIBUSB_OPTION_LOG_LEVEL, LIBUSB_LOG_LEVEL_INFO);
 }
 
 void G19Device::openDevice()
