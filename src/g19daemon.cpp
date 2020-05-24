@@ -99,7 +99,7 @@ g19daemon::~g19daemon()
     if ( menuActive )
         settings->setValue ( "ActivePlugin", "menu" );
     else if ( activePlugin != -1 )
-        settings->setValue ( "ActivePlugin", plugins[activePlugin]->getName() );
+        settings->setValue ( "ActivePlugin", getActivePlugins()[activePlugin]->getName() );
 
     settings->sync();
 
@@ -151,7 +151,7 @@ void g19daemon::run()
     if ( menuActive )
         menu();
     else
-        plugins[activePlugin]->setActive ( true );
+        getActivePlugins()[activePlugin]->setActive ( true );
 }
 
 void g19daemon::GKeys()
@@ -386,7 +386,7 @@ void g19daemon::loadPlugins()
                     plugins.append ( pluginint );
 
                     if ( pluginint->getName().compare ( name ) == 0 ) {
-                        activePlugin = plugins.indexOf ( pluginint );
+                        activePlugin = getActivePlugins().indexOf ( pluginint );
                     }
                 }
             }
