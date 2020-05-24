@@ -64,9 +64,9 @@ void HelloWorld::paint()
 	if (!isActive)
 		return;
 
-	p = screen->Begin();
+	p = screen->begin();
 	p->drawText(0, 0, 320, 206, Qt::AlignCenter, tr("Hello World!"));
-	screen->End();
+	screen->end();
 	emit doAction(displayScreen, screen);
 }
 

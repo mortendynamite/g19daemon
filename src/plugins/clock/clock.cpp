@@ -84,12 +84,12 @@ void Clock::paint()
         QColor hourColor(255, 25, 0);
         QColor minuteColor(0, 169, 181, 168);
 
-        int side = qMin(320, 206);
+        int side = qMin(320, 240);
         QTime time = QTime::currentTime();
-	p = screen->Begin();
+	p = screen->beginFullScreen();
 
         p->setRenderHint(QPainter::Antialiasing);
-        p->translate(320 / 2, 206 / 2);
+        p->translate(320 / 2, 240 / 2);
         p->scale(side / 200.0, side / 200.0);
         p->setPen(Qt::NoPen);
         p->setBrush(hourColor);
@@ -116,8 +116,8 @@ void Clock::paint()
             p->rotate(6.0);
         }
 
-	screen->End();
-	emit doAction(displayScreen, screen);
+	screen->end();
+	emit doAction(displayFullScreen, screen);
 }
 
 

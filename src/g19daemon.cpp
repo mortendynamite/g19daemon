@@ -265,7 +265,7 @@ void g19daemon::menu()
 
     QVector<PluginInterface*> activePlugins = getActivePlugins();
 
-    p = menuScreen->Begin();
+    p = menuScreen->begin();
     // How many pages will there be
     pages = qCeil ( activePlugins.count() / 3 );
 
@@ -292,9 +292,9 @@ void g19daemon::menu()
     }
 
     // Scroll Bar
-    menuScreen->DrawScrollbar ( page, pages + 1 );
-    menuScreen->End();
-    device->updateLcd ( menuScreen->Draw() );
+    menuScreen->drawScrollbar ( page, pages + 1 );
+    menuScreen->end();
+    device->updateLcd ( menuScreen->draw() );
 }
 
 void g19daemon::menuSettings()
@@ -304,7 +304,7 @@ void g19daemon::menuSettings()
     int y = 0;
     int menuStart, menuEnd, pages, page;
 
-    p = menuScreen->Begin();
+    p = menuScreen->begin();
     // How many pages will there be
     pages = qCeil ( plugins.count() / 3 );
 
@@ -336,9 +336,9 @@ void g19daemon::menuSettings()
     }
 
     // Scroll Bar
-    menuScreen->DrawScrollbar ( page, pages + 1 );
-    menuScreen->End();
-    device->updateLcd ( menuScreen->Draw() );
+    menuScreen->drawScrollbar ( page, pages + 1 );
+    menuScreen->end();
+    device->updateLcd ( menuScreen->draw() );
 
 }
 
@@ -425,8 +425,11 @@ void g19daemon::doAction ( gAction action, void *data )
     int b;
 
     switch ( action ) {
+        case displayFullScreen:
+            device->updateLcd ( ( ( gScreen * ) data )->drawFullScreen() );
+            break;
     case displayScreen:
-        device->updateLcd ( ( ( gScreen * ) data )->Draw() );
+        device->updateLcd ( ( ( gScreen * ) data )->draw() );
         break;
     case setKeyBackground:
         device->setKeysBacklight ( * ( ( QColor * ) data ) );
