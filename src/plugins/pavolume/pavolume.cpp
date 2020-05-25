@@ -250,7 +250,7 @@ void PAVolume::paint()
 	
 	QImage sound(":/pavolume/sound.png");
 	
-	p = screen->Begin();
+	p = screen->begin();
 	p->drawImage((320 - sound.width()) / 2, (146 - sound.height()) / 2, sound);
 	p->setFont(header);
 
@@ -268,7 +268,7 @@ void PAVolume::paint()
 	screen->drawVGuage(5, 171, 310, 30, pos);
 	p->setPen(qRgb(255, 255, 255));
 	p->drawText(5, 171, 310, 30, Qt::AlignCenter, s);
-	screen->End();
+	screen->end();
 	emit doAction(displayScreen, screen);
 }
 

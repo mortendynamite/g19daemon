@@ -112,7 +112,7 @@ void Backlight::paint()
 	QColor color;
 	QString text;
 	
-	p = screen->Begin();
+	p = screen->begin();
 
 	drawGuage(132, 30, 40, 170, (Value * 100) / 127, qRgb(116, 119, 123), p);
 

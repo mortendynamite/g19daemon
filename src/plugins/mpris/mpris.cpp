@@ -265,7 +265,7 @@ void Mpris::menu()
 	QPainter *p;
 	int y, menuStart, menuEnd, pages, page;
 
-	p = screen->Begin();
+	p = screen->begin();
 	
 	// How many pages will there be
 	pages = qCeil(players.count() / 4);
@@ -294,8 +294,8 @@ void Mpris::menu()
 		y += 40;
 	}
 	
-	screen->DrawScrollbar(page, pages + 1);
-	screen->End();
+	screen->drawScrollbar (page, pages + 1);
+	screen->end();
 	
 	emit doAction(displayScreen, screen);
 }
@@ -312,7 +312,7 @@ void Mpris::paint()
 	if (!isActive)
 		return;
 	
-	p = screen->Begin();
+	p = screen->begin();
 
 	switch (playerstatus->Play)
 	{
@@ -486,7 +486,7 @@ void Mpris::paint()
 	p->drawText(5, 171, 310, 30, Qt::AlignCenter, s);
 	p->drawImage(10, 176, bkg);
 
-	screen->End();
+	screen->end();
 	
 	emit doAction(displayScreen, screen);
 }

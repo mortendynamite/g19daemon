@@ -165,7 +165,7 @@ void KeyBacklight::paint()
 	QString text;
 	int value;
 	
-	p = screen->Begin();
+	p = screen->begin();
 
 	// Red
 	

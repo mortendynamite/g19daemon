@@ -46,16 +46,18 @@ class gScreen : public QObject
         
 		QImage *getScreen();
 		
-		QImage *Draw();
-		QPainter *Begin();
+		QImage *draw();
+        QImage *drawFullScreen();
+		QPainter *begin();
+        QPainter *beginFullScreen();
 		
 		void drawHGuage(int x, int y, int w, int h, int pos);
 		void drawHGuage(int x, int y, int w, int h, int pos, QColor color);
 		void drawVGuage(int x, int y, int w, int h, int pos);
 		void drawVGuage(int x, int y, int w, int h, int pos, QColor color);
-		void End();
+		void end();
 		
-		void DrawScrollbar(int pos, int max);
+		void drawScrollbar (int pos, int max);
 		
 		
 	private:

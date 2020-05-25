@@ -5,4 +5,5 @@ Comment=Daemon for the Logitech G19 Keyboard
 Terminal=false
 Exec=g19daemon
 Icon=input-keyboard
+Categories=Settings
 

@@ -55,7 +55,7 @@ qt5_use_modules(g19daemon Core Gui)
 
 install(TARGETS g19daemon RUNTIME DESTINATION bin)
 install(PROGRAMS src/g19daemon.desktop DESTINATION share/applications)
-install(FILES src/80-hid-g19.rules DESTINATION /etc/udev/rules.d)
+install(FILES helper/80-hid-g19.rules DESTINATION /etc/udev/rules.d)
 
 add_subdirectory(src/plugins/helloworld)
 add_subdirectory(src/plugins/keybacklight)

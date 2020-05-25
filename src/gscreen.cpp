@@ -90,7 +90,7 @@ QFontMetrics gScreen::getTextFontMetrics()
 	return QFontMetrics(fontText);
 }
 
-QImage *gScreen::Draw()
+QImage *gScreen::draw()
 {
 	QPainter painter;
 	QLinearGradient background(0, 0, 0, 240);
@@ -114,7 +114,13 @@ QImage *gScreen::Draw()
 	return screen;
 }
 
-QPainter *gScreen::Begin()
+QImage *gScreen::drawFullScreen()
+{
+	return screen;    
+}
+    
+
+QPainter *gScreen::begin()
 {
 	userscreen->fill(qRgba(0, 0, 0, 0));
 	userPainter->begin(userscreen);
@@ -123,12 +129,21 @@ QPainter *gScreen::Begin()
 	return userPainter;
 }
 
-void gScreen::End()
+QPainter *gScreen::beginFullScreen()
+{
+	screen->fill(qRgba(0, 0, 0, 0));
+	userPainter->begin(screen);
+	userPainter->setFont(fontText);
+	userPainter->setPen(rgbText);
+	return userPainter;
+}
+
+void gScreen::end()
 {
 	userPainter->end();
 }
 
-void gScreen::DrawScrollbar(int pos, int max)
+void gScreen::drawScrollbar (int pos, int max)
 {
 	int y, h, step;
 	

@@ -27,6 +27,7 @@
 
 enum gAction
 {
+    displayFullScreen,
 	displayScreen,
 	setKeyBackground,
 	setLcdBrightness,
