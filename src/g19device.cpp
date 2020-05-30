@@ -444,16 +444,19 @@ void G19Device::setMKeys(bool m1, bool m2, bool m3, bool mr)
 	if (m1)
 	{
 		mkeys |= 0x80;
+        activeMKey = G19_KEY_M1;
 	}
 	
 	if (m2)
 	{
 		mkeys |= 0x40;
+        activeMKey = G19_KEY_M2;
 	}
 	
 	if (m3)
 	{
 		mkeys |= 0x20;
+        activeMKey = G19_KEY_M3;
 	}
 	
 	if (mr)
@@ -474,6 +477,11 @@ void G19Device::setMKeys(bool m1, bool m2, bool m3, bool mr)
 	libusb_fill_control_transfer(data_transfer, deviceHandle, data_buff, _TransferCallback, &isTransfering, 0);
 	libusb_submit_transfer(data_transfer);
 	
+}
+
+G19Keys G19Device::getActiveMKey()
+{
+    return activeMKey;    
 }
 
 void G19Device::setDisplayBrightness(unsigned char brightness)
