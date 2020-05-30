@@ -28,7 +28,9 @@
 #include <QSystemTrayIcon>
 #include <QAction>
 #include <QWidget>
+#include <QProcess>
 #include <QMainWindow>
+#include <QLineEdit>
 #include "g19device.hpp"
 #include "plugininterface.hpp"
 #include "gscreen.hpp"
@@ -65,6 +67,7 @@ class g19daemon : public QMainWindow
 		void ResetLcdBacklight();
 		void GKeys();
 		void LKeys();
+        void saveSettings(); 
 		
 		void doAction(gAction, void *data);
 		
@@ -74,6 +77,7 @@ class g19daemon : public QMainWindow
 		G19Device *device;
 		QVector<PluginInterface *> plugins;
 		QVector<PluginInterface *> PopupPlugins;
+        QList<G19Keys> pressedKey;
 		int activePlugin;
 		int prevPlugin;
 		
@@ -94,6 +98,8 @@ class g19daemon : public QMainWindow
         QVector<PluginInterface *> getActivePlugins();
 		void loadPlugins();
 		void unloadPlugins();
+        QString translateKey(G19Keys);
+        void loadSettings();
 		
 	private slots:
 };

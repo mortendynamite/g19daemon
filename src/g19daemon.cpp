@@ -61,6 +61,8 @@ g19daemon::g19daemon ( QWidget *parent ) :
 
     connect ( device, SIGNAL ( GKey() ), SLOT ( GKeys() ) );
     connect ( device, SIGNAL ( LKey() ), SLOT ( LKeys() ) );
+    connect(ui->actionSave_settings, SIGNAL(triggered()), SLOT(saveSettings()));
+
 
     micon = QImage ( ":/menu_icon.png" );
     menuScreen = new gScreen ( micon, tr ( "Logitech G19s Linux" ) );
@@ -92,6 +94,8 @@ g19daemon::g19daemon ( QWidget *parent ) :
     trayIcon->setToolTip ( "Logitech G19 Daemon" );
     trayIcon->setIcon ( QIcon ( ":/tray_icon.png" ) );
     trayIcon->show();
+    
+    loadSettings();
 }
 
 g19daemon::~g19daemon()
@@ -129,6 +133,26 @@ void g19daemon::quit()
 void g19daemon::aboutToQuitApp()
 {
 }
+
+void g19daemon::loadSettings()
+{
+    for (QLineEdit *lineEdit : ui->mKeyTabWidget->findChildren<QLineEdit*>()) {
+        
+        lineEdit->setText(settings->value(lineEdit->objectName()).toString());
+    }
+}
+
+void g19daemon::saveSettings() {
+
+    qDebug() << "Save Settings";
+
+     for (QLineEdit *lineEdit : ui->mKeyTabWidget->findChildren<QLineEdit*>()) {
+        
+        settings->setValue(lineEdit->objectName(), lineEdit->text());
+    }
+
+}
+
 
 void g19daemon::Show()
 {
@@ -175,6 +199,90 @@ void g19daemon::GKeys()
     if ( keys & G19_KEY_MR ) {
         device->setMKeys ( false, false, false, true );
     }
+
+    QString gKey = translateKey((G19Keys)keys);
+
+    if(!gKey.isEmpty())
+    {
+        //Fix double actions for same key
+        if(!pressedKey.contains((G19Keys)keys))
+        {
+            pressedKey.append((G19Keys)keys);
+            QString command = settings->value(translateKey(device->getActiveMKey()) + "_" + gKey).toString();
+            qDebug() << "Run command: " << command;
+            QProcess::startDetached(command);
+        }
+        else
+        {
+            pressedKey.removeAll((G19Keys)keys);
+        }
+    }
+}
+
+QString g19daemon::translateKey(G19Keys keys)
+{
+    if(keys & G19_KEY_G1)
+    {
+        return QString("G1");
+    }
+    else if(keys & G19_KEY_G2)
+    {
+        return QString("G2");
+    }
+    else if(keys & G19_KEY_G3)
+    {
+        return QString("G3");
+    }
+    else if(keys & G19_KEY_G4)
+    {
+        return QString("G4");
+    }
+    else if(keys & G19_KEY_G5)
+    {
+        return QString("G5");
+    }
+    else if(keys & G19_KEY_G6)
+    {
+        return QString("G6");
+    }
+    else if(keys & G19_KEY_G7)
+    {
+        return QString("G7");
+    }
+    else if(keys & G19_KEY_G8)
+    {
+        return QString("G8");
+    }
+    else if(keys & G19_KEY_G9)
+    {
+        return QString("G9");
+    }
+    else if(keys & G19_KEY_G10)
+    {
+        return QString("G10");
+    }
+    else if(keys & G19_KEY_G11)
+    {
+        return QString("G11");
+    }
+    else if(keys & G19_KEY_G12)
+    {
+        return QString("G12");
+    }
+    else if(keys & G19_KEY_M1)
+    {
+        return QString("m1");
+    }
+    else if(keys & G19_KEY_M2)
+    {
+        return QString("m2");
+    }
+    else if(keys & G19_KEY_M3)
+    {
+        return QString("m3");
+    }
+
+    return QString("");
 }
 
 void g19daemon::LKeys()
@@ -425,9 +533,9 @@ void g19daemon::doAction ( gAction action, void *data )
     int b;
 
     switch ( action ) {
-        case displayFullScreen:
-            device->updateLcd ( ( ( gScreen * ) data )->drawFullScreen() );
-            break;
+    case displayFullScreen:
+        device->updateLcd ( ( ( gScreen * ) data )->drawFullScreen() );
+        break;
     case displayScreen:
         device->updateLcd ( ( ( gScreen * ) data )->draw() );
         break;

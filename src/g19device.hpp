@@ -87,6 +87,8 @@ class G19Device : public QObject
 
 		void GKeyCallback(unsigned int keys);
 		void LKeyCallback(unsigned int keys);
+        
+        G19Keys getActiveMKey();
 		
 		unsigned int getKeys();
 
@@ -99,6 +101,7 @@ class G19Device : public QObject
 		bool enableEventThread;
 		bool isTransfering;
 		QString cstatus;
+        G19Keys activeMKey;
 		
 		libusb_transfer *GKeys_transfer;
 		libusb_transfer *LKeys_transfer;
