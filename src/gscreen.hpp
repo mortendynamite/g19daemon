@@ -27,13 +27,13 @@
 #include <QString>
 #include <QRgb>
 
-class gScreen : public QObject
+class Gscreen : public QObject
 {
 	Q_OBJECT
 
 	public:
-		gScreen(const QImage &Icon, const QString &Name);
-		~gScreen();
+        Gscreen(const QImage &Icon, const QString &Name);
+        ~Gscreen();
 
 		void setName(const QString &Name);
 		void setIcon(const QImage &Icon);

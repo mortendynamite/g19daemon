@@ -37,15 +37,15 @@
 
 namespace Ui
 {
-	class g19daemon;
+    class G19daemon;
 }
 
-class g19daemon : public QMainWindow
+class G19daemon : public QMainWindow
 {
 	Q_OBJECT
 	public:
-		explicit g19daemon(QWidget *parent = 0);
-		~g19daemon();
+        explicit G19daemon(QWidget *parent = 0);
+        ~G19daemon();
 
 		void menu();
         void menuSettings();
@@ -63,16 +63,16 @@ class g19daemon : public QMainWindow
 		void aboutToQuitApp();
 		void quit();
 
-		void Show();
-		void ResetLcdBacklight();
-		void GKeys();
-		void LKeys();
+        void show();
+        void resetLcdBacklight();
+        void gKeys();
+        void lKeys();
         void saveSettings(); 
 		
 		void doAction(gAction, void *data);
 		
 	private:
-		Ui::g19daemon *ui;
+        Ui::G19daemon *ui;
         
 		G19Device *device;
 		QVector<PluginInterface *> plugins;
@@ -86,7 +86,7 @@ class g19daemon : public QMainWindow
 		bool menuActive;
         bool menuSettingsActive;
 		
-		gScreen *menuScreen;
+        Gscreen *menuScreen;
 		
 		QMenu *trayIconMenu;
 		QSystemTrayIcon *trayIcon;

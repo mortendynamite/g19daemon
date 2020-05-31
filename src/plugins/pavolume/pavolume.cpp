@@ -121,7 +121,7 @@ PAVolume::PAVolume()
 
 	isMuted = false;
 	isActive = false;
-	screen = new gScreen(icon, tr("Volume"));
+	screen = new Gscreen(icon, tr("Volume"));
 	
 	// Create a mainloop API and connection to the default server
 	pa_ml = pa_threaded_mainloop_new();
@@ -229,7 +229,7 @@ QString PAVolume::getName()
     return tr("Volume");
 }
 
-void PAVolume::LKeys(int keys)
+void PAVolume::lKeys(int keys)
 {
 }
 

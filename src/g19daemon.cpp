@@ -38,9 +38,9 @@
 #include <QtCore/QSharedMemory>
 #include <QErrorMessage>
 
-g19daemon::g19daemon ( QWidget *parent ) :
+G19daemon::G19daemon ( QWidget *parent ) :
     QMainWindow ( parent ),
-    ui ( new Ui::g19daemon )
+    ui ( new Ui::G19daemon )
 {
     QImage micon;
     QColor BackLight;
@@ -59,13 +59,13 @@ g19daemon::g19daemon ( QWidget *parent ) :
     isActive = true;
     menuSettingsActive = false;
 
-    connect ( device, SIGNAL ( GKey() ), SLOT ( GKeys() ) );
-    connect ( device, SIGNAL ( LKey() ), SLOT ( LKeys() ) );
+    connect ( device, SIGNAL ( gKey() ), SLOT ( gKeys() ) );
+    connect ( device, SIGNAL ( lKey() ), SLOT ( lKeys() ) );
     connect(ui->actionSave_settings, SIGNAL(triggered()), SLOT(saveSettings()));
 
 
     micon = QImage ( ":/menu_icon.png" );
-    menuScreen = new gScreen ( micon, tr ( "Logitech G19s Linux" ) );
+    menuScreen = new Gscreen ( micon, tr ( "Logitech G19s Linux" ) );
     menuSelect = 0;
 
     loadPlugins();
@@ -84,8 +84,8 @@ g19daemon::g19daemon ( QWidget *parent ) :
     device->setMKeys ( true, false, false, false );
 
     trayIconMenu = new QMenu ( this );
-    trayIconMenu->addAction ( tr ( "Show" ), this, SLOT ( Show() ) );
-    trayIconMenu->addAction ( tr ( "Reset LCD Backlight" ), this, SLOT ( ResetLcdBacklight() ) );
+    trayIconMenu->addAction ( tr ( "Show" ), this, SLOT ( show() ) );
+    trayIconMenu->addAction ( tr ( "Reset LCD Backlight" ), this, SLOT ( resetLcdBacklight() ) );
     trayIconMenu->addAction ( QIcon ( ":/off.png" ), "&Quit", this, SLOT ( quit() ) );
 
 
@@ -98,7 +98,7 @@ g19daemon::g19daemon ( QWidget *parent ) :
     loadSettings();
 }
 
-g19daemon::~g19daemon()
+G19daemon::~G19daemon()
 {
     if ( menuActive )
         settings->setValue ( "ActivePlugin", "menu" );
@@ -116,13 +116,13 @@ g19daemon::~g19daemon()
 }
 
 // call this routine to quit the application
-void g19daemon::quit()
+void G19daemon::quit()
 {
     // you can do some cleanup here
     // then do emit finished to signal CoreApplication to quit
 
-    disconnect ( device, SIGNAL ( GKey() ), this, SLOT ( GKeys() ) );
-    disconnect ( device, SIGNAL ( LKey() ), this, SLOT ( LKeys() ) );
+    disconnect ( device, SIGNAL ( GKey() ), this, SLOT ( gKeys() ) );
+    disconnect ( device, SIGNAL ( LKey() ), this, SLOT ( lKeys() ) );
 
     emit finished();
 }
@@ -130,11 +130,11 @@ void g19daemon::quit()
 // shortly after quit is called the CoreApplication will signal this routine
 // this is a good place to delete any objects that were created in the
 // constructor and/or to stop any threads
-void g19daemon::aboutToQuitApp()
+void G19daemon::aboutToQuitApp()
 {
 }
 
-void g19daemon::loadSettings()
+void G19daemon::loadSettings()
 {
     for (QLineEdit *lineEdit : ui->mKeyTabWidget->findChildren<QLineEdit*>()) {
         
@@ -142,7 +142,7 @@ void g19daemon::loadSettings()
     }
 }
 
-void g19daemon::saveSettings() {
+void G19daemon::saveSettings() {
 
     qDebug() << "Save Settings";
 
@@ -154,7 +154,7 @@ void g19daemon::saveSettings() {
 }
 
 
-void g19daemon::Show()
+void G19daemon::show()
 {
 //	configdialog *dlg;
 
@@ -163,14 +163,14 @@ void g19daemon::Show()
     show();
 }
 
-void g19daemon::ResetLcdBacklight()
+void G19daemon::resetLcdBacklight()
 {
     device->setDisplayBrightness ( 255 );
     settings->setValue ( "Backlight", 255 );
 
 }
 
-void g19daemon::run()
+void G19daemon::run()
 {
     if ( menuActive )
         menu();
@@ -178,7 +178,7 @@ void g19daemon::run()
         getActivePlugins()[activePlugin]->setActive ( true );
 }
 
-void g19daemon::GKeys()
+void G19daemon::gKeys()
 {
     unsigned int keys;
 
@@ -219,7 +219,7 @@ void g19daemon::GKeys()
     }
 }
 
-QString g19daemon::translateKey(G19Keys keys)
+QString G19daemon::translateKey(G19Keys keys)
 {
     if(keys & G19_KEY_G1)
     {
@@ -285,7 +285,7 @@ QString g19daemon::translateKey(G19Keys keys)
     return QString("");
 }
 
-void g19daemon::LKeys()
+void G19daemon::lKeys()
 {
     unsigned int keys;
 
@@ -360,11 +360,11 @@ void g19daemon::LKeys()
             menuSettings();
         }
     } else if ( activePlugins[activePlugin] ) {
-        activePlugins[activePlugin]->LKeys ( keys );
+        activePlugins[activePlugin]->lKeys ( keys );
     }
 }
 
-void g19daemon::menu()
+void G19daemon::menu()
 {
     QPainter *p;
     QString name;
@@ -405,7 +405,7 @@ void g19daemon::menu()
     device->updateLcd ( menuScreen->draw() );
 }
 
-void g19daemon::menuSettings()
+void G19daemon::menuSettings()
 {
     QPainter *p;
     QString name;
@@ -450,7 +450,7 @@ void g19daemon::menuSettings()
 
 }
 
-QVector<PluginInterface *> g19daemon::getActivePlugins()
+QVector<PluginInterface *> G19daemon::getActivePlugins()
 {
     QVector<PluginInterface*> activePlugins;
 
@@ -463,7 +463,7 @@ QVector<PluginInterface *> g19daemon::getActivePlugins()
     return activePlugins;
 }
 
-void g19daemon::loadPlugins()
+void G19daemon::loadPlugins()
 {
     PluginInterface *pluginint;
     QDir pluginsDir ( qApp->applicationDirPath() );
@@ -506,7 +506,7 @@ void g19daemon::loadPlugins()
     }
 }
 
-void g19daemon::unloadPlugins()
+void G19daemon::unloadPlugins()
 {
     PluginInterface *pl;
 
@@ -528,16 +528,16 @@ void g19daemon::unloadPlugins()
 
 }
 
-void g19daemon::doAction ( gAction action, void *data )
+void G19daemon::doAction ( gAction action, void *data )
 {
     int b;
 
     switch ( action ) {
     case displayFullScreen:
-        device->updateLcd ( ( ( gScreen * ) data )->drawFullScreen() );
+        device->updateLcd ( ( ( Gscreen * ) data )->drawFullScreen() );
         break;
     case displayScreen:
-        device->updateLcd ( ( ( gScreen * ) data )->draw() );
+        device->updateLcd ( ( ( Gscreen * ) data )->draw() );
         break;
     case setKeyBackground:
         device->setKeysBacklight ( * ( ( QColor * ) data ) );

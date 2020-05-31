@@ -51,7 +51,7 @@ int main(int argc, char** argv)
 		}
 
 		// create the main class
-		g19daemon task;
+        G19daemon task;
 		
 		// connect up the signals
 		QObject::connect(&task, SIGNAL(finished()), &app, SLOT(quit()));
