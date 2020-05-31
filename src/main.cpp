@@ -71,7 +71,7 @@ int main(int argc, char** argv)
     else
 	{
 		qDebug() << "App is running";
-		app.exit;
+        app.exit();
 		return 0;
 	}	
 }

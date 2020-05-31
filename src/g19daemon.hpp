@@ -63,7 +63,6 @@ class G19daemon : public QMainWindow
 		void aboutToQuitApp();
 		void quit();
 
-        void show();
         void resetLcdBacklight();
         void gKeys();
         void lKeys();

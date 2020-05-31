@@ -221,8 +221,6 @@ void Mpris::onStatusChanged(PlayerStatus pl)
 
 void Mpris::onTrackChanged(MediaData md)
 {
-	QNetworkReply *reply;
-	
 	mediadata->artist = md.artist;
 	mediadata->length = md.length;
 	mediadata->title = md.title;
@@ -338,7 +336,7 @@ void Mpris::paint()
 	
 	if (mediadata->album.isEmpty())
 	{
-		w = screen->getTextFontMetrics().width(mediadata->album);
+        w = screen->getTextFontMetrics().horizontalAdvance(mediadata->album);
 		if (w > 320)
 		{
 			if (!lastPosDir[0])
@@ -377,7 +375,7 @@ void Mpris::paint()
 		else
 			s = mediadata->title;
 		
-		w = screen->getTextFontMetrics().width(s);
+        w = screen->getTextFontMetrics().horizontalAdvance(s);
 		if (w > 320)
 		{
 			if (lastPosDir[1] == 0)
@@ -411,7 +409,7 @@ void Mpris::paint()
 
 	if (!mediadata->artist.isEmpty())
 	{
-		w = screen->getTextFontMetrics().width(mediadata->artist);
+        w = screen->getTextFontMetrics().horizontalAdvance(mediadata->artist);
 		if (w > 320)
 		{
 			if (!lastPosDir[2])
@@ -444,7 +442,7 @@ void Mpris::paint()
 	
 	if (!mediadata->url.isEmpty() && mediadata->title.isEmpty())
 	{
-		w = screen->getTextFontMetrics().width(mediadata->url);
+        w = screen->getTextFontMetrics().horizontalAdvance(mediadata->url);
 		if (w > 320)
 		{
 			if (!lastPosDir[3])

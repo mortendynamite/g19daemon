@@ -121,8 +121,8 @@ void G19daemon::quit()
     // you can do some cleanup here
     // then do emit finished to signal CoreApplication to quit
 
-    disconnect ( device, SIGNAL ( GKey() ), this, SLOT ( gKeys() ) );
-    disconnect ( device, SIGNAL ( LKey() ), this, SLOT ( lKeys() ) );
+    disconnect ( device, SIGNAL ( gKey() ), this, SLOT ( gKeys() ) );
+    disconnect ( device, SIGNAL ( lKey() ), this, SLOT ( lKeys() ) );
 
     emit finished();
 }
@@ -154,14 +154,7 @@ void G19daemon::saveSettings() {
 }
 
 
-void G19daemon::show()
-{
-//	configdialog *dlg;
 
-//	dlg = new configdialog();
-//	dlg->show();
-    show();
-}
 
 void G19daemon::resetLcdBacklight()
 {
