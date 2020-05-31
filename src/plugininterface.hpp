@@ -40,7 +40,7 @@ class PluginInterface
 {
 	public:
 		virtual ~PluginInterface(){}
-		virtual void LKeys(int keys) = 0;
+        virtual void lKeys(int keys) = 0;
 		virtual QString getName() = 0;
 		virtual QImage getIcon() = 0;
 		virtual void setActive(bool active) = 0;

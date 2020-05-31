@@ -52,15 +52,15 @@ Mpris::Mpris()
 	
 	isActive = false;
 	QImage icon(":/mpris/icon.png");
-	screen = new gScreen(icon, player.left(1).toUpper() + player.mid(1));
+	screen = new Gscreen(icon, player.left(1).toUpper() + player.mid(1));
 	mpris = new MprisFetcher2(player);
 	mediadata = new MediaData();
 	playerstatus = new PlayerStatus();
 	
 	albumArt = new QImage();
 	
-	m_netwManager = new QNetworkAccessManager(this);
-	connect(m_netwManager, SIGNAL(finished(QNetworkReply*)), this, SLOT(loadImage(QNetworkReply*)));
+	networkManager = new QNetworkAccessManager(this);
+	connect(networkManager, SIGNAL(finished(QNetworkReply*)), this, SLOT(loadImage(QNetworkReply*)));
 	
 	timer = new QTimer(this);
 	connect(timer, SIGNAL(timeout()), this, SLOT(onTimer()));
@@ -70,14 +70,14 @@ Mpris::Mpris()
 	connect(mpris, SIGNAL(statusChanged(PlayerStatus)), this, SLOT(onStatusChanged(PlayerStatus)));
 	connect(mpris, SIGNAL(trackChanged(MediaData)), this, SLOT(onTrackChanged(MediaData)));
 	
-	LastPos[0] = 0;
-	LastPos[1] = 0;
-	LastPos[2] = 0;
-	LastPos[3] = 0;
-	LastPosDir[0] = 0;
-	LastPosDir[1] = 0;
-	LastPosDir[2] = 0;
-	LastPosDir[3] = 0;
+	lastPos[0] = 0;
+	lastPos[1] = 0;
+	lastPos[2] = 0;
+	lastPos[3] = 0;
+	lastPosDir[0] = 0;
+	lastPosDir[1] = 0;
+	lastPosDir[2] = 0;
+	lastPosDir[3] = 0;
 	speed = 20;
 	menuActive = false;
 	menuSelect = 0;
@@ -98,7 +98,7 @@ void Mpris::onTimer()
 	paint();
 }
 
-void Mpris::LKeys(int keys)
+void Mpris::lKeys(int keys)
 {
 	if (menuActive)
 	{
@@ -206,14 +206,14 @@ void Mpris::onStatusChanged(PlayerStatus pl)
 	playerstatus->Repeat = pl.Repeat;
 	playerstatus->RepeatPlaylist = pl.RepeatPlaylist;
 	
-	LastPos[0] = 0;
-	LastPos[1] = 0;
-	LastPos[2] = 0;
-	LastPos[3] = 0;
-	LastPosDir[0] = 0;
-	LastPosDir[1] = 0;
-	LastPosDir[2] = 0;
-	LastPosDir[3] = 0;
+	lastPos[0] = 0;
+	lastPos[1] = 0;
+	lastPos[2] = 0;
+	lastPos[3] = 0;
+	lastPosDir[0] = 0;
+	lastPosDir[1] = 0;
+	lastPosDir[2] = 0;
+	lastPosDir[3] = 0;
 
 	if (!menuActive)
 		paint();
@@ -233,14 +233,14 @@ void Mpris::onTrackChanged(MediaData md)
 	QUrl url(mediadata->url);
 	doDownload(url);
 	
-	LastPos[0] = 0;
-	LastPos[1] = 0;
-	LastPos[2] = 0;
-	LastPos[3] = 0;
-	LastPosDir[0] = 0;
-	LastPosDir[1] = 0;
-	LastPosDir[2] = 0;
-	LastPosDir[3] = 0;
+	lastPos[0] = 0;
+	lastPos[1] = 0;
+	lastPos[2] = 0;
+	lastPos[3] = 0;
+	lastPosDir[0] = 0;
+	lastPosDir[1] = 0;
+	lastPosDir[2] = 0;
+	lastPosDir[3] = 0;
 
 	if (!menuActive)
 		paint();
@@ -341,32 +341,32 @@ void Mpris::paint()
 		w = screen->getTextFontMetrics().width(mediadata->album);
 		if (w > 320)
 		{
-			if (!LastPosDir[0])
+			if (!lastPosDir[0])
 			{
-				LastPos[0] -= speed;
-				if (LastPos[0] < (320 - w))
-					LastPosDir[0] = 1;
+				lastPos[0] -= speed;
+				if (lastPos[0] < (320 - w))
+					lastPosDir[0] = 1;
 			}
 			else
 			{
-				LastPos[0] += speed;
-				if (LastPos[0] > 0)
+				lastPos[0] += speed;
+				if (lastPos[0] > 0)
 				{
-					LastPosDir[0] = 0;
-					LastPos[0] = 0;
+					lastPosDir[0] = 0;
+					lastPos[0] = 0;
 				}
 			}
 				
 		}
 
 		p->setPen(qRgb(0, 0, 0));
-		for (xx = LastPos[0] - 2; xx <= LastPos[0] + 2; xx++)
+		for (xx = lastPos[0] - 2; xx <= lastPos[0] + 2; xx++)
 		{
 			for (yy = y - 2; yy <= y + 2; yy++)
 				p->drawText(xx, yy, mediadata->album);
 		}
 		p->setPen(screen->getTextRgb());
-		p->drawText(LastPos[0], y, mediadata->album);
+		p->drawText(lastPos[0], y, mediadata->album);
 		y += 25;
 	}
 	
@@ -380,31 +380,31 @@ void Mpris::paint()
 		w = screen->getTextFontMetrics().width(s);
 		if (w > 320)
 		{
-			if (LastPosDir[1] == 0)
+			if (lastPosDir[1] == 0)
 			{
-				LastPos[1] -= speed;
-				if (LastPos[1] < (320 - w - speed))
-					LastPosDir[1] = 1;
+				lastPos[1] -= speed;
+				if (lastPos[1] < (320 - w - speed))
+					lastPosDir[1] = 1;
 			}
 			else
 			{
-				LastPos[1] += speed;
-				if (LastPos[1] > 0)
+				lastPos[1] += speed;
+				if (lastPos[1] > 0)
 				{
-					LastPosDir[1] = 0;
-					LastPos[1] = 0;
+					lastPosDir[1] = 0;
+					lastPos[1] = 0;
 				}
 			}
 				
 		}
 		p->setPen(qRgb(0, 0, 0));
-		for (xx = LastPos[1] - 2; xx <= LastPos[1] + 2; xx++)
+		for (xx = lastPos[1] - 2; xx <= lastPos[1] + 2; xx++)
 		{
 			for (yy = y - 2; yy <= y + 2; yy++)
 				p->drawText(xx, yy, s);
 		}
 		p->setPen(screen->getTextRgb());
-		p->drawText(LastPos[1], y, s);
+		p->drawText(lastPos[1], y, s);
 		y += 25;
 	}
 
@@ -414,31 +414,31 @@ void Mpris::paint()
 		w = screen->getTextFontMetrics().width(mediadata->artist);
 		if (w > 320)
 		{
-			if (!LastPosDir[2])
+			if (!lastPosDir[2])
 			{
-				LastPos[2] -= speed;
-				if (LastPos[2] < (320 - w))
-					LastPosDir[2] = 1;
+				lastPos[2] -= speed;
+				if (lastPos[2] < (320 - w))
+					lastPosDir[2] = 1;
 			}
 			else
 			{
-				LastPos[2] += speed;
-				if (LastPos[2] > 0)
+				lastPos[2] += speed;
+				if (lastPos[2] > 0)
 				{
-					LastPosDir[2] = 0;
-					LastPos[2] = 0;
+					lastPosDir[2] = 0;
+					lastPos[2] = 0;
 				}
 			}
 				
 		}
 		p->setPen(qRgb(0, 0, 0));
-		for (xx = LastPos[2] - 2; xx <= LastPos[2] + 2; xx++)
+		for (xx = lastPos[2] - 2; xx <= lastPos[2] + 2; xx++)
 		{
 			for (yy = y - 2; yy <= y + 2; yy++)
 				p->drawText(xx, yy, mediadata->artist);
 		}
 		p->setPen(screen->getTextRgb());
-		p->drawText(LastPos[2], y, mediadata->artist);
+		p->drawText(lastPos[2], y, mediadata->artist);
 		y += 25;
 	}
 	
@@ -447,31 +447,31 @@ void Mpris::paint()
 		w = screen->getTextFontMetrics().width(mediadata->url);
 		if (w > 320)
 		{
-			if (!LastPosDir[3])
+			if (!lastPosDir[3])
 			{
-				LastPos[3] -= speed;
-				if (LastPos[3] < (320 - w))
-					LastPosDir[3] = 1;
+				lastPos[3] -= speed;
+				if (lastPos[3] < (320 - w))
+					lastPosDir[3] = 1;
 			}
 			else
 			{
-				LastPos[3] += speed;
-				if (LastPos[3] > 0)
+				lastPos[3] += speed;
+				if (lastPos[3] > 0)
 				{
-					LastPosDir[3] = 0;
-					LastPos[3] = 0;
+					lastPosDir[3] = 0;
+					lastPos[3] = 0;
 				}
 			}
 				
 		}
 		p->setPen(qRgb(0, 0, 0));
-		for (xx = LastPos[3] - 2; xx <= LastPos[3] + 2; xx++)
+		for (xx = lastPos[3] - 2; xx <= lastPos[3] + 2; xx++)
 		{
 			for (yy = y - 2; yy <= y + 2; yy++)
 				p->drawText(xx, yy, mediadata->url);
 		}
 		p->setPen(screen->getTextRgb());
-		p->drawText(LastPos[3], y, mediadata->url);
+		p->drawText(lastPos[3], y, mediadata->url);
 	}
 	
 	p->setCompositionMode(QPainter::CompositionMode_SourceOver);
@@ -514,7 +514,7 @@ QString Mpris::getName()
 void Mpris::doDownload(const QUrl &url)
 {
     QNetworkRequest request(url);
-    QNetworkReply *reply = m_netwManager->get(request);
+    QNetworkReply *reply = networkManager->get(request);
 
     connect(reply, SIGNAL(sslErrors(QList<QSslError>)), SLOT(sslErrors(QList<QSslError>)));
 	

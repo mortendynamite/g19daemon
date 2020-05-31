@@ -37,7 +37,7 @@ class Backlight : public QObject, public PluginInterface
 	public:
 		Backlight();
 		~Backlight();
-		void LKeys(int keys);
+		void lKeys(int keys);
 		QString getName();
 		QImage getIcon();
 		void setActive(bool active);
@@ -45,7 +45,7 @@ class Backlight : public QObject, public PluginInterface
 		QObject *getQObject();
 
 	private:
-		gScreen *screen;
+		Gscreen *screen;
 		bool isActive;
 
 		QSettings *settings;

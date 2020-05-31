@@ -46,7 +46,7 @@ class Mpris : public QObject, PluginInterface
 	public:
 		Mpris();
 		~Mpris();
-		void LKeys(int keys);
+		void lKeys(int keys);
 		QString getName();
 		QImage getIcon();
 		void setActive(bool active);
@@ -54,7 +54,7 @@ class Mpris : public QObject, PluginInterface
 		QObject *getQObject();
 
 	private:
-		gScreen *screen;
+		Gscreen *screen;
 		bool isActive;
 		QStringList players; 
 		QString player;
@@ -62,13 +62,13 @@ class Mpris : public QObject, PluginInterface
 		MediaData *mediadata;
 		PlayerStatus *playerstatus;
 		QTimer *timer;
-		int LastPos[4];
-		int LastPosDir[4];
+        int lastPos[4];
+        int lastPosDir[4];
 		int speed;
 		bool menuActive;
 		int menuSelect;
 		QSettings *settings;
-		QNetworkAccessManager *m_netwManager;
+        QNetworkAccessManager *networkManager;
 		QList<QNetworkReply *> currentDownloads;
 		QImage *albumArt;
 		

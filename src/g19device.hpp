@@ -85,30 +85,31 @@ class G19Device : public QObject
 		void setMKeys(bool m1, bool m2, bool m3, bool mr);
 		void setDisplayBrightness(unsigned char brightness);
 
-		void GKeyCallback(unsigned int keys);
-		void LKeyCallback(unsigned int keys);
+        void gKeyCallback(unsigned int keys);
+        void lKeyCallback(unsigned int keys);
         
         G19Keys getActiveMKey();
 		
 		unsigned int getKeys();
 
-        bool GKeys_transfer_cancelled;
-        bool LKeys_transfer_cancelled;
+        bool gKeysTransferCancelled;
+        bool lKeysTransferCancelled;
 
 	private:
 		unsigned int lastkeys;
-		bool isDeviceConnected, isInitialized;
+        bool isDeviceConnected;
+        bool isInitialized;
 		bool enableEventThread;
 		bool isTransfering;
 		QString cstatus;
         G19Keys activeMKey;
 		
-		libusb_transfer *GKeys_transfer;
-		libusb_transfer *LKeys_transfer;
-		libusb_transfer *data_transfer;
+        libusb_transfer * gKeysTransfer;
+        libusb_transfer *lKeysTransfer;
+        libusb_transfer *dataTransfer;
 		
-		unsigned char GKeysBuffer[4];
-		unsigned char LKeysBuffer[2];
+        unsigned char gKeysBuffer[4];
+        unsigned char lKeysBuffer[2];
 		
 		libusb_context *context;
 		libusb_device_handle *deviceHandle;
@@ -119,13 +120,13 @@ class G19Device : public QObject
 		
 		QFuture<void> future;
 		
-		unsigned char *data_buff;
+        unsigned char *dataBuff;
         
-        QColor BackLight;
+        QColor backLight;
 	
 	signals:
-		void GKey();
-		void LKey();
+        void gKey();
+        void lKey();
 		
 	public slots:
 };

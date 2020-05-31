@@ -32,7 +32,7 @@ Clock::Clock()
         Q_INIT_RESOURCE(clock);
 
 	isActive = false;
-        screen = new gScreen(QImage(":/clock/icon.png"), tr("Clock"));
+        screen = new Gscreen(QImage(":/clock/icon.png"), tr("Clock"));
 
         QTimer *timer = new QTimer(this);
         connect(timer, &QTimer::timeout, this, QOverload<>::of(&Clock::paint));
@@ -49,7 +49,7 @@ QString Clock::getName()
     return tr("Clock");
 }
 
-void Clock::LKeys(int keys)
+void Clock::lKeys(int keys)
 {
 }
 

@@ -25,7 +25,7 @@
 #include <QImage>
 #include <QRgb>
 
-gScreen::gScreen(const QImage &Icon, const QString &Name)
+Gscreen::Gscreen(const QImage &Icon, const QString &Name)
 {
 	screen = new QImage(320, 240, QImage::Format_RGB32);
 	userscreen = new QImage(320, 206, QImage::Format_ARGB32);
@@ -42,7 +42,7 @@ gScreen::gScreen(const QImage &Icon, const QString &Name)
 	fontText = QFont(fontName, 15);
 }
 
-gScreen::~gScreen()
+Gscreen::~Gscreen()
 {
 	delete screen;
 	delete userscreen;
@@ -50,47 +50,47 @@ gScreen::~gScreen()
 	delete userPainter;
 }
 
-QImage *gScreen::getScreen()
+QImage *Gscreen::getScreen()
 {
 	return screen;
 }
 
-void gScreen::setName(const QString &Name)
+void Gscreen::setName(const QString &Name)
 {
 	name = Name;
 }
 
-void gScreen::setIcon(const QImage& Icon)
+void Gscreen::setIcon(const QImage& Icon)
 {
 	icon = new QImage(Icon);
 }
 
-QRgb gScreen::getTextRgb()
+QRgb Gscreen::getTextRgb()
 {
 	return rgbText;
 }
 
-QRgb gScreen::getControlRgb()
+QRgb Gscreen::getControlRgb()
 {
 	return rgbControl;
 }
 
-QRgb gScreen::getControlBackroundRgb()
+QRgb Gscreen::getControlBackroundRgb()
 {
 	return rgbControlBackground;
 }
 
-QFont gScreen::getTextFont()
+QFont Gscreen::getTextFont()
 {
 	return fontText;
 }
 
-QFontMetrics gScreen::getTextFontMetrics()
+QFontMetrics Gscreen::getTextFontMetrics()
 {
 	return QFontMetrics(fontText);
 }
 
-QImage *gScreen::draw()
+QImage *Gscreen::draw()
 {
 	QPainter painter;
 	QLinearGradient background(0, 0, 0, 240);
@@ -114,13 +114,13 @@ QImage *gScreen::draw()
 	return screen;
 }
 
-QImage *gScreen::drawFullScreen()
+QImage *Gscreen::drawFullScreen()
 {
 	return screen;    
 }
     
 
-QPainter *gScreen::begin()
+QPainter *Gscreen::begin()
 {
 	userscreen->fill(qRgba(0, 0, 0, 0));
 	userPainter->begin(userscreen);
@@ -129,7 +129,7 @@ QPainter *gScreen::begin()
 	return userPainter;
 }
 
-QPainter *gScreen::beginFullScreen()
+QPainter *Gscreen::beginFullScreen()
 {
 	screen->fill(qRgba(0, 0, 0, 0));
 	userPainter->begin(screen);
@@ -138,12 +138,12 @@ QPainter *gScreen::beginFullScreen()
 	return userPainter;
 }
 
-void gScreen::end()
+void Gscreen::end()
 {
 	userPainter->end();
 }
 
-void gScreen::drawScrollbar (int pos, int max)
+void Gscreen::drawScrollbar (int pos, int max)
 {
 	int y, h, step;
 	
@@ -159,12 +159,12 @@ void gScreen::drawScrollbar (int pos, int max)
 	userPainter->drawRoundedRect(306, y, 12, h, 6, 6);
 }
 
-void gScreen::drawHGuage(int x, int y, int w, int h, int pos)
+void Gscreen::drawHGuage(int x, int y, int w, int h, int pos)
 {
 	drawHGuage(x, y, w, h, pos, rgbControl);
 }
 
-void gScreen::drawHGuage(int x, int y, int w, int h, int pos, QColor color)
+void Gscreen::drawHGuage(int x, int y, int w, int h, int pos, QColor color)
 {
 	int cy1, cy2, cheight;
 	
@@ -183,12 +183,12 @@ void gScreen::drawHGuage(int x, int y, int w, int h, int pos, QColor color)
 	}
 }
 
-void gScreen::drawVGuage(int x, int y, int w, int h, int pos)
+void Gscreen::drawVGuage(int x, int y, int w, int h, int pos)
 {
 	drawVGuage(x, y, w, h, pos, rgbControl);
 }
 
-void gScreen::drawVGuage(int x, int y, int w, int h, int pos, QColor color)
+void Gscreen::drawVGuage(int x, int y, int w, int h, int pos, QColor color)
 {
 	int cx1, cwidth;
 	
