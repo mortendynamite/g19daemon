@@ -572,8 +572,6 @@
      <string>File</string>
     </property>
     <addaction name="actionSave_settings"/>
-    <addaction name="actionExport_settings"/>
-    <addaction name="actionImport_settings"/>
    </widget>
    <addaction name="menuFile"/>
   </widget>
@@ -597,16 +595,6 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+S</string>
-   </property>
-  </action>
-  <action name="actionExport_settings">
-   <property name="text">
-    <string>Export settings</string>
-   </property>
-  </action>
-  <action name="actionImport_settings">
-   <property name="text">
-    <string>Import settings</string>
    </property>
   </action>
  </widget>

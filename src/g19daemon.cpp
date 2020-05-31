@@ -53,7 +53,7 @@ G19daemon::G19daemon ( QWidget *parent ) :
     device->initializeDevice();
     device->openDevice();
 
-    settings =  new QSettings ( "Dynamite", "G19Daemon" );
+    settings =  new QSettings ( "G19Daemon", "G19Daemon" );
 
     activePlugin = -1;
     isActive = true;
