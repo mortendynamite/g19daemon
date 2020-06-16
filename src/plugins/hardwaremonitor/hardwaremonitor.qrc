@@ -1,0 +1,7 @@
+<RCC>
+    <qresource prefix="/hardwaremonitor">
+        <file alias="icon.png">images/icon.png</file>
+        <file alias="menu_icon.png">images/menu_icon.png</file>
+        <file>images/Default.png</file>
+    </qresource>
+</RCC>

@@ -5,3 +5,17 @@ debian/g19daemon
 debian/g19daemon.debhelper.log
 
 debian/g19daemon.substvars
+
+src/plugins/hardwaremonitor/hardwaremonitor_autogen/
+
+src/plugins/hardwaremonitor/hardwaremonitor.qrc.depends
+
+src/plugins/hardwaremonitor/Makefile
+
+src/plugins/hardwaremonitor/CMakeFiles/
+
+src/plugins/hardwaremonitor/cmake_install.cmake
+
+src/plugins/hardwaremonitor/CMakeCache.txt
+
+CMakeLists.txt.user
