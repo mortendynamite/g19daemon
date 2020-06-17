@@ -65,3 +65,7 @@ void NormalScreen::cleanData()
 {
 
 }
+
+void NormalScreen::okPressed()
+{
+}

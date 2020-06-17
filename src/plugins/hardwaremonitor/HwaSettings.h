@@ -5,6 +5,7 @@
 #include <QVector>
 #include <QMap>
 #include <QList>
+#include <QDebug>
 #include "Defines.h"
 
 #include "Screen/Screen.h"

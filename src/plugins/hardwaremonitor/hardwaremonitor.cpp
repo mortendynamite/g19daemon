@@ -28,14 +28,21 @@ HardwareMonitor::HardwareMonitor()
         HwaSettings::getInstance()->loadSettings();
         screens = HwaSettings::getInstance()->getScreenList();
 
-        if(screens.isEmpty())
+        QList<Screen *> mainorder = HwaSettings::getInstance()->getMainOrder();
+
+        if(mainorder.isEmpty())
         {
             screens.append(new StartScreen("StartSreen"));
+            currentScreen_ = screens[0];
+            currentMainScreen_ = currentScreen_;
             qDebug() << "Load StartScreen";
         }
+        else
+        {
+            currentScreen_ = mainorder[0];
+            currentMainScreen_ = currentScreen_;
+        }
 
-        currentScreen_ = HwaSettings::getInstance()->getMainOrder()[0];
-        currentMainScreen_ = currentScreen_;
 
         isActive = false;
         screen = new Gscreen(QImage(":/hardwaremonitor/icon.png"), tr("Hardware Monitor"));
@@ -43,6 +50,8 @@ HardwareMonitor::HardwareMonitor()
         QTimer *timer = new QTimer(this);
         connect(timer, &QTimer::timeout, this, QOverload<>::of(&HardwareMonitor::paint));
         timer->start(5000);
+
+        qDebug() << "Plugin initialized";
 }
 
 HardwareMonitor::~HardwareMonitor()
@@ -116,6 +125,10 @@ void HardwareMonitor::lKeys(int keys)
 
             currentScreen_ = subScreen.at(currentPosition);
     }
+    else if(keys & G19Keys::G19_KEY_LOK)
+    {
+        currentScreen_->okPressed();
+    }
 
     paint();
 }
@@ -135,8 +148,10 @@ void HardwareMonitor::paint()
 	if (!isActive)
 		return;
 
+    if(currentScreen_ != nullptr)
+    {
         currentScreen_->draw(screen);
-
+    }
 	emit doAction(displayFullScreen, screen);
 }
 

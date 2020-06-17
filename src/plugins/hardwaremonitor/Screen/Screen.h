@@ -34,9 +34,10 @@ public:
 	virtual ScreenType getScreenType();
 	QString getName();
 	virtual void update();
-        virtual void draw(Gscreen *screen);
+    virtual void draw(Gscreen *screen);
 	virtual void cleanData();
 	virtual void openCustomScreen();
+    virtual void okPressed();
 
 	virtual void setBackground(QString background);
 	QString getBackground();

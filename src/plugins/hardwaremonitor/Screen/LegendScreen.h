@@ -29,14 +29,14 @@ public:
 	//---------------------------
 	// General Methods
 	//---------------------------
-	void draw();
+    void draw(Gscreen *screen);
 	void update();
 
 	ScreenType getScreenType();
 
 	void setData(QList<GraphLine>);
 	void setSettings(GraphSettings);
-
+    void okPressed();
 	QList<GraphLine> getData();
 
 private:

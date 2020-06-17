@@ -39,7 +39,7 @@ public:
 	ScreenType getScreenType();
 
 	void setData(QList<GraphLine>);
-
+    void okPressed();
 	QList<GraphLine> getData();
 
 	void setBackground(QString background);

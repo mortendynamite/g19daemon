@@ -10,6 +10,9 @@
 //-----------------------------------------------------------------
 #include "Screen.h"
 #include <QObject>
+#include <QDesktopServices>
+#include <QUrl>
+
 
 //-----------------------------------------------------------------
 // StartScreen Class
@@ -33,6 +36,7 @@ public:
 	ScreenType getScreenType();
 	void update();
         void draw(Gscreen *screen);
+        void okPressed();
 	
 
 private:

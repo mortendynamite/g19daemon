@@ -35,7 +35,7 @@ void HwaSettings::releaseResources()
 
 HwaSettings::HwaSettings() : generalSettings_(GeneralSettings{ TemperatureType::Celsius })
 {
-        QString fileName = QDir::home().absolutePath() + "/.config/HWA/settings.ini";
+    QString fileName = QDir::home().absolutePath() + "/.config/HWA/settings.ini";
 	settings_ = new QSettings(fileName, QSettings::IniFormat);
 }
 
@@ -92,6 +92,8 @@ void HwaSettings::loadSettings()
 
 	settings_->endArray();
 
+    qDebug() << "Total screens loaded from settings: " + QString::number(screenList_.size()) + " of " + QString::number(screenTotal);
+
 	loadScreenOrder();
 }
 
@@ -111,6 +113,7 @@ Screen * HwaSettings::getScreenData(QString name)
 
 void HwaSettings::loadNormalScreenSettings(QString name, QString background, ScreenType type)
 {
+    qDebug() << "Loading normal screen settings";
 	QList<LineText> lines;
 	LineText text;
 
@@ -161,6 +164,7 @@ void HwaSettings::loadNormalScreenSettings(QString name, QString background, Scr
 
 void HwaSettings::loadGraphScreenSettings(QString name, QString background, ScreenType type)
 {
+    qDebug() << "Loading graph screen settings";
 	QList<GraphLine> graphData;
 
 	GraphSettings graphSetting;
@@ -250,10 +254,13 @@ void HwaSettings::changeScreenOrder(QList<QString> mainOrder, QMap<QString, QLis
                 subOrder_.insert(i.key(), newList);
                 ++i;
         }
+
+        qDebug() << "Loaded screen orders: " + QString::number(mainOrder_.size());
 }
 
 QList<QString> HwaSettings::loadMainScreenOrder()
 {
+    qDebug() << "Loading main screen order";
 	QList<QString> mainList;
 
 	int size = settings_->beginReadArray("MainOrder");
@@ -272,6 +279,8 @@ QList<QString> HwaSettings::loadMainScreenOrder()
 
 QMap<QString, QList<QString>> HwaSettings::loadSubScreenOrder()
 {
+    qDebug() << "Loading sub screen order";
+
 	QMap<QString, QList<QString>> subList;
 
 	int size = settings_->beginReadArray("SubOrder");
@@ -305,8 +314,9 @@ QMap<QString, QList<QString>> HwaSettings::loadSubScreenOrder()
 
 void HwaSettings::loadGeneralSettings()
 {
+    qDebug() << "Loading General settings";
+
 	generalSettings_.temperature = Defines::translateTemperatureEnum(settings_->value("General/Temperature").toString());
-	generalSettings_.autoStart = settings_->value("General/AutoStart").toBool();
 	generalSettings_.language = settings_->value("General/Language").toString();
 
     InfluxDbSettings influxSettings;

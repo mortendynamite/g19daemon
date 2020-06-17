@@ -1,32 +1,10 @@
-//-----------------------------------------------------------------
-// LegendScreen File
-// C++ Source - LegendScreen.cpp - version 0.1 (2013/06/13)
-//-----------------------------------------------------------------
-
-//-----------------------------------------------------------------
-// Include Files
-//-----------------------------------------------------------------
 #include "LegendScreen.h"
 
-//-----------------------------------------------------------------
-// Defines
-//-----------------------------------------------------------------
-
-
-//-----------------------------------------------------------------
-// LegendScreen methods
-//-----------------------------------------------------------------
-#ifdef __linux__
 LegendScreen::LegendScreen(QString name) : Screen(name), Xpos_(0), settings_({ 0 }), firstrun_(true)
 {
     setBackground("");
 }
-#elif _WIN32
-LegendScreen::LegendScreen(CEzLcd * logitech, QString name) : Screen(logitech, name), Xpos_(0), settings_({ 0 }), firstrun_(true)
-{
-    setBackground("");
-}
-#endif
+
 
 LegendScreen::~LegendScreen()
 {
@@ -37,7 +15,7 @@ ScreenType LegendScreen::getScreenType()
 	return ScreenType::Legend;
 }
 
-void LegendScreen::draw()
+void LegendScreen::draw(Gscreen *screen)
 {
     #ifdef _WIN32
 	if (firstrun_)
@@ -86,4 +64,8 @@ QList<GraphLine> LegendScreen::getData()
 void LegendScreen::setSettings(GraphSettings settings)
 {
 	settings_ = settings;
+}
+
+void LegendScreen::okPressed()
+{
 }

@@ -34,7 +34,7 @@ public:
         void draw(Gscreen *screen);
 
 	void cleanData();
-	
+    void okPressed();
 	void setData(QList<LineText>);
 	void setSettings(QList<CustomSettings> settings);
 

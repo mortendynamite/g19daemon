@@ -38,6 +38,16 @@ void StartScreen::draw(Gscreen *screen)
 {
     QPainter *p;
     p = screen->beginFullScreen();
-    p->drawText(0, 0, 320, 206, Qt::AlignCenter, "Hello World!");
+    p->drawText(0, 0, 320, 206, Qt::AlignCenter, "No settings are found! \n "
+                                                 "Please download configurator\n"
+                                                 "from: \n "
+                                                 "https://cutt.ly/Kumdskl \n"
+                                                 "or press OK to open url");
     screen->end();
+}
+
+void StartScreen::okPressed()
+{
+    QDesktopServices::openUrl(QUrl("https://github.com/lonelobo0070/Hardware-Monitor-Applet/releases", QUrl::TolerantMode));
+
 }

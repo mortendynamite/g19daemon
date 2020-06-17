@@ -138,3 +138,8 @@ void GraphScreen::openCustomScreen()
 {
 	legendOpen_ = !legendOpen_;
 }
+
+void GraphScreen::okPressed()
+{
+    openCustomScreen();
+}

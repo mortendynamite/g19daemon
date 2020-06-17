@@ -111,7 +111,6 @@ struct InfluxDbSettings
 struct GeneralSettings
 {
 	TemperatureType temperature;
-	bool autoStart;
 	QString language;
     InfluxDbSettings influxDbSettings;
 };

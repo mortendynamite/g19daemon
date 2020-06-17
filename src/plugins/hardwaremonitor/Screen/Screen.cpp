@@ -54,6 +54,11 @@ void Screen::openCustomScreen()
 	//Nothing to do
 }
 
+void Screen::okPressed()
+{
+
+}
+
 QString Screen::getName()
 {
 	return name_;
