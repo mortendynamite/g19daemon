@@ -6,9 +6,10 @@ set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_CURRENT_SOURCE_DIR}/CMakeMod
 
 find_package(Qt5Core)
 find_package(Qt5Gui)
+find_package(Qt5Network)
 find_package(Qt5PrintSupport)
 
-include_directories(${Qt5Core_INCLUDE_DIRS} ${Qt5Gui_INCLUDE_DIRS} ${Qt5PrintSupport_INCLUDE_DIRS} ${LIBUSB_1_INCLUDE_DIRS} )
+include_directories(${Qt5Core_INCLUDE_DIRS} ${Qt5Gui_INCLUDE_DIRS} ${Qt5PrintSupport_INCLUDE_DIRS} ${Qt5Network_INCLUDE_DIRS} ${LIBUSB_1_INCLUDE_DIRS} )
 
 # Instruct CMake to run moc automatically when needed.
 set(CMAKE_AUTOMOC ON)
@@ -26,12 +27,15 @@ Defines.cpp
   Screen/GraphScreen.cpp
   Screen/Screen.cpp
   hardwaremonitor.cpp
+  Tools/Data.cpp
+  Tools/influxdb.cpp
+  Tools/MonitorTool.cpp
 )
 
 qt5_add_resources(hardwaremonitor_QRC hardwaremonitor.qrc)
 
 add_library(hardwaremonitor SHARED ${hardwaremonitor_SRC} ${hardwaremonitor_QRC})
-target_link_libraries(hardwaremonitor ${Qt5Core_LIBRARIES} ${Qt5PrintSupport_LIBRARIES} ${Qt5Gui_LIBRARIES})
+target_link_libraries(hardwaremonitor ${Qt5Core_LIBRARIES} ${Qt5PrintSupport_LIBRARIES} ${Qt5Network_LIBRARIES} ${Qt5Gui_LIBRARIES})
 
 qt5_use_modules(hardwaremonitor Core Gui)
 

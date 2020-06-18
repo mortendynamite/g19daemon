@@ -30,19 +30,48 @@ ScreenType GraphScreen::getScreenType()
 
 void GraphScreen::draw(Gscreen *screen)
 {
+    if (legendOpen_)
+    {
+        legendScreen_->draw(screen);
+    }
+    else
+    {
+        QPainter * p = screen->beginFullScreen();
 
+        if (Xpos_ >= settings_.range)
+        {
+            plot_->xAxis->setRange(Xpos_ - settings_.range, Xpos_);
+        }
+        else
+        {
+            plot_->xAxis->setRange(0, settings_.range);
+        }
+
+        if (settings_.yAutoRange)
+        {
+            plot_->yAxis->rescale();
+        }
+
+        plot_->replot();
+
+        QPixmap pixmap = plot_->toPixmap(320, 240, 1);
+
+        p->drawPixmap(0, 0, 320, 240, pixmap);
+
+        p->end();
+    }
 }
 
 void GraphScreen::update()
 {
-        /*QList<double> listDate = data_->translateLines(graphData_);
+     QList<double> listDate = data_->translateLines(graphData_);
 
 	for (int i = 0; i < listDate.size(); i++)
 	{
 		plot_->graph(i)->addData(Xpos_, listDate[i]);
 	}
 
-        Xpos_++;*/
+    Xpos_++;
 }
 
 void GraphScreen::cleanData()
@@ -88,21 +117,10 @@ void GraphScreen::setSettings(GraphSettings settings)
 
 void GraphScreen::setBackground(QString background)
 {
+    Screen::setBackground(background);
 	legendScreen_->setBackground(background);
 
-	QString backgroundTemp = "";
-
-	if (background.isEmpty())
-	{
-                backgroundTemp = ":/hardwaremonitor/Resources/Default.png";
-	}
-	else
-	{
-		backgroundString_ = background;
-                backgroundTemp = QDir::home().absolutePath() + "/.config/HWA//Background/" + background;
-	}
-
-	QPixmap backgroundPixMap(backgroundTemp);
+    QPixmap backgroundPixMap(getBackground());
 
 	if (!backgroundPixMap.isNull())
 	{

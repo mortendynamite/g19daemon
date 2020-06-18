@@ -32,7 +32,8 @@ HardwareMonitor::HardwareMonitor()
 
         if(mainorder.isEmpty())
         {
-            screens.append(new StartScreen("StartSreen"));
+            startScreen = new StartScreen("StartSreen");
+            screens.append(startScreen);
             currentScreen_ = screens[0];
             currentMainScreen_ = currentScreen_;
             qDebug() << "Load StartScreen";
@@ -56,6 +57,9 @@ HardwareMonitor::HardwareMonitor()
 
 HardwareMonitor::~HardwareMonitor()
 {
+    if(startScreen != nullptr) {
+        delete startScreen;
+    }
 	delete screen;
 }
 
@@ -150,6 +154,7 @@ void HardwareMonitor::paint()
 
     if(currentScreen_ != nullptr)
     {
+        currentScreen_->update();
         currentScreen_->draw(screen);
     }
 	emit doAction(displayFullScreen, screen);

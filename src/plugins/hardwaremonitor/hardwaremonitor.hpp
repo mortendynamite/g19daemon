@@ -63,6 +63,7 @@ class HardwareMonitor: public QObject, public PluginInterface
 		void paint();
 
                 QVector<Screen*> screens;
+                StartScreen* startScreen;
 
 
 	signals:

@@ -1,27 +1,9 @@
-//-----------------------------------------------------------------
-// Screen File
-// C++ Source - Screen.cpp - version 0.1 (2013/06/13)
-//-----------------------------------------------------------------
-
-//-----------------------------------------------------------------
-// Include Files
-//-----------------------------------------------------------------
 #include "Screen.h"
 
-//-----------------------------------------------------------------
-// Defines
-//-----------------------------------------------------------------
-
-//-----------------------------------------------------------------
-// Screen methods
-//-----------------------------------------------------------------
-#ifdef __linux__
 Screen::Screen( QString name) : name_(name), backgroundString_(""), firstStart_(true)
 {
-
+    data_ = Data::Instance();
 }
-
-#endif
 
 Screen::~Screen()
 {
@@ -66,7 +48,14 @@ QString Screen::getName()
 
 void Screen::setBackground(QString background)
 {
-
+    if (background.isEmpty())
+    {
+        backgroundString_ = ":/hardwaremonitor/images/Default.png";
+    }
+    else
+    {
+        backgroundString_ = QDir::home().absolutePath() + "/.config/HWA//Background/" + background;
+    }
 }
 
 QString Screen::getBackground()

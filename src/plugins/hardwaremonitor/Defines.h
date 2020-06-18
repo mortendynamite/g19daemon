@@ -61,9 +61,6 @@ struct HardwareSensor{
 struct LineText{
 	QString text;
 	QMap<QString, Query> queryMap;
-    #ifdef _WIN32
-    HANDLE textHandle;
-    #endif
 };
 
 struct GraphLine{
