@@ -6,6 +6,7 @@
 #include <QNetworkAccessManager>
 #include <QNetworkReply>
 #include <QDebug>
+#include <QMap>
 
 class InfluxDb : private QObject, public MonitorTool
 {
@@ -15,9 +16,9 @@ public:
     InfluxDb(QObject * parent = nullptr);
     ~InfluxDb();
 
-    QVector<HardwareSensor> getAllSensors();
+    QVector<Query> getAllSensors();
     MonitorSystem getMonitorSystem();
-    HardwareSensor getData(Query query);
+    double getData(Query query);
 
 private:
     QNetworkAccessManager * manager;
@@ -25,8 +26,10 @@ private:
     QUrl getUrl(QString query);
 
     QVector<QString> readValues(QNetworkReply*);
+    double readQueryValue(QNetworkReply*);
 
     QNetworkReply * sendQuery(QString);
+    QMap<QString, QString> parseQueryArguments(Query query);
 };
 
 #endif // INFLUXDB_H

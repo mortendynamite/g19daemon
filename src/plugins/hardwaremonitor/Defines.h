@@ -20,8 +20,7 @@ enum TemperatureType { Celsius, Fahrenheit };
 enum Alignment { Left, Center, Right };
 enum PageDirection {Next, Previous, Up, Down};
 
-//TODO remove Name & hardware -> users  can manually type this in the lineEditor
-enum QueryValue {Name, Current, Max, Min, Hardware};
+enum QueryValue {Current, Max, Min};
 
 struct Query{
 	MonitorSystem system;
@@ -43,19 +42,6 @@ struct Query{
                     hardware == rhs.hardware &&
                     field == rhs.hardware;
     }
-};
-
-//TODO remove HardwareSensor OR Query
-
-struct HardwareSensor{
-        QString id;
-        QString name;
-        double value;
-        double max;
-        double min;
-        QString unit;
-        QString hardware;
-        QString field;
 };
 
 struct LineText{

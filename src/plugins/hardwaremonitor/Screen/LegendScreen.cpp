@@ -33,13 +33,11 @@ void LegendScreen::draw(Gscreen *screen)
 
     for (int i = 0; i < graphData_.size(); i++)
     {
-        HardwareSensor sensor = data_->translateLine(graphData_[i].query);
-
         const QRect rectangle = QRect(0, textPosition, 320, 50 );
         QRect boundingRect;
 
         p->setPen(graphData_[i].color);
-        p->drawText(rectangle, Qt::AlignLeft | Qt::AlignTop | Qt::TextSingleLine, graphData_[i].text + " (" + sensor.unit + ")", &boundingRect);
+        p->drawText(rectangle, Qt::AlignLeft | Qt::AlignTop | Qt::TextSingleLine, graphData_[i].text + " (" + graphData_[i].query.unit + ")", &boundingRect);
         textPosition += boundingRect.y() +  settings_.titleFont.pointSize();
     }
 

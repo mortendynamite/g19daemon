@@ -204,6 +204,9 @@ void HwaSettings::loadGraphScreenSettings(QString name, QString background, Scre
 		query.name = settings_->value("name").toString();
 		query.value = Defines::translateQueryValueEnum(settings_->value("value").toString());
 		query.precision = settings_->value("precision").toInt();
+        query.field = settings_->value("field").toString();
+        query.unit = settings_->value("unit").toString();
+        query.hardware = settings_->value("hardware").toString();
 
 		line.query = query;
 

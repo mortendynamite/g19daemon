@@ -61,9 +61,9 @@ Data::~Data()
 /// </summary>
 /// <param name="system">The monitor system</param>
 /// <returns>A list of all the sensor data from that Monitor system</returns>
-QVector<HardwareSensor> Data::getAllData(MonitorSystem system)
+QVector<Query> Data::getAllData(MonitorSystem system)
 {
-	QVector<HardwareSensor> emptyVector;
+    QVector<Query> emptyVector;
 
 	for (MonitorTool * monitorSystem : tools_)
 	{
@@ -83,8 +83,6 @@ QVector<HardwareSensor> Data::getAllData(MonitorSystem system)
 /// <returns>QStringList with all the translated values in it</returns>
 QStringList Data::translateLines(QList<LineText> lines)
 {
-    //TODO add support for new system without HardwareSensor OR Query
-
 	QStringList returnValue;
 
 	for (LineText text : lines)
@@ -114,32 +112,11 @@ QStringList Data::translateLines(QList<LineText> lines)
 /// <returns>List of the translated values</returns>
 QList<double> Data::translateLines(QList<GraphLine> lines)
 {
-    //TODO add support for new system without HardwareSensor OR Query
-
 	QList<double> returnValue;
 
 	for (GraphLine line : lines)
 	{
-        /*Query query = line.query;
-
-		HardwareSensor sensor = getMonitorTool(query.system)->getData(query);
-
-		switch (query.value)
-		{
-		case Name:
-			returnValue.append(0);
-		case Current:
-			returnValue.append(sensor.value);
-			break;
-		case Max:
-			returnValue.append(sensor.max);
-			break;
-		case Min:
-			returnValue.append(sensor.min);
-			break;
-        }*/
-
-        returnValue.append(100);
+        returnValue.append(getMonitorTool(line.query.system)->getData(line.query));
 	}
 
     return returnValue;
@@ -160,32 +137,7 @@ QMap<QString, QString> Data::queryMapData(QMap<QString, Query> map)
 	{
 		Query query = i.value();
 
-		QString value = "";
-
-		HardwareSensor sensor = getMonitorTool(query.system)->getData(query);
-
-		switch (query.value)
-		{
-		case Name:
-			value = sensor.name;
-			break;
-		case Current:
-			value = QString::number(sensor.value, 'f', query.precision);
-			break;
-		case Max:
-			value = QString::number(sensor.max, 'f', query.precision);
-			break;
-		case Min:
-			value = QString::number(sensor.min, 'f', query.precision);
-			break;
-		}
-
-        if (query.value != QueryValue::Name)
-		{
-			value += sensor.unit;
-		}
-
-		returnmap.insert(i.key(), value);
+        returnmap.insert(i.key(), QString::number(getMonitorTool(query.system)->getData(query), 'f', query.precision));
 
 		++i;
 	}
@@ -217,7 +169,7 @@ MonitorTool * Data::getMonitorTool(MonitorSystem system)
 /// </summary>
 /// <param name="query">The query</param>
 /// <returns>Hardware sensor data</returns>
-HardwareSensor Data::translateLine(Query query)
+double Data::translateLine(Query query)
 {
 	return getMonitorTool(query.system)->getData(query);;
 }

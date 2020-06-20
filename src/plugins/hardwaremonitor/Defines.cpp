@@ -33,12 +33,6 @@ QString Defines::translateQueryValueEnum(QueryValue value)
 	case QueryValue::Min:
 		return "Min";
 		break;
-	case QueryValue::Name:
-		return "Name";
-		break;
-	case QueryValue::Hardware:
-		return "Hardware";
-		break;
 	};
 
 	return "";
@@ -69,14 +63,6 @@ QueryValue Defines::translateQueryValueEnum(QString string)
 		else if (string == "Min")
 		{
 			value = QueryValue::Min;
-		}
-		else if (string == "Name")
-		{
-			value = QueryValue::Name;
-		}
-		else if (string == "Hardware")
-		{
-			value = QueryValue::Hardware;
 		}
 
 		return value;

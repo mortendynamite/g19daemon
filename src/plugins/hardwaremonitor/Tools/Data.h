@@ -16,11 +16,11 @@ public:
 
 	virtual ~Data();
 
-	QVector<HardwareSensor> getAllData(MonitorSystem system);
+    QVector<Query> getAllData(MonitorSystem system);
 	QStringList translateLines(QList<LineText>);
 	QList<double> translateLines(QList<GraphLine>);
 
-	HardwareSensor translateLine(Query);
+    double translateLine(Query);
 
 private:
 

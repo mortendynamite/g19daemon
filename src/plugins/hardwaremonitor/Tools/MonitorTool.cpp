@@ -11,9 +11,9 @@ MonitorTool::~MonitorTool()
 	// nothing to destroy
 }
 
-QVector<HardwareSensor> MonitorTool::getAllSensors()
+QVector<Query> MonitorTool::getAllSensors()
 {
-	QVector<HardwareSensor> sensors;
+    QVector<Query> sensors;
 
 	return sensors;
 }
@@ -27,13 +27,8 @@ MonitorSystem MonitorTool::getMonitorSystem()
 	return MonitorSystem::NONE;
 }
 
-/// <summary>
-/// Gets the data from the query
-/// </summary>
-/// <param name="query">The query</param>
-/// <returns>Empty HardwareSensor</returns>
-HardwareSensor MonitorTool::getData(Query query)
+
+double MonitorTool::getData(Query query)
 {
-	HardwareSensor emptySensor = {0};
-	return emptySensor;
+    return 0;
 }
