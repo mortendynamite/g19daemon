@@ -2,6 +2,7 @@
 #define NORMALSCREEN_H
 
 #include "Screen.h"
+#include <QFontMetrics>
 
 class NormalScreen : public Screen
 {

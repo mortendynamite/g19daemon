@@ -29,16 +29,21 @@ void LegendScreen::draw(Gscreen *screen)
     QRect boundingRect;
     p->drawText(rectangle, Qt::AlignCenter | Qt::AlignTop | Qt::TextSingleLine	, name_, &boundingRect);
 
-   int textPosition = boundingRect.y() +  settings_.titleFont.pointSize();
+    QFontMetrics titleMetric(settings_.titleFont);
+
+   int textPosition = titleMetric.height() +  settings_.titleFont.pointSize();
 
     for (int i = 0; i < graphData_.size(); i++)
     {
         const QRect rectangle = QRect(0, textPosition, 320, 50 );
-        QRect boundingRect;
 
+        p->setFont(settings_.titleFont);
         p->setPen(graphData_[i].color);
-        p->drawText(rectangle, Qt::AlignLeft | Qt::AlignTop | Qt::TextSingleLine, graphData_[i].text + " (" + graphData_[i].query.unit + ")", &boundingRect);
-        textPosition += boundingRect.y() +  settings_.titleFont.pointSize();
+        p->drawText(rectangle, Qt::AlignLeft | Qt::AlignTop | Qt::TextSingleLine, graphData_[i].text + " (" + graphData_[i].query.unit + ")");
+
+        QFontMetrics metric(settings_.titleFont);
+
+        textPosition += metric.height() + 5;
     }
 
     screen->end();

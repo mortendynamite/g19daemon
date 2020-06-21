@@ -32,6 +32,7 @@ public:
     QVector<Screen*> getScreenList();
       QList<Screen *> getMainOrder();
       QMap<QString, QList<Screen *>> getSubOrder();
+      void removeSettings();
 
 protected:
 

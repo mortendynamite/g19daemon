@@ -35,23 +35,32 @@ void HwaSettings::releaseResources()
 
 HwaSettings::HwaSettings() : generalSettings_(GeneralSettings{ TemperatureType::Celsius })
 {
-    QString fileName = QDir::home().absolutePath() + "/.config/HWA/settings.ini";
-	settings_ = new QSettings(fileName, QSettings::IniFormat);
 }
 
 HwaSettings::~HwaSettings()
 {
+    removeSettings();
+}
+
+void HwaSettings::removeSettings()
+{
     for(Screen* screen : screenList_)
     {
-        delete screen;
+        if(screen != nullptr)
+        {
+            delete screen;
+        }
     }
 
+    screenList_.clear();
+    mainOrder_.clear();
+    subOrder_.clear();
 
-	if (settings_ != nullptr)
-	{
-		delete settings_;
-		settings_ = nullptr;
-	}
+    if (settings_ != nullptr)
+    {
+        delete settings_;
+        settings_ = nullptr;
+    }
 }
 
 TemperatureType HwaSettings::getTemperature()
@@ -64,6 +73,10 @@ TemperatureType HwaSettings::getTemperature()
 void HwaSettings::loadSettings()
 {
     qDebug() << "Loading settings";
+
+    QString fileName = QDir::home().absolutePath() + "/.config/HWA/settings.ini";
+    settings_ = new QSettings(fileName, QSettings::IniFormat);
+
 	loadGeneralSettings();
 
 	int screenTotal = settings_->beginReadArray("pages");
@@ -349,10 +362,10 @@ void HwaSettings::creategraphScreen(QString name, QString background, ScreenType
 void HwaSettings::createNormalScreen(QString name, QString background, ScreenType type, QList<LineText> lines)
 {
     NormalScreen * screen = new NormalScreen(name);
-        screen->setBackground(background);
-        screen->setData(lines);
+    screen->setBackground(background);
+    screen->setData(lines);
 
-        screenList_.append(screen);
+    screenList_.append(screen);
 }
 
 QList<CustomSettings> HwaSettings::loadCustomSettings()

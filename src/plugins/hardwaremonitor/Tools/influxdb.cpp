@@ -167,8 +167,6 @@ double InfluxDb::getData(Query query)
 
     queryString += ")";
 
-    qDebug() << "Query: " << queryString;
-
     QNetworkReply * reply = sendQuery(queryString);
 
     return readQueryValue(reply);

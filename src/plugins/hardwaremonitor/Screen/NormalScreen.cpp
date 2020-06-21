@@ -56,7 +56,6 @@ void NormalScreen::draw(Gscreen *screen)
     QPainter * p = screen->beginFullScreen();
 
     QPixmap background(getBackground());
-
     p->drawPixmap(0, 0, 320, 240, background);
 
     int textPosition = 0;
@@ -98,10 +97,11 @@ void NormalScreen::draw(Gscreen *screen)
         p->setFont(custom.font);
 
         const QRect rectangle = QRect(0, textPosition, 320, 50 );
-        QRect boundingRect;
-        p->drawText(rectangle, aligment | Qt::AlignTop | Qt::TextSingleLine	, lines[i], &boundingRect);
+        p->drawText(rectangle, aligment | Qt::AlignTop | Qt::TextSingleLine	, lines[i]);
 
-        textPosition += boundingRect.y() + custom.lineSpacing + custom.font.pointSize();
+        QFontMetrics metric(custom.font);
+
+        textPosition += metric.height() + custom.lineSpacing;
     }
 
     screen->end();

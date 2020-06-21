@@ -19,34 +19,19 @@
 
 #include "hardwaremonitor.hpp"
 
-//TODO add function to reload settings when settings file has been changed
-
 HardwareMonitor::HardwareMonitor()
 {
         Q_INIT_RESOURCE(hardwaremonitor);
 
-        HwaSettings::getInstance()->loadSettings();
-        screens = HwaSettings::getInstance()->getScreenList();
-
-        QList<Screen *> mainorder = HwaSettings::getInstance()->getMainOrder();
-
-        if(mainorder.isEmpty())
-        {
-            startScreen = new StartScreen("StartSreen");
-            screens.append(startScreen);
-            currentScreen_ = screens[0];
-            currentMainScreen_ = currentScreen_;
-            qDebug() << "Load StartScreen";
-        }
-        else
-        {
-            currentScreen_ = mainorder[0];
-            currentMainScreen_ = currentScreen_;
-        }
-
+        watcher = new QFileSystemWatcher(this);
+        startScreen = new StartScreen("StartSreen");
+        loadsettings();
 
         isActive = false;
         screen = new Gscreen(QImage(":/hardwaremonitor/icon.png"), tr("Hardware Monitor"));
+
+        watcher->addPath(QDir::home().absolutePath() + "/.config/HWA/settings.ini");
+        connect(watcher, SIGNAL(fileChanged(const QString &)), this, SLOT(reloadSettings()));
 
         QTimer *timer = new QTimer(this);
         connect(timer, &QTimer::timeout, this, QOverload<>::of(&HardwareMonitor::paint));
@@ -57,10 +42,52 @@ HardwareMonitor::HardwareMonitor()
 
 HardwareMonitor::~HardwareMonitor()
 {
+    if(watcher != nullptr)
+    {
+        delete  watcher;
+    }
     if(startScreen != nullptr) {
         delete startScreen;
     }
 	delete screen;
+}
+void HardwareMonitor::loadsettings()
+{
+     qDebug() << "Load Settings";
+
+    HwaSettings::getInstance()->loadSettings();
+    screens = HwaSettings::getInstance()->getScreenList();
+
+    QList<Screen *> mainorder = HwaSettings::getInstance()->getMainOrder();
+
+    if(mainorder.isEmpty())
+    {
+        screens.append(startScreen);
+        currentScreen_ = screens[0];
+        currentMainScreen_ = currentScreen_;
+        qDebug() << "Load StartScreen";
+    }
+    else
+    {
+        qDebug() << "Activate " + mainorder[0]->getName();
+        currentScreen_ = mainorder[0];
+        currentMainScreen_ = currentScreen_;
+    }
+}
+
+void HardwareMonitor::reloadSettings()
+{
+    qDebug() << "Reload settings";
+
+    screens.append(startScreen);
+    currentScreen_ = screens[0];
+    currentMainScreen_ = currentScreen_;
+
+    HwaSettings::getInstance()->removeSettings();
+
+    loadsettings();
+
+    paint();
 }
 
 QString HardwareMonitor::getName()

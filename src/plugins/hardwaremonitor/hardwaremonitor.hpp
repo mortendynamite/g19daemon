@@ -36,6 +36,7 @@
 #include <QString>
 #include <QTime>
 #include <QTimer>
+#include <QFileSystemWatcher>
 #include <QDebug>
 
 class HardwareMonitor: public QObject, public PluginInterface
@@ -56,17 +57,22 @@ class HardwareMonitor: public QObject, public PluginInterface
 		QObject *getQObject();
 	
 	private:
-                Gscreen *screen;
-                Screen * currentScreen_;
-                Screen * currentMainScreen_;
+        void loadsettings();
+        Gscreen *screen;
+        Screen * currentScreen_;
+        Screen * currentMainScreen_;
 		bool isActive;
 		void paint();
 
-                QVector<Screen*> screens;
-                StartScreen* startScreen;
+        QVector<Screen*> screens;
+        StartScreen* startScreen;
+        QFileSystemWatcher * watcher;
 
 
-	signals:
+    private slots:
+        void reloadSettings();
+
+    signals:
 		void doAction(gAction action, void *data);			// Signal to draw img on screen
 		
 };
