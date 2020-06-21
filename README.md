@@ -19,7 +19,7 @@ For the full detailed changelog you can look in [changelog section](Changelog.md
 
 Unsigned deb and rpm files are generated on every release. Those can be used to install the application by using the package manager of your operating system. The files can be found on the releases package of the repository.
 
-You can manually build and install from source. More info can be found in the [Manually build G19daemon]('Manually build G19daemon') section in the FAQ.
+You can manually build and install from source. More info can be found in the [Manually build G19daemon](#Manually-build-G19daemon') section in the FAQ.
 
 ## How to run daemon without root
 - Install the application
