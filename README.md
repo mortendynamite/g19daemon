@@ -9,6 +9,9 @@ G19daemon provides multiple virtual screens for the LCD on the Logitech G19 keyb
 - Show different information on the LCD
 - Customize settings
 
+# Changelogs
+
+For the full detailed changelog you can look in [changelog section](Changelog.md).
 
 # FAQ
 
