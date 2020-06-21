@@ -5,21 +5,8 @@ project(g19daemon)
 
 set(CPACK_RPM_PACKAGE_SUMMARY "G19daemon provides multiple virtual screens for the LCD on the Logitech G19 Keyboar")
 set(CPACK_RPM_PACKAGE_NAME "g19deamon")
-#set(CPACK_RPM_FILE_NAME)
-#set(CPACK_RPM_PACKAGE_VERSION)
-#set(CPACK_RPM_PACKAGE_ARCHITECTURE)
-#set(CPACK_RPM_PACKAGE_RELEASE)
-#set(CPACK_RPM_PACKAGE_LICENSE)
-#set(CPACK_RPM_PACKAGE_GROUP)
-#set(CPACK_RPM_PACKAGE_VENDOR)
 set(CPACK_RPM_PACKAGE_DESCRIPTION "G19daemon provides multiple virtual screens for the LCD on the Logitech G19 Keyboar")
-
-#set(CPACK_BUILD_SOURCE_DIRS)
-#set(CPACK_RPM_BUILD_SOURCE_DIRS_PREFIX)
-#set(CPACK_RPM_SOURCE_PKG_PACKAGING_INSTALL_PREFIX)
 include(CPack)
-
-
 
 
 set(VERSION_MAJOR 0 CACHE STRING "Major version" FORCE)
@@ -77,11 +64,11 @@ install(TARGETS g19daemon RUNTIME DESTINATION bin)
 install(PROGRAMS src/g19daemon.desktop DESTINATION share/applications)
 install(FILES helper/80-hid-g19.rules DESTINATION /etc/udev/rules.d)
 
-#add_subdirectory(src/plugins/helloworld)
-#add_subdirectory(src/plugins/keybacklight)
-#add_subdirectory(src/plugins/backlight)
-#add_subdirectory(src/plugins/pavolume)
-#add_subdirectory(src/plugins/mpris)
-#add_subdirectory(src/plugins/clock)
+add_subdirectory(src/plugins/helloworld)
+add_subdirectory(src/plugins/keybacklight)
+add_subdirectory(src/plugins/backlight)
+add_subdirectory(src/plugins/pavolume)
+add_subdirectory(src/plugins/mpris)
+add_subdirectory(src/plugins/clock)
 add_subdirectory(src/plugins/hardwaremonitor)
 
