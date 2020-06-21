@@ -21,6 +21,8 @@ jobs:
       uses: jurplel/install-qt-action@v2
       with:
         cached: ${{ steps.cache-qt.outputs.cache-hit }} 
+    - name: Build G19daemon
+      run: mkdir build && cd build && cmake -DCMAKE_INSTALL_PREFIX:PATH=/usr .. && make
     - name: Build rpm file
       run: cd build && sudo cpack -G RPM
     - name: Upload artifact
