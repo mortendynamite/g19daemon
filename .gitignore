@@ -19,3 +19,7 @@ src/plugins/hardwaremonitor/cmake_install.cmake
 src/plugins/hardwaremonitor/CMakeCache.txt
 
 CMakeLists.txt.user
+
+CMakeFiles/
+_CPack_Packages/
+*.cmake
