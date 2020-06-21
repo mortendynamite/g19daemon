@@ -23,8 +23,10 @@ jobs:
         cached: ${{ steps.cache-qt.outputs.cache-hit }} 
     - name: Build deb file
       run: dpkg-buildpackage -b --no-sign
+    - name: Move deb file
+      run: cp ../*deb ./
     - name: Upload artifact
       uses: actions/upload-artifact@v2
       with:
         name: X64
-        path: ${{ github.workspace }}/../*.deb
+        path: ${{ github.workspace }}/*.deb
