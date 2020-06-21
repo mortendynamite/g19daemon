@@ -23,3 +23,5 @@ CMakeLists.txt.user
 CMakeFiles/
 _CPack_Packages/
 *.cmake
+
+*.deb

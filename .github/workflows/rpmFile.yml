@@ -1,0 +1,30 @@
+name: Build rpm file
+
+on: push
+
+jobs:
+  build-deb:
+
+    runs-on: ubuntu-20.04
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Install build dependencies
+      run: sudo apt-get install debhelper libusb-1.0-0-dev libpulse-dev rpm
+    - name: Cache Qt
+      id: cache-qt
+      uses: actions/cache@v1
+      with:
+        path: ../Qt
+        key: ${{ runner.os }}-QtCache
+    - name: Install Qt
+      uses: jurplel/install-qt-action@v2
+      with:
+        cached: ${{ steps.cache-qt.outputs.cache-hit }} 
+    - name: Build rpm file
+      run: cd build && sudo cpack -G RPM
+    - name: Upload artifact
+      uses: actions/upload-artifact@v2
+      with:
+        name: X64
+        path: ${{ github.workspace }}/*.rpm
