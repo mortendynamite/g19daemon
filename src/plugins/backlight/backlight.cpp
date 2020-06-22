@@ -32,7 +32,7 @@ Backlight::Backlight()
 
 	isActive = false;
 	QImage icon(":/backlight/icon.png");
-	screen = new gScreen(icon, tr("Hello World"));
+	screen = new Gscreen(icon, tr("Hello World"));
 	
 	settings = new QSettings("Dynamite", "G19Daemon");
 	
@@ -51,7 +51,7 @@ Backlight::~Backlight()
 	delete screen;
 }
 
-void Backlight::LKeys(int keys)
+void Backlight::lKeys(int keys)
 {
 	if (keys & G19_KEY_LUP)
 	{

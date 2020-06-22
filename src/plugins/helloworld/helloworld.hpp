@@ -35,7 +35,7 @@ class HelloWorld : public QObject, public PluginInterface
 	public:
 		HelloWorld();
 		~HelloWorld();
-		void LKeys(int keys);
+		void lKeys(int keys);
 		QString getName();
 		QImage getIcon();
 		void setActive(bool active);
@@ -43,7 +43,7 @@ class HelloWorld : public QObject, public PluginInterface
 		QObject *getQObject();
 	
 	private:
-		gScreen *screen;
+		Gscreen *screen;
 		bool isActive;
 		void paint();
 

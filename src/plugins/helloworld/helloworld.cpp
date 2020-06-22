@@ -30,7 +30,7 @@ HelloWorld::HelloWorld()
 	Q_INIT_RESOURCE(helloworld);
 
 	isActive = false;
-	screen = new gScreen(QImage(":/helloworld/icon.png"), tr("Hello World"));
+	screen = new Gscreen(QImage(":/helloworld/icon.png"), tr("Hello World"));
 }
 
 HelloWorld::~HelloWorld()
@@ -43,7 +43,7 @@ QString HelloWorld::getName()
     return tr("Hello World");
 }
 
-void HelloWorld::LKeys(int keys)
+void HelloWorld::lKeys(int keys)
 {
 }
 

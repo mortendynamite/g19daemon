@@ -1,3 +1,9 @@
+g19daemon (0.3-1) stable; urgency=low
+  * Feature: Map g-keys to custom commands
+  * BugFix: Fixed deprecation
+
+ -- Lonelobo0070 <Lonelobo0070@g19daemon.com>  Sun, 31 May 2020 14:09:57 +0200
+
 g19daemon (0.2-1) stable; urgency=low
   * Feature: Added clock plugin
   * Feature: Made it possible to disable plugins

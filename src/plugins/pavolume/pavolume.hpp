@@ -43,7 +43,7 @@ class PAVolume : public QObject, public PluginInterface
 		
 		PAVolume();
 		~PAVolume();
-		void LKeys(int keys);
+		void lKeys(int keys);
 		QString getName();
 		QImage getIcon();
 		void setActive(bool active);
@@ -55,7 +55,7 @@ class PAVolume : public QObject, public PluginInterface
 		
 	private:
 		QSettings *settings;
-		gScreen *screen;
+		Gscreen *screen;
 		bool isActive;
 		int volume;
 		bool isMuted;

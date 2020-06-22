@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>g19daemon</class>
- <widget class="QMainWindow" name="g19daemon">
+ <class>G19daemon</class>
+ <widget class="QMainWindow" name="G19daemon">
   <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
     <width>859</width>
-    <height>527</height>
+    <height>542</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -571,10 +571,7 @@
     <property name="title">
      <string>File</string>
     </property>
-    <addaction name="separator"/>
     <addaction name="actionSave_settings"/>
-    <addaction name="actionExport_settings"/>
-    <addaction name="actionImport_settings"/>
    </widget>
    <addaction name="menuFile"/>
   </widget>
@@ -585,7 +582,6 @@
    <attribute name="toolBarBreak">
     <bool>false</bool>
    </attribute>
-   <addaction name="separator"/>
    <addaction name="actionSave_settings"/>
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
@@ -599,16 +595,6 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+S</string>
-   </property>
-  </action>
-  <action name="actionExport_settings">
-   <property name="text">
-    <string>Export settings</string>
-   </property>
-  </action>
-  <action name="actionImport_settings">
-   <property name="text">
-    <string>Import settings</string>
    </property>
   </action>
  </widget>

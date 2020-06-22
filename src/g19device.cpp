@@ -36,7 +36,7 @@ extern "C" void LIBUSB_CALL _GKeysCallback(libusb_transfer *transfer)
 	
     if (transfer->status == LIBUSB_TRANSFER_CANCELLED)
     {
-        cthis->GKeys_transfer_cancelled = true;
+        cthis->gKeysTransferCancelled = true;
         return;
     }
 
@@ -102,7 +102,7 @@ extern "C" void LIBUSB_CALL _GKeysCallback(libusb_transfer *transfer)
 	if (transfer->buffer[3] & 0x48)
 		keys |= G19_KEY_LIGHT;
 
-	cthis->GKeyCallback(keys);
+	cthis->gKeyCallback(keys);
 	
 }
 
@@ -117,7 +117,7 @@ extern "C" void LIBUSB_CALL _LKeysCallback(libusb_transfer *transfer)
 
 	if (transfer->status == LIBUSB_TRANSFER_CANCELLED)
     {
-        cthis->LKeys_transfer_cancelled = true;
+        cthis->lKeysTransferCancelled = true;
         return;
     }
 
@@ -145,7 +145,7 @@ extern "C" void LIBUSB_CALL _LKeysCallback(libusb_transfer *transfer)
 	if (transfer->buffer[0] & 0x80)
 		keys |= G19_KEY_LUP;
 
-	cthis->LKeyCallback(keys);
+	cthis->lKeyCallback(keys);
 }
 
 extern "C" void LIBUSB_CALL _TransferCallback(libusb_transfer *transfer)
@@ -164,18 +164,18 @@ G19Device::G19Device()
 	isDeviceConnected = false;
 	isInitialized = false;
 	enableEventThread = true;
-	GKeys_transfer = NULL;
-	LKeys_transfer = NULL;
+	gKeysTransfer = NULL;
+	lKeysTransfer = NULL;
 	lastkeys = 0;
 	isTransfering = false;
-    GKeys_transfer_cancelled = false;
-    LKeys_transfer_cancelled = false;
-	data_buff = new unsigned char [BUFF_SIZE];
+    gKeysTransferCancelled = false;
+    lKeysTransferCancelled = false;
+	dataBuff = new unsigned char [BUFF_SIZE];
 }
 
 G19Device::~G19Device()
 {
-    delete [] data_buff;
+    delete [] dataBuff;
 }
 
 void G19Device::initializeDevice()
@@ -235,13 +235,13 @@ void G19Device::openDevice()
 	{
 		isDeviceConnected = true;
 
-		GKeys_transfer = libusb_alloc_transfer(0);
-		libusb_fill_interrupt_transfer(GKeys_transfer, deviceHandle, LIBUSB_ENDPOINT_IN | LIBUSB_RECIPIENT_OTHER, GKeysBuffer, 4, _GKeysCallback, this, 0);
-		libusb_submit_transfer(GKeys_transfer);
+		gKeysTransfer = libusb_alloc_transfer(0);
+		libusb_fill_interrupt_transfer(gKeysTransfer, deviceHandle, LIBUSB_ENDPOINT_IN | LIBUSB_RECIPIENT_OTHER, gKeysBuffer, 4, _GKeysCallback, this, 0);
+		libusb_submit_transfer(gKeysTransfer);
 
-		LKeys_transfer = libusb_alloc_transfer(0);
-		libusb_fill_interrupt_transfer(LKeys_transfer, deviceHandle, LIBUSB_ENDPOINT_IN | LIBUSB_RECIPIENT_INTERFACE, LKeysBuffer, 2, _LKeysCallback, this, 0);
-		libusb_submit_transfer(LKeys_transfer);
+		lKeysTransfer = libusb_alloc_transfer(0);
+		libusb_fill_interrupt_transfer(lKeysTransfer, deviceHandle, LIBUSB_ENDPOINT_IN | LIBUSB_RECIPIENT_INTERFACE, lKeysBuffer, 2, _LKeysCallback, this, 0);
+		libusb_submit_transfer(lKeysTransfer);
 	}
 	else
 	{
@@ -261,28 +261,28 @@ void G19Device::closeDevice()
 		while (isTransfering)
 			;
 
-		if (GKeys_transfer)
+		if (gKeysTransfer)
 		{
-            status = libusb_cancel_transfer(GKeys_transfer);
+            status = libusb_cancel_transfer(gKeysTransfer);
             if (status == 0)
             {
-                while (!GKeys_transfer_cancelled)
+                while (!gKeysTransferCancelled)
                     ;
             }
-			libusb_free_transfer(GKeys_transfer);
-			GKeys_transfer = NULL;
+			libusb_free_transfer(gKeysTransfer);
+			gKeysTransfer = NULL;
 		}
 		
-		if (LKeys_transfer)
+		if (lKeysTransfer)
 		{
-            status = libusb_cancel_transfer(LKeys_transfer);
+            status = libusb_cancel_transfer(lKeysTransfer);
             if (status == 0)
             {
-                while (!LKeys_transfer_cancelled)
+                while (!lKeysTransferCancelled)
                     ;
             }
-            libusb_free_transfer(LKeys_transfer);
-			LKeys_transfer = NULL;
+            libusb_free_transfer(lKeysTransfer);
+			lKeysTransfer = NULL;
 		}
 
         enableEventThread = false;
@@ -321,7 +321,7 @@ void G19Device::eventThread()
 	}
 }
 
-void G19Device::GKeyCallback(unsigned int keys)
+void G19Device::gKeyCallback(unsigned int keys)
 {
 	lastkeys = keys;
 
@@ -332,13 +332,13 @@ void G19Device::GKeyCallback(unsigned int keys)
 	}
 	qDebug() << "G-Keys: " << str; */
 	
-	emit GKey();
+	emit gKey();
 
-	if (GKeys_transfer != NULL)
-		libusb_submit_transfer(GKeys_transfer);
+	if (gKeysTransfer != NULL)
+		libusb_submit_transfer(gKeysTransfer);
 }
 
-void G19Device::LKeyCallback(unsigned int keys)
+void G19Device::lKeyCallback(unsigned int keys)
 {
 	lastkeys = keys;
 	
@@ -349,10 +349,10 @@ void G19Device::LKeyCallback(unsigned int keys)
 	}
 	qDebug() << "L-Keys: " << str; */
 
-	emit LKey();
+	emit lKey();
 	
-	if (LKeys_transfer != NULL)
-		libusb_submit_transfer(LKeys_transfer);
+	if (lKeysTransfer != NULL)
+		libusb_submit_transfer(lKeysTransfer);
 }
 
 unsigned int G19Device::getKeys()
@@ -375,7 +375,7 @@ void G19Device::updateLcd(QImage* imgin)
 
 	for (index = 0; index < 512; index++)
 	{
-		data_buff[index] = hdata[index];
+		dataBuff[index] = hdata[index];
 	}
 
 	for (x = 0; x < 320; x++)
@@ -387,18 +387,18 @@ void G19Device::updateLcd(QImage* imgin)
 			color = (qRed(pixelData) / 8) << 11;
 			color |= (qGreen(pixelData) / 4) << 5;
 			color |= (qBlue(pixelData) / 8);
-			data_buff[index++] = (unsigned char) (color & 0xFF);
-			data_buff[index++] = (unsigned char) (color >> 8); 
+			dataBuff[index++] = (unsigned char) (color & 0xFF);
+			dataBuff[index++] = (unsigned char) (color >> 8); 
 		}
 	}
 
 	while (isTransfering)
-		;
+    {}
 	isTransfering = true;
-	data_transfer = libusb_alloc_transfer(0);
-	data_transfer->flags = LIBUSB_TRANSFER_FREE_TRANSFER;
-	libusb_fill_bulk_transfer(data_transfer, deviceHandle, 0x02, data_buff, BUFF_SIZE, _TransferCallback, &isTransfering, 0);
-	libusb_submit_transfer(data_transfer);
+	dataTransfer = libusb_alloc_transfer(0);
+	dataTransfer->flags = LIBUSB_TRANSFER_FREE_TRANSFER;
+	libusb_fill_bulk_transfer(dataTransfer, deviceHandle, 0x02, dataBuff, BUFF_SIZE, _TransferCallback, &isTransfering, 0);
+	libusb_submit_transfer(dataTransfer);
 }
 
 void G19Device::setKeysBacklight(QColor color)
@@ -408,27 +408,27 @@ void G19Device::setKeysBacklight(QColor color)
 		return;
 	}
 	
-	BackLight = color;
+	backLight = color;
 	
-	memset(data_buff, '\0', BUFF_SIZE);
-	data_buff[8] = 255;
-	data_buff[9] = (unsigned char) color.red();
-	data_buff[10] = (unsigned char) color.green();
-	data_buff[11] = (unsigned char) color.blue();
+	memset(dataBuff, '\0', BUFF_SIZE);
+	dataBuff[8] = 255;
+	dataBuff[9] = (unsigned char) color.red();
+	dataBuff[10] = (unsigned char) color.green();
+	dataBuff[11] = (unsigned char) color.blue();
 	
 	while (isTransfering)
-		;
+    {}
 	isTransfering = true;
-	data_transfer = libusb_alloc_transfer(0);
-	data_transfer->flags = LIBUSB_TRANSFER_FREE_TRANSFER;
-	libusb_fill_control_setup(data_buff, LIBUSB_REQUEST_TYPE_CLASS | LIBUSB_RECIPIENT_INTERFACE, 9, 0x307, 1, 4);
-	libusb_fill_control_transfer(data_transfer, deviceHandle, data_buff, _TransferCallback, &isTransfering, 0);
-	libusb_submit_transfer(data_transfer);
+	dataTransfer = libusb_alloc_transfer(0);
+	dataTransfer->flags = LIBUSB_TRANSFER_FREE_TRANSFER;
+	libusb_fill_control_setup(dataBuff, LIBUSB_REQUEST_TYPE_CLASS | LIBUSB_RECIPIENT_INTERFACE, 9, 0x307, 1, 4);
+	libusb_fill_control_transfer(dataTransfer, deviceHandle, dataBuff, _TransferCallback, &isTransfering, 0);
+	libusb_submit_transfer(dataTransfer);
 }
 
 QColor G19Device::getKeysBacklight()
 {
-    return BackLight;
+    return backLight;
 }
 
 
@@ -464,18 +464,18 @@ void G19Device::setMKeys(bool m1, bool m2, bool m3, bool mr)
 		mkeys |= 0x10;
 	}
 	
-	memset(data_buff, '\0', BUFF_SIZE);
-	data_buff[8] = 0x10;
-	data_buff[9] = mkeys;
+	memset(dataBuff, '\0', BUFF_SIZE);
+	dataBuff[8] = 0x10;
+	dataBuff[9] = mkeys;
 	
 	while (isTransfering)
 		;
 	isTransfering = true;
-	data_transfer = libusb_alloc_transfer(0);
-	data_transfer->flags = LIBUSB_TRANSFER_FREE_TRANSFER;
-    libusb_fill_control_setup(data_buff, LIBUSB_REQUEST_TYPE_CLASS | LIBUSB_RECIPIENT_INTERFACE, 9, 0x305, 0x01, 2);
-	libusb_fill_control_transfer(data_transfer, deviceHandle, data_buff, _TransferCallback, &isTransfering, 0);
-	libusb_submit_transfer(data_transfer);
+	dataTransfer = libusb_alloc_transfer(0);
+	dataTransfer->flags = LIBUSB_TRANSFER_FREE_TRANSFER;
+    libusb_fill_control_setup(dataBuff, LIBUSB_REQUEST_TYPE_CLASS | LIBUSB_RECIPIENT_INTERFACE, 9, 0x305, 0x01, 2);
+	libusb_fill_control_transfer(dataTransfer, deviceHandle, dataBuff, _TransferCallback, &isTransfering, 0);
+	libusb_submit_transfer(dataTransfer);
 	
 }
 
@@ -491,23 +491,23 @@ void G19Device::setDisplayBrightness(unsigned char brightness)
 		return;
 	}
 
-	memset(data_buff, '\0', BUFF_SIZE);
-	data_buff[8] = brightness;
-	data_buff[10] = 0xE2;
-	data_buff[11] = 0x12;
-	data_buff[12] = 0x00;
-	data_buff[13] = 0x8C;
-	data_buff[14] = 0x11;
-	data_buff[15] = 0x00;
-	data_buff[16] = 0x10;
-	data_buff[17] = 0x00;
+	memset(dataBuff, '\0', BUFF_SIZE);
+	dataBuff[8] = brightness;
+	dataBuff[10] = 0xE2;
+	dataBuff[11] = 0x12;
+	dataBuff[12] = 0x00;
+	dataBuff[13] = 0x8C;
+	dataBuff[14] = 0x11;
+	dataBuff[15] = 0x00;
+	dataBuff[16] = 0x10;
+	dataBuff[17] = 0x00;
 
 	while (isTransfering)
-		;
+    {}
 	isTransfering = true;
-	data_transfer = libusb_alloc_transfer(0);
-	data_transfer->flags = LIBUSB_TRANSFER_FREE_TRANSFER;
-    libusb_fill_control_setup(data_buff, LIBUSB_REQUEST_TYPE_VENDOR | LIBUSB_RECIPIENT_INTERFACE, 0x0A, 0x00, 0x00, 1);
-	libusb_fill_control_transfer(data_transfer, deviceHandle, data_buff, _TransferCallback, &isTransfering, 0);
-	libusb_submit_transfer(data_transfer);
+	dataTransfer = libusb_alloc_transfer(0);
+	dataTransfer->flags = LIBUSB_TRANSFER_FREE_TRANSFER;
+    libusb_fill_control_setup(dataBuff, LIBUSB_REQUEST_TYPE_VENDOR | LIBUSB_RECIPIENT_INTERFACE, 0x0A, 0x00, 0x00, 1);
+	libusb_fill_control_transfer(dataTransfer, deviceHandle, dataBuff, _TransferCallback, &isTransfering, 0);
+	libusb_submit_transfer(dataTransfer);
 }

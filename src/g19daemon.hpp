@@ -1,4 +1,4 @@
-/*
+﻿/*
  * <one line to give the program's name and a brief idea of what it does.>
  * Copyright (C) 2014  <copyright holder> <email>
  *
@@ -37,15 +37,15 @@
 
 namespace Ui
 {
-	class g19daemon;
+    class G19daemon;
 }
 
-class g19daemon : public QMainWindow
+class G19daemon : public QMainWindow
 {
 	Q_OBJECT
 	public:
-		explicit g19daemon(QWidget *parent = 0);
-		~g19daemon();
+        explicit G19daemon(QWidget *parent = 0);
+        ~G19daemon();
 
 		void menu();
         void menuSettings();
@@ -63,30 +63,31 @@ class g19daemon : public QMainWindow
 		void aboutToQuitApp();
 		void quit();
 
-		void Show();
-		void ResetLcdBacklight();
-		void GKeys();
-		void LKeys();
+        void resetLcdBacklight();
+        void gKeys();
+        void lKeys();
+
         void saveSettings(); 
 		
 		void doAction(gAction, void *data);
 		
 	private:
-		Ui::g19daemon *ui;
+        Ui::G19daemon *ui;
         
 		G19Device *device;
 		QVector<PluginInterface *> plugins;
 		QVector<PluginInterface *> PopupPlugins;
-        QList<G19Keys> pressedKey;
-		int activePlugin;
-		int prevPlugin;
+    QList<G19Keys> pressedKey;
+
+    PluginInterface* activePlugin;
+
 		
 		int isActive;
 		int menuSelect;
 		bool menuActive;
         bool menuSettingsActive;
 		
-		gScreen *menuScreen;
+        Gscreen *menuScreen;
 		
 		QMenu *trayIconMenu;
 		QSystemTrayIcon *trayIcon;
@@ -100,6 +101,8 @@ class g19daemon : public QMainWindow
 		void unloadPlugins();
         QString translateKey(G19Keys);
         void loadSettings();
+        void deactiveAllPlugins();
+
 		
 	private slots:
 };
