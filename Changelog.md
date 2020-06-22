@@ -2,6 +2,8 @@
 
 ## Version 0.3-1 by Lonelobo0070 (21 Jun 2020)
 * Added Hardware monitor plugin
+* Fixed Pulseaudio plugin not loading issue
+* Stability improvements
 
 ## Version 0.3-1 by Lonelobo0070 (31 May 2020)
   * Feature: Map g-keys to custom commands

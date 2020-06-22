@@ -8,10 +8,19 @@ G19daemon provides multiple virtual screens for the LCD on the Logitech G19 keyb
 - Change color of the keyboard backlight
 - Show different information on the LCD
 - Customize settings
+- Plugin support  
+    - Clock
+    - Media Player (mris)
+    - Hardware monitor
+    - Blacklight color changer
+    - LCD brightness changer
+    - Hello world
+    - Pulseaudio volume
 
 # Changelogs
 
 For the full detailed changelog you can look in [changelog section](Changelog.md).
+
 
 # FAQ
 
