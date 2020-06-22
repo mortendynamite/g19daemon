@@ -136,7 +136,7 @@ void G19daemon::aboutToQuitApp()
 }
 
 
-void g19daemon::loadSettings()
+void G19daemon::loadSettings()
 {
     for (QLineEdit *lineEdit : ui->mKeyTabWidget->findChildren<QLineEdit*>()) {
         
@@ -144,19 +144,8 @@ void g19daemon::loadSettings()
     }
 }
 
-void g19daemon::saveSettings() {
 
-    qDebug() << "Save Settings";
-
-     for (QLineEdit *lineEdit : ui->mKeyTabWidget->findChildren<QLineEdit*>()) {
-        
-        settings->setValue(lineEdit->objectName(), lineEdit->text());
-    }
-
-}
-
-
-void g19daemon::Show()
+void G19daemon::Show()
 {
     for (QLineEdit *lineEdit : ui->mKeyTabWidget->findChildren<QLineEdit*>()) {
         
@@ -174,7 +163,6 @@ void G19daemon::saveSettings() {
     }
 
 }
-
 
 
 
@@ -562,7 +550,7 @@ void G19daemon::doAction ( gAction action, void *data )
 
     switch ( action ) {
     case displayFullScreen:
-        device->updateLcd ( ( ( gScreen * ) data )->drawFullScreen() );
+        device->updateLcd ( ( ( Gscreen * ) data )->drawFullScreen() );
 
         break;
     case displayScreen:
