@@ -176,15 +176,16 @@ void HardwareMonitor::setActive(bool active)
 
 void HardwareMonitor::paint()
 {
-	if (!isActive)
-		return;
+    if (isActive) {
 
-    if(currentScreen_ != nullptr)
-    {
-        currentScreen_->update();
-        currentScreen_->draw(screen);
+        if(currentScreen_ != nullptr)
+        {
+            currentScreen_->update();
+            currentScreen_->draw(screen);
+        }
+
+        emit doAction(displayFullScreen, screen);
     }
-	emit doAction(displayFullScreen, screen);
 }
 
 
