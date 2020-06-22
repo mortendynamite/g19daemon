@@ -65,59 +65,58 @@ void Clock::setActive(bool active)
 
 void Clock::paint()
 {
-	QPainter *p;
+        if (isActive)
+        {
+            QPainter *p;
+            static const QPoint hourHand[3] = {
+                QPoint(7, 8),
+                QPoint(-7, 8),
+                QPoint(0, -40)
+            };
+            static const QPoint minuteHand[3] = {
+                QPoint(7, 8),
+                QPoint(-7, 8),
+                QPoint(0, -70)
+            };
 
-	if (!isActive)
-		return;
+            QColor hourColor(255, 25, 0);
+            QColor minuteColor(0, 169, 181, 168);
 
-        static const QPoint hourHand[3] = {
-            QPoint(7, 8),
-            QPoint(-7, 8),
-            QPoint(0, -40)
-        };
-        static const QPoint minuteHand[3] = {
-            QPoint(7, 8),
-            QPoint(-7, 8),
-            QPoint(0, -70)
-        };
+            int side = qMin(320, 240);
+            QTime time = QTime::currentTime();
+            p = screen->beginFullScreen();
 
-        QColor hourColor(255, 25, 0);
-        QColor minuteColor(0, 169, 181, 168);
+            p->setRenderHint(QPainter::Antialiasing);
+            p->translate(320 / 2, 240 / 2);
+            p->scale(side / 200.0, side / 200.0);
+            p->setPen(Qt::NoPen);
+            p->setBrush(hourColor);
+            p->save();
+            p->rotate(30.0 * ((time.hour() + time.minute() / 60.0)));
+            p->drawConvexPolygon(hourHand, 3);
+            p->restore();
+            p->setPen(hourColor);
+            for (int i = 0; i < 12; ++i) {
+                p->drawLine(88, 0, 96, 0);
+                p->rotate(30.0);
+            }
+            p->setPen(Qt::NoPen);
+            p->setBrush(minuteColor);
+            p->save();
+            p->rotate(6.0 * (time.minute() + time.second() / 60.0));
+            p->drawConvexPolygon(minuteHand, 3);
+            p->restore();
+            p->setPen(minuteColor);
 
-        int side = qMin(320, 240);
-        QTime time = QTime::currentTime();
-	p = screen->beginFullScreen();
+            for (int j = 0; j < 60; ++j) {
+                if ((j % 5) != 0)
+                    p->drawLine(92, 0, 96, 0);
+                p->rotate(6.0);
+            }
 
-        p->setRenderHint(QPainter::Antialiasing);
-        p->translate(320 / 2, 240 / 2);
-        p->scale(side / 200.0, side / 200.0);
-        p->setPen(Qt::NoPen);
-        p->setBrush(hourColor);
-        p->save();
-        p->rotate(30.0 * ((time.hour() + time.minute() / 60.0)));
-        p->drawConvexPolygon(hourHand, 3);
-        p->restore();
-        p->setPen(hourColor);
-        for (int i = 0; i < 12; ++i) {
-            p->drawLine(88, 0, 96, 0);
-            p->rotate(30.0);
+            screen->end();
+            emit doAction(displayFullScreen, screen);
         }
-        p->setPen(Qt::NoPen);
-        p->setBrush(minuteColor);
-        p->save();
-        p->rotate(6.0 * (time.minute() + time.second() / 60.0));
-        p->drawConvexPolygon(minuteHand, 3);
-        p->restore();
-        p->setPen(minuteColor);
-
-        for (int j = 0; j < 60; ++j) {
-            if ((j % 5) != 0)
-                p->drawLine(92, 0, 96, 0);
-            p->rotate(6.0);
-        }
-
-	screen->end();
-	emit doAction(displayFullScreen, screen);
 }
 
 

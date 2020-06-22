@@ -2,6 +2,13 @@ cmake_minimum_required(VERSION 3.1)
 
 project(g19daemon)
 
+
+set(CPACK_RPM_PACKAGE_SUMMARY "G19daemon provides multiple virtual screens for the LCD on the Logitech G19 Keyboar")
+set(CPACK_RPM_PACKAGE_NAME "g19deamon")
+set(CPACK_RPM_PACKAGE_DESCRIPTION "G19daemon provides multiple virtual screens for the LCD on the Logitech G19 Keyboar")
+include(CPack)
+
+
 set(VERSION_MAJOR 0 CACHE STRING "Major version" FORCE)
 set(VERSION_MINOR 1 CACHE STRING "Minor version" FORCE)
 set(VERSION_REVISION 2 CACHE STRING "Revison" FORCE)
@@ -63,4 +70,5 @@ add_subdirectory(src/plugins/backlight)
 add_subdirectory(src/plugins/pavolume)
 add_subdirectory(src/plugins/mpris)
 add_subdirectory(src/plugins/clock)
+add_subdirectory(src/plugins/hardwaremonitor)
 

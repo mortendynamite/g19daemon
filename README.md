@@ -8,9 +8,27 @@ G19daemon provides multiple virtual screens for the LCD on the Logitech G19 keyb
 - Change color of the keyboard backlight
 - Show different information on the LCD
 - Customize settings
+- Plugin support  
+    - Clock
+    - Media Player (mris)
+    - [Hardware monitor](https://github.com/lonelobo0070/Hardware-Monitor-Applet)
+    - Blacklight color changer
+    - LCD brightness changer
+    - Hello world
+    - Pulseaudio volume
+
+# Changelogs
+
+For the full detailed changelog you can look in [changelog section](Changelog.md).
 
 
 # FAQ
+
+## How to install G19daemon
+
+Unsigned deb and rpm files are generated on every release. Those can be used to install the application by using the package manager of your operating system. The files can be found on the releases package of the repository.
+
+You can manually build and install from source. More info can be found in the [Manually build G19daemon](#Manually-build-G19daemon') section in the FAQ.
 
 ## How to run daemon without root
 - Install the application
@@ -30,6 +48,14 @@ Before you can build G19daemon you need some packages installed:
 - Cmake
 
 After installing all the above packages you can run 'sh ./build.sh'. The script will build the code and install it on the system.
+
+## How to configure G-keys to open applications?
+When starting the g19daemon a system tray icon is show. When you right click on it you can click 'show'. This will open the G19daemon configurator.
+In the configurator all the G-keys and M-keys are shown. Here you can place all the commands of the application/scripts that you want to open with the G-keys.
+
+For example I want the M1-G1 key to open Chrome. I place '/usr/bin/google-chrome-stable %U' in the G1 textfield in the M1 tab. After saving this settings you can press the G1 key and Chrome will be opened.
+
+To easily find the commands of the installed application you can use for example 'KDE Menu editor', ...
 
 ## How to create own plugins
 Every plugin must implement the plugininterface.hpp file (can be find on the root of the project directory.

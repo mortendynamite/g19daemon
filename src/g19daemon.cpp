@@ -55,7 +55,7 @@ G19daemon::G19daemon ( QWidget *parent ) :
 
     settings =  new QSettings ( "G19Daemon", "G19Daemon" );
 
-    activePlugin = -1;
+    activePlugin = nullptr;
     isActive = true;
     menuSettingsActive = false;
 
@@ -70,7 +70,7 @@ G19daemon::G19daemon ( QWidget *parent ) :
 
     loadPlugins();
 
-    if ( activePlugin != -1 )
+    if ( activePlugin != nullptr )
         menuActive = false;
     else
         menuActive = true;
@@ -102,8 +102,8 @@ G19daemon::~G19daemon()
 {
     if ( menuActive )
         settings->setValue ( "ActivePlugin", "menu" );
-    else if ( activePlugin != -1 )
-        settings->setValue ( "ActivePlugin", getActivePlugins()[activePlugin]->getName() );
+    else if ( activePlugin != nullptr )
+        settings->setValue ( "ActivePlugin", activePlugin->getName() );
 
     settings->sync();
 
@@ -166,9 +166,10 @@ void G19daemon::resetLcdBacklight()
 void G19daemon::run()
 {
     if ( menuActive )
-        menu();
-    else
-        getActivePlugins()[activePlugin]->setActive ( true );
+     {   menu();}
+    else {
+        activePlugin->setActive ( true );
+    }
 }
 
 void G19daemon::gKeys()
@@ -294,7 +295,7 @@ void G19daemon::lKeys()
 
     if ( keys & G19_KEY_LHOME ) {
         if ( menuActive == false ) {
-            activePlugins[activePlugin]->setActive ( false );
+            activePlugin->setActive ( false );
             menuActive = true;
             menuSettingsActive = false;
         }
@@ -339,8 +340,11 @@ void G19daemon::lKeys()
 
         if ( keys & G19_KEY_LOK && menuActive ) {
             menuActive = false;
-            activePlugin = menuSelect;
-            activePlugins[activePlugin]->setActive ( true );
+            activePlugin = activePlugins[menuSelect];
+
+            deactiveAllPlugins();
+
+            activePlugin->setActive ( true );
         } else if ( keys & G19_KEY_LOK && menuSettingsActive ) {
             bool currentPluginEnabled = settings->value ( plugins[menuSelect]->getName() + "-enabled", true ).toBool();
 
@@ -352,8 +356,16 @@ void G19daemon::lKeys()
 
             menuSettings();
         }
-    } else if ( activePlugins[activePlugin] ) {
-        activePlugins[activePlugin]->lKeys ( keys );
+    } else if ( activePlugin != nullptr ) {
+        activePlugin->lKeys ( keys );
+    }
+}
+
+void G19daemon::deactiveAllPlugins()
+{
+    for(int i = 0; i < plugins.size(); i++)
+    {
+        plugins[i]->setActive(false);
     }
 }
 
@@ -487,7 +499,7 @@ void G19daemon::loadPlugins()
                     plugins.append ( pluginint );
 
                     if ( pluginint->getName().compare ( name ) == 0 ) {
-                        activePlugin = getActivePlugins().indexOf ( pluginint );
+                        activePlugin = getActivePlugins()[getActivePlugins().indexOf ( pluginint )];
                     }
                 }
             }
@@ -537,12 +549,13 @@ void G19daemon::doAction ( gAction action, void *data )
         break;
     case grabFocus:
         if ( !menuActive )
-            plugins[activePlugin]->setActive ( false );
-
+            deactiveAllPlugins();
         break;
     case releaseFocus:
-        if ( !menuActive )
-            plugins[activePlugin]->setActive ( true );
+        if ( !menuActive ) {
+            deactiveAllPlugins();
+            activePlugin->setActive ( true );
+        }
         else
             menu();
         break;

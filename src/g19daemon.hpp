@@ -1,4 +1,4 @@
-/*
+﻿/*
  * <one line to give the program's name and a brief idea of what it does.>
  * Copyright (C) 2014  <copyright holder> <email>
  *
@@ -77,8 +77,7 @@ class G19daemon : public QMainWindow
 		QVector<PluginInterface *> plugins;
 		QVector<PluginInterface *> PopupPlugins;
         QList<G19Keys> pressedKey;
-		int activePlugin;
-		int prevPlugin;
+                PluginInterface* activePlugin;
 		
 		int isActive;
 		int menuSelect;
@@ -99,6 +98,7 @@ class G19daemon : public QMainWindow
 		void unloadPlugins();
         QString translateKey(G19Keys);
         void loadSettings();
+        void deactiveAllPlugins();
 		
 	private slots:
 };
