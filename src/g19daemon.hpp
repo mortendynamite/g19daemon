@@ -66,6 +66,7 @@ class G19daemon : public QMainWindow
         void resetLcdBacklight();
         void gKeys();
         void lKeys();
+
         void saveSettings(); 
 		
 		void doAction(gAction, void *data);
@@ -76,8 +77,10 @@ class G19daemon : public QMainWindow
 		G19Device *device;
 		QVector<PluginInterface *> plugins;
 		QVector<PluginInterface *> PopupPlugins;
-        QList<G19Keys> pressedKey;
-                PluginInterface* activePlugin;
+    QList<G19Keys> pressedKey;
+
+    PluginInterface* activePlugin;
+
 		
 		int isActive;
 		int menuSelect;
@@ -99,6 +102,7 @@ class G19daemon : public QMainWindow
         QString translateKey(G19Keys);
         void loadSettings();
         void deactiveAllPlugins();
+
 		
 	private slots:
 };

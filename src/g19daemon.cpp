@@ -61,6 +61,7 @@ G19daemon::G19daemon ( QWidget *parent ) :
 
     connect ( device, SIGNAL ( gKey() ), SLOT ( gKeys() ) );
     connect ( device, SIGNAL ( lKey() ), SLOT ( lKeys() ) );
+
     connect(ui->actionSave_settings, SIGNAL(triggered()), SLOT(saveSettings()));
 
 
@@ -134,7 +135,28 @@ void G19daemon::aboutToQuitApp()
 {
 }
 
-void G19daemon::loadSettings()
+
+void g19daemon::loadSettings()
+{
+    for (QLineEdit *lineEdit : ui->mKeyTabWidget->findChildren<QLineEdit*>()) {
+        
+        lineEdit->setText(settings->value(lineEdit->objectName()).toString());
+    }
+}
+
+void g19daemon::saveSettings() {
+
+    qDebug() << "Save Settings";
+
+     for (QLineEdit *lineEdit : ui->mKeyTabWidget->findChildren<QLineEdit*>()) {
+        
+        settings->setValue(lineEdit->objectName(), lineEdit->text());
+    }
+
+}
+
+
+void g19daemon::Show()
 {
     for (QLineEdit *lineEdit : ui->mKeyTabWidget->findChildren<QLineEdit*>()) {
         
@@ -211,6 +233,7 @@ void G19daemon::gKeys()
             pressedKey.removeAll((G19Keys)keys);
         }
     }
+
 }
 
 QString G19daemon::translateKey(G19Keys keys)
@@ -539,7 +562,8 @@ void G19daemon::doAction ( gAction action, void *data )
 
     switch ( action ) {
     case displayFullScreen:
-        device->updateLcd ( ( ( Gscreen * ) data )->drawFullScreen() );
+        device->updateLcd ( ( ( gScreen * ) data )->drawFullScreen() );
+
         break;
     case displayScreen:
         device->updateLcd ( ( ( Gscreen * ) data )->draw() );
