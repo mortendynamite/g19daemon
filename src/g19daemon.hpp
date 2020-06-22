@@ -66,6 +66,7 @@ class G19daemon : public QMainWindow
         void resetLcdBacklight();
         void gKeys();
         void lKeys();
+        void Show();
 
         void saveSettings(); 
 		
