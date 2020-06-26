@@ -20,61 +20,58 @@
 #ifndef HARDWAREMONITOR_H
 #define HARDWAREMONITOR_H
 
-#include <QtCore>
-#include <QtPlugin>
-#include "../../plugininterface.hpp"
+#include "../../g19daemon.hpp"
 #include "../../gscreen.hpp"
-#include "HwaSettings.h"
+#include "../../plugininterface.hpp"
 #include "Defines.h"
-#include "Screen/Screen.h"
+#include "HwaSettings.h"
 #include "Screen/GraphScreen.h"
 #include "Screen/NormalScreen.h"
+#include "Screen/Screen.h"
 #include "Screen/StartScreen.h"
-#include "../../g19daemon.hpp"
+#include <QDebug>
+#include <QFileSystemWatcher>
 #include <QImage>
 #include <QPainter>
 #include <QString>
 #include <QTime>
 #include <QTimer>
-#include <QFileSystemWatcher>
-#include <QDebug>
+#include <QtCore>
+#include <QtPlugin>
 
-class HardwareMonitor: public QObject, public PluginInterface
-{
-	Q_OBJECT
-    Q_INTERFACES(PluginInterface)
+class HardwareMonitor : public QObject, public PluginInterface {
+  Q_OBJECT
+  Q_INTERFACES(PluginInterface)
 
-        Q_PLUGIN_METADATA(IID "hardwaremonitor")
-	
-	public:
-                HardwareMonitor();
-                ~HardwareMonitor();
-		void lKeys(int keys);
-		QString getName();
-		QImage getIcon();
-		void setActive(bool active);
-		bool isPopup();
-		QObject *getQObject();
-	
-	private:
-        void loadsettings();
-        Gscreen *screen;
-        Screen * currentScreen_;
-        Screen * currentMainScreen_;
-		bool isActive;
-		void paint();
+  Q_PLUGIN_METADATA(IID "hardwaremonitor")
 
-        QVector<Screen*> screens;
-        StartScreen* startScreen;
-        QFileSystemWatcher * watcher;
+public:
+  HardwareMonitor();
+  ~HardwareMonitor();
+  void lKeys(int keys);
+  QString getName();
+  QImage getIcon();
+  void setActive(bool active);
+  bool isPopup();
+  QObject *getQObject();
 
+private:
+  void loadsettings();
+  Gscreen *screen;
+  Screen *currentScreen_;
+  Screen *currentMainScreen_;
+  bool isActive;
+  void paint();
 
-    private slots:
-        void reloadSettings();
+  QVector<Screen *> screens;
+  StartScreen *startScreen;
+  QFileSystemWatcher *watcher;
 
-    signals:
-		void doAction(gAction action, void *data);			// Signal to draw img on screen
-		
+private slots:
+  void reloadSettings();
+
+signals:
+  void doAction(gAction action, void *data); // Signal to draw img on screen
 };
 
 #endif // HARDWAREMONITOR_H

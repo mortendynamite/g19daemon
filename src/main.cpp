@@ -17,61 +17,54 @@
  *
  */
 
-#include <QApplication>
-#include <QtCore/QtCore>
-#include <QFile>
-#include "g19daemon.hpp"
 #include "config.h"
+#include "g19daemon.hpp"
+#include <QApplication>
+#include <QFile>
+#include <QtCore/QtCore>
 
+int main(int argc, char **argv) {
+  int ret;
+  QString file;
 
-int main(int argc, char** argv)
-{
-	int ret;
-	QString file;
-	
-    QApplication app(argc, argv);
-    QCoreApplication::setApplicationName("G19");
-	QCoreApplication::setApplicationVersion(VERSION);
+  QApplication app(argc, argv);
+  QCoreApplication::setApplicationName("G19");
+  QCoreApplication::setApplicationVersion(VERSION);
 
-	file = QStandardPaths::writableLocation(QStandardPaths::RuntimeLocation) + "/g19daemon.pid";
-    QFile isRunning_file(file);
-    
-    if (!isRunning_file.exists())
-    {
-        if (!isRunning_file.open(QIODevice::WriteOnly))
-		{
-			qDebug() << "Error: " << isRunning_file.errorString();
-		}
-		else
-		{
-			QString pid;
-			pid.setNum(app.applicationPid());
-			isRunning_file.write(pid.toLatin1(), pid.length());
-			isRunning_file.close();
-		}
+  file = QStandardPaths::writableLocation(QStandardPaths::RuntimeLocation) +
+         "/g19daemon.pid";
+  QFile isRunning_file(file);
 
-		// create the main class
-        G19daemon task;
-		
-		// connect up the signals
-		QObject::connect(&task, SIGNAL(finished()), &app, SLOT(quit()));
-		QObject::connect(&app, SIGNAL(aboutToQuit()), &task, SLOT(aboutToQuitApp()));
-		
-		// This code will start the messaging engine in QT and in
-		// 10ms it will start the execution in the MainClass.run routine;
-		QTimer::singleShot(10, &task, SLOT(run())); 
-		ret = app.exec();
-		
-		if (!isRunning_file.remove())
-		{
-			qDebug() << "Error: " << isRunning_file.errorString();
-		}
-		return ret;
+  if (!isRunning_file.exists()) {
+    if (!isRunning_file.open(QIODevice::WriteOnly)) {
+      qDebug() << "Error: " << isRunning_file.errorString();
+    } else {
+      QString pid;
+      pid.setNum(app.applicationPid());
+      isRunning_file.write(pid.toLatin1(), pid.length());
+      isRunning_file.close();
     }
-    else
-	{
-		qDebug() << "App is running";
-        app.exit();
-		return 0;
-	}	
+
+    // create the main class
+    G19daemon task;
+
+    // connect up the signals
+    QObject::connect(&task, SIGNAL(finished()), &app, SLOT(quit()));
+    QObject::connect(&app, SIGNAL(aboutToQuit()), &task,
+                     SLOT(aboutToQuitApp()));
+
+    // This code will start the messaging engine in QT and in
+    // 10ms it will start the execution in the MainClass.run routine;
+    QTimer::singleShot(10, &task, SLOT(run()));
+    ret = app.exec();
+
+    if (!isRunning_file.remove()) {
+      qDebug() << "Error: " << isRunning_file.errorString();
+    }
+    return ret;
+  } else {
+    qDebug() << "App is running";
+    app.exit();
+    return 0;
+  }
 }

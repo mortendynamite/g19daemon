@@ -5,76 +5,66 @@
 #include <QUrl>
 #include <QtDBus/QtDBus>
 
-namespace PlaybackStatus
-{
-	enum PlaybackStatus
-	{
-		Playing = 0,
-		Paused,
-		Stopped
-	};
+namespace PlaybackStatus {
+enum PlaybackStatus { Playing = 0, Paused, Stopped };
 }
 
-struct PlayerStatus
-{
-	unsigned short Play;
-	unsigned short PlayRandom;
-	unsigned short Repeat;
-	unsigned short RepeatPlaylist;
+struct PlayerStatus {
+  unsigned short Play;
+  unsigned short PlayRandom;
+  unsigned short Repeat;
+  unsigned short RepeatPlaylist;
 };
 
-struct MediaData
-{
-	QString artist;
-	QString album;
-	QString title;
-	QString track;
-	QString url;
-	unsigned short length;
+struct MediaData {
+  QString artist;
+  QString album;
+  QString title;
+  QString track;
+  QString url;
+  unsigned short length;
 };
 
-class MprisFetcher2 : public QObject
-{
-		Q_OBJECT
-	public:
-		MprisFetcher2(const QString &APlayerName = QString::Null());
-		~MprisFetcher2();
+class MprisFetcher2 : public QObject {
+  Q_OBJECT
+public:
+  MprisFetcher2(const QString &APlayerName = QString::Null());
+  ~MprisFetcher2();
 
-		void updateStatus();
-		long getPlayerPosition();
-		
-		PlayerStatus getPlayerStatus() const;
-		QString getPlayerName() const;
-		bool isSpotify();
+  void updateStatus();
+  long getPlayerPosition();
 
-	signals:
-		void statusChanged(PlayerStatus);
-		void trackChanged(MediaData);
+  PlayerStatus getPlayerStatus() const;
+  QString getPlayerName() const;
+  bool isSpotify();
 
-	public slots:
-		void playerPlay() const;
-		void playerStop() const;
-		void playerPrev() const;
-		void playerNext() const;
-		void playerSeek(int sec) const;
-		void onPlayerNameChange(const QString &);
+signals:
+  void statusChanged(PlayerStatus);
+  void trackChanged(MediaData);
 
-	private slots:
-		void onPropertyChange(QDBusMessage);
-		void onPlayersExistenceChanged(QString, QString, QString);
+public slots:
+  void playerPlay() const;
+  void playerStop() const;
+  void playerPrev() const;
+  void playerNext() const;
+  void playerSeek(int sec) const;
+  void onPlayerNameChange(const QString &);
 
-	private:
-		bool spotify;
-		void connectToBus();
-		void disconnectToBus();
-		QDBusInterface *createPlayerInterface();
-		void parseTrackInfo(const QVariantMap &);
-		void parsePlaybackStatus(const QString &);
+private slots:
+  void onPropertyChange(QDBusMessage);
+  void onPlayersExistenceChanged(QString, QString, QString);
 
-	protected:
-		QString FPlayerName;
-		QDBusInterface *FPlayerInterface;
+private:
+  bool spotify;
+  void connectToBus();
+  void disconnectToBus();
+  QDBusInterface *createPlayerInterface();
+  void parseTrackInfo(const QVariantMap &);
+  void parsePlaybackStatus(const QString &);
+
+protected:
+  QString FPlayerName;
+  QDBusInterface *FPlayerInterface;
 };
 
 #endif // MPRISFETCHER2_H
-

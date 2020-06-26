@@ -20,46 +20,46 @@
 #ifndef HELLOWORLD_H
 #define HELLOWORLD_H
 
-#include <QtCore>
-#include <QtPlugin>
+#include "../../gscreen.hpp"
+#include "../../plugininterface.hpp"
 #include <QObject>
 #include <QSettings>
-#include "../../plugininterface.hpp"
-#include "../../gscreen.hpp"
+#include <QtCore>
+#include <QtPlugin>
 
-class Backlight : public QObject, public PluginInterface
-{
-		Q_OBJECT
-		Q_INTERFACES(PluginInterface)
+class Backlight : public QObject, public PluginInterface {
+  Q_OBJECT
+  Q_INTERFACES(PluginInterface)
 
-		Q_PLUGIN_METADATA(IID "Backlight")
+  Q_PLUGIN_METADATA(IID "Backlight")
 
-	public:
-		Backlight();
-		~Backlight();
-		void lKeys(int keys);
-		QString getName();
-		QImage getIcon();
-		void setActive(bool active);
-		bool isPopup();
-		QObject *getQObject();
+public:
+  Backlight();
+  ~Backlight();
+  void lKeys(int keys);
+  QString getName();
+  QImage getIcon();
+  void setActive(bool active);
+  bool isPopup();
+  QObject *getQObject();
 
-	private:
-		Gscreen *screen;
-		bool isActive;
+private:
+  Gscreen *screen;
+  bool isActive;
 
-		QSettings *settings;
-		int Value;
-		int step;
+  QSettings *settings;
+  int Value;
+  int step;
 
-		void drawGuage(int x, int y, int w, int h, int pos, QColor color, QPainter *p);
-		
-		int selected;
+  void drawGuage(int x, int y, int w, int h, int pos, QColor color,
+                 QPainter *p);
 
-		void paint();
+  int selected;
 
-	signals:
-		void doAction(gAction action, void *data);			// Signal to draw img on screen
+  void paint();
+
+signals:
+  void doAction(gAction action, void *data); // Signal to draw img on screen
 };
 
 #endif // HELLOWORLD_H

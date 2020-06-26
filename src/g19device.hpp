@@ -20,115 +20,113 @@
 #ifndef G19_H
 #define G19_H
 
-#include <QtCore/QObject>
-#include <QtConcurrent/QtConcurrent>
-#include <QDebug>
 #include <QColor>
+#include <QDebug>
+#include <QtConcurrent/QtConcurrent>
+#include <QtCore/QObject>
 #include <QtGui/QImage>
 #include <libusb.h>
 
 using namespace std;
 
-#define BUFF_SIZE	154112			//	154112 = 320x240 x 2 bytes/pixel + header of 512 bytes
+#define BUFF_SIZE                                                              \
+  154112 //	154112 = 320x240 x 2 bytes/pixel + header of 512 bytes
 
-enum G19Keys
-{
-	G19_KEY_G1		= 1 << 0,
-	G19_KEY_G2		= 1 << 1,
-	G19_KEY_G3		= 1 << 2,
-	G19_KEY_G4		= 1 << 3,
-	G19_KEY_G5		= 1 << 4,
-	G19_KEY_G6		= 1 << 5,
-	G19_KEY_G7		= 1 << 6,
-	G19_KEY_G8		= 1 << 7,
-	G19_KEY_G9		= 1 << 8,
-	G19_KEY_G10		= 1 << 9,
-	G19_KEY_G11		= 1 << 10,
-	G19_KEY_G12		= 1 << 11,
-	
-	G19_KEY_M1		= 1 << 12,
-	G19_KEY_M2		= 1 << 13,
-	G19_KEY_M3		= 1 << 14,
-	G19_KEY_MR		= 1 << 15,
+enum G19Keys {
+  G19_KEY_G1 = 1 << 0,
+  G19_KEY_G2 = 1 << 1,
+  G19_KEY_G3 = 1 << 2,
+  G19_KEY_G4 = 1 << 3,
+  G19_KEY_G5 = 1 << 4,
+  G19_KEY_G6 = 1 << 5,
+  G19_KEY_G7 = 1 << 6,
+  G19_KEY_G8 = 1 << 7,
+  G19_KEY_G9 = 1 << 8,
+  G19_KEY_G10 = 1 << 9,
+  G19_KEY_G11 = 1 << 10,
+  G19_KEY_G12 = 1 << 11,
 
-	G19_KEY_LHOME	= 1 << 16,
-	G19_KEY_LCANCEL	= 1 << 17,
-	G19_KEY_LMENU	= 1 << 18,
-	G19_KEY_LOK		= 1 << 19,
-	G19_KEY_LRIGHT	= 1 << 20,
-	G19_KEY_LLEFT	= 1 << 21,
-	G19_KEY_LDOWN	= 1 << 22,
-	G19_KEY_LUP		= 1 << 23,
-	G19_KEY_LIGHT   = 1 << 24
+  G19_KEY_M1 = 1 << 12,
+  G19_KEY_M2 = 1 << 13,
+  G19_KEY_M3 = 1 << 14,
+  G19_KEY_MR = 1 << 15,
+
+  G19_KEY_LHOME = 1 << 16,
+  G19_KEY_LCANCEL = 1 << 17,
+  G19_KEY_LMENU = 1 << 18,
+  G19_KEY_LOK = 1 << 19,
+  G19_KEY_LRIGHT = 1 << 20,
+  G19_KEY_LLEFT = 1 << 21,
+  G19_KEY_LDOWN = 1 << 22,
+  G19_KEY_LUP = 1 << 23,
+  G19_KEY_LIGHT = 1 << 24
 };
-
 
 typedef void (*G19KeysCallback)(unsigned int keys);
 
-class G19Device : public QObject
-{
-	Q_OBJECT
-	public:
-		int rawkey;
-		
-		G19Device();
-		~G19Device();
-		
-		void initializeDevice();
-		void openDevice();
-		void closeDevice();
-		void eventThread();
-		
-		void updateLcd(QImage *img);
-		void setKeysBacklight(QColor color);
-		QColor getKeysBacklight();
-		void setMKeys(bool m1, bool m2, bool m3, bool mr);
-		void setDisplayBrightness(unsigned char brightness);
+class G19Device : public QObject {
+  Q_OBJECT
+public:
+  int rawkey;
 
-        void gKeyCallback(unsigned int keys);
-        void lKeyCallback(unsigned int keys);
-        
-        G19Keys getActiveMKey();
-		
-		unsigned int getKeys();
+  G19Device();
+  ~G19Device();
 
-        bool gKeysTransferCancelled;
-        bool lKeysTransferCancelled;
+  void initializeDevice();
+  void openDevice();
+  void closeDevice();
+  void eventThread();
 
-	private:
-		unsigned int lastkeys;
-        bool isDeviceConnected;
-        bool isInitialized;
-		bool enableEventThread;
-		bool isTransfering;
-		QString cstatus;
-        G19Keys activeMKey;
-		
-        libusb_transfer * gKeysTransfer;
-        libusb_transfer *lKeysTransfer;
-        libusb_transfer *dataTransfer;
-		
-        unsigned char gKeysBuffer[4];
-        unsigned char lKeysBuffer[2];
-		
-		libusb_context *context;
-		libusb_device_handle *deviceHandle;
-		libusb_device_descriptor deviceDesc;
-		libusb_device **devs;
-		libusb_device *dev;
-//		int usbInterfaceNumber;
-		
-		QFuture<void> future;
-		
-        unsigned char *dataBuff;
-        
-        QColor backLight;
-	
-	signals:
-        void gKey();
-        void lKey();
-		
-	public slots:
+  void updateLcd(QImage *img);
+  void setKeysBacklight(QColor color);
+  QColor getKeysBacklight();
+  void setMKeys(bool m1, bool m2, bool m3, bool mr);
+  void setDisplayBrightness(unsigned char brightness);
+
+  void gKeyCallback(unsigned int keys);
+  void lKeyCallback(unsigned int keys);
+
+  G19Keys getActiveMKey();
+
+  unsigned int getKeys();
+
+  bool gKeysTransferCancelled;
+  bool lKeysTransferCancelled;
+
+private:
+  unsigned int lastkeys;
+  bool isDeviceConnected;
+  bool isInitialized;
+  bool enableEventThread;
+  bool isTransfering;
+  QString cstatus;
+  G19Keys activeMKey;
+
+  libusb_transfer *gKeysTransfer;
+  libusb_transfer *lKeysTransfer;
+  libusb_transfer *dataTransfer;
+
+  unsigned char gKeysBuffer[4];
+  unsigned char lKeysBuffer[2];
+
+  libusb_context *context;
+  libusb_device_handle *deviceHandle;
+  libusb_device_descriptor deviceDesc;
+  libusb_device **devs;
+  libusb_device *dev;
+  //		int usbInterfaceNumber;
+
+  QFuture<void> future;
+
+  unsigned char *dataBuff;
+
+  QColor backLight;
+
+signals:
+  void gKey();
+  void lKey();
+
+public slots:
 };
 
 #endif // G19_H

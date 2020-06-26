@@ -20,92 +20,88 @@
 #ifndef g19daemon_H
 #define g19daemon_H
 
-#include <QtCore/QObject>
-#include <QSettings>
-#include <QLinearGradient>
-#include <QFont>
-#include <QMenu>
-#include <QSystemTrayIcon>
-#include <QAction>
-#include <QWidget>
-#include <QProcess>
-#include <QMainWindow>
-#include <QLineEdit>
 #include "g19device.hpp"
-#include "plugininterface.hpp"
 #include "gscreen.hpp"
+#include "plugininterface.hpp"
+#include <QAction>
+#include <QFont>
+#include <QLineEdit>
+#include <QLinearGradient>
+#include <QMainWindow>
+#include <QMenu>
+#include <QProcess>
+#include <QSettings>
+#include <QSystemTrayIcon>
+#include <QWidget>
+#include <QtCore/QObject>
 
-namespace Ui
-{
-    class G19daemon;
+namespace Ui {
+class G19daemon;
 }
 
-class G19daemon : public QMainWindow
-{
-	Q_OBJECT
-	public:
-        explicit G19daemon(QWidget *parent = 0);
-        ~G19daemon();
+class G19daemon : public QMainWindow {
+  Q_OBJECT
+public:
+  explicit G19daemon(QWidget *parent = 0);
+  ~G19daemon();
 
-		void menu();
-        void menuSettings();
+  void menu();
+  void menuSettings();
 
-	signals:
-		// Signal to finish, this is connected to Application Quit
-		void finished();
+signals:
+  // Signal to finish, this is connected to Application Quit
+  void finished();
 
-	public slots:
-		// This is the slot that gets called from main to start everything
-		// but, everthing is set up in the Constructor
-		void run();
+public slots:
+  // This is the slot that gets called from main to start everything
+  // but, everthing is set up in the Constructor
+  void run();
 
-		// slot that get signal when that application is about to quit
-		void aboutToQuitApp();
-		void quit();
+  // slot that get signal when that application is about to quit
+  void aboutToQuitApp();
+  void quit();
 
-        void resetLcdBacklight();
-        void gKeys();
-        void lKeys();
-        void Show();
+  void resetLcdBacklight();
+  void gKeys();
+  void lKeys();
+  void Show();
 
-        void saveSettings(); 
-		
-		void doAction(gAction, void *data);
-		
-	private:
-        Ui::G19daemon *ui;
-        
-		G19Device *device;
-		QVector<PluginInterface *> plugins;
-		QVector<PluginInterface *> PopupPlugins;
-    QList<G19Keys> pressedKey;
+  void saveSettings();
 
-    PluginInterface* activePlugin;
+  void doAction(gAction, void *data);
 
-		
-		int isActive;
-		int menuSelect;
-		bool menuActive;
-        bool menuSettingsActive;
-		
-        Gscreen *menuScreen;
-		
-		QMenu *trayIconMenu;
-		QSystemTrayIcon *trayIcon;
-		QAction *quitAction;
-		QAction *showAction;
-		
-		QSettings *settings;
-		
-        QVector<PluginInterface *> getActivePlugins();
-		void loadPlugins();
-		void unloadPlugins();
-        QString translateKey(G19Keys);
-        void loadSettings();
-        void deactiveAllPlugins();
+private:
+  Ui::G19daemon *ui;
 
-		
-	private slots:
+  G19Device *device;
+  QVector<PluginInterface *> plugins;
+  QVector<PluginInterface *> PopupPlugins;
+  QList<G19Keys> pressedKey;
+
+  PluginInterface *activePlugin;
+
+  int isActive;
+  int menuSelect;
+  bool menuActive;
+  bool menuSettingsActive;
+
+  Gscreen *menuScreen;
+
+  QMenu *trayIconMenu;
+  QSystemTrayIcon *trayIcon;
+  QAction *quitAction;
+  QAction *showAction;
+
+  QSettings *settings;
+
+  QVector<PluginInterface *> getActivePlugins();
+  void loadPlugins();
+  void unloadPlugins();
+  QString translateKey(G19Keys);
+  void loadSettings();
+  void deactiveAllPlugins();
+
+private slots:
 };
 
 #endif // g19daemon_H

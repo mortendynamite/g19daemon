@@ -20,63 +20,62 @@
 #ifndef PAVOLUME_H
 #define PAVOLUME_H
 
-#include <QtCore>
-#include <QtPlugin>
+#include "../../gscreen.hpp"
+#include "../../plugininterface.hpp"
 #include <QSettings>
 #include <QtConcurrent/QtConcurrent>
-#include "../../plugininterface.hpp"
-#include "../../gscreen.hpp"
+#include <QtCore>
+#include <QtPlugin>
 #include <pulse/pulseaudio.h>
 
-class PAVolume : public QObject, public PluginInterface
-{
-	Q_OBJECT
-	Q_INTERFACES(PluginInterface)
+class PAVolume : public QObject, public PluginInterface {
+  Q_OBJECT
+  Q_INTERFACES(PluginInterface)
 
-	Q_PLUGIN_METADATA(IID "your-string-here")
+  Q_PLUGIN_METADATA(IID "your-string-here")
 
-	public:
-		pa_threaded_mainloop *pa_ml;
-		pa_mainloop_api *pa_mlapi;
-		pa_operation *pa_op;
-		pa_context *pa_ctx;
-		
-		PAVolume();
-		~PAVolume();
-		void lKeys(int keys);
-		QString getName();
-		QImage getIcon();
-		void setActive(bool active);
-		void setVolume(int vol, bool mute);
-		bool isPopup();
-		QObject *getQObject();
-		
-		void eventThread();
-		
-	private:
-		QSettings *settings;
-		Gscreen *screen;
-		bool isActive;
-		int volume;
-		bool isMuted;
-		QFuture<void> future;
-		QTime ftime;
-		QTimer *timer;
+public:
+  pa_threaded_mainloop *pa_ml;
+  pa_mainloop_api *pa_mlapi;
+  pa_operation *pa_op;
+  pa_context *pa_ctx;
 
-		void paint();
-		void setKeybackground();
-		
-	private slots:
-		void BlinkKeyBackground();
+  PAVolume();
+  ~PAVolume();
+  void lKeys(int keys);
+  QString getName();
+  QImage getIcon();
+  void setActive(bool active);
+  void setVolume(int vol, bool mute);
+  bool isPopup();
+  QObject *getQObject();
 
-	public slots:
-		void doVolumeChanged();
-		void doRelease();
-		
-	signals:
-		void doAction(gAction action, void *data);			// Signal to draw img on screen
-		void volumeChanged();
-		void Release();
+  void eventThread();
+
+private:
+  QSettings *settings;
+  Gscreen *screen;
+  bool isActive;
+  int volume;
+  bool isMuted;
+  QFuture<void> future;
+  QTime ftime;
+  QTimer *timer;
+
+  void paint();
+  void setKeybackground();
+
+private slots:
+  void BlinkKeyBackground();
+
+public slots:
+  void doVolumeChanged();
+  void doRelease();
+
+signals:
+  void doAction(gAction action, void *data); // Signal to draw img on screen
+  void volumeChanged();
+  void Release();
 };
 
 #endif // PAVOLUME_H

@@ -47,7 +47,7 @@ Before you can build G19daemon you need some packages installed:
 - Qt
 - Cmake
 
-After installing all the above packages you can run 'sh ./build.sh'. The script will build the code and install it on the system.
+After installing all the above packages you can run 'sh ./mb.sh && sudo make install'. The script will build the code and install it on the system.
 
 ## How to configure G-keys to open applications?
 When starting the g19daemon a system tray icon is show. When you right click on it you can click 'show'. This will open the G19daemon configurator.

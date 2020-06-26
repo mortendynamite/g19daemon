@@ -20,33 +20,32 @@
 #ifndef plugininterface_H
 #define plugininterface_H
 
-#include <QtPlugin>
 #include <QImage>
-#include <QString>
 #include <QObject>
+#include <QString>
+#include <QtPlugin>
 
-enum gAction
-{
-    displayFullScreen,
-	displayScreen,
-	setKeyBackground,
-	setLcdBrightness,
-	grabFocus,
-	releaseFocus,
-    restoreKeyBackground
+enum gAction {
+  displayFullScreen,
+  displayScreen,
+  setKeyBackground,
+  setLcdBrightness,
+  grabFocus,
+  releaseFocus,
+  restoreKeyBackground
 };
 
-class PluginInterface
-{
-	public:
-		virtual ~PluginInterface(){}
-        virtual void lKeys(int keys) = 0;
-		virtual QString getName() = 0;
-		virtual QImage getIcon() = 0;
-		virtual void setActive(bool active) = 0;
-		virtual bool isPopup() = 0;
-		virtual QObject *getQObject() = 0;
-	private:
+class PluginInterface {
+public:
+  virtual ~PluginInterface() {}
+  virtual void lKeys(int keys) = 0;
+  virtual QString getName() = 0;
+  virtual QImage getIcon() = 0;
+  virtual void setActive(bool active) = 0;
+  virtual bool isPopup() = 0;
+  virtual QObject *getQObject() = 0;
+
+private:
 };
 
 Q_DECLARE_INTERFACE(PluginInterface, "g19daemon.plugin/0.3");
