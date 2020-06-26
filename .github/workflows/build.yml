@@ -1,9 +1,9 @@
-name: Build
+name: Build + cppcheck
 
 on: push
 
 jobs:
-  build-rpm:
+  build-cppcheck:
 
     runs-on: ubuntu-20.04
 
