@@ -23,5 +23,8 @@ jobs:
         cached: ${{ steps.cache-qt.outputs.cache-hit }} 
     - name: Build G19daemon
       run: mkdir build && cd build && cmake -DCMAKE_INSTALL_PREFIX:PATH=/usr  -DCMAKE_EXPORT_COMPILE_COMMANDS=ON .. && make
-    - name: CppCheck
-      run: cppcheck --project=compile_commands.json
+    - name: Upload artifact
+      uses: actions/upload-artifact@v2
+      with:
+        name: test
+        path: ${{ github.workspace }}/**
