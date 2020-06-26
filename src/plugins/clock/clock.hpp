@@ -20,36 +20,34 @@
 #ifndef CLOCK_H
 #define CLOCK_H
 
+#include "../../gscreen.hpp"
+#include "../../plugininterface.hpp"
 #include <QtCore>
 #include <QtPlugin>
-#include "../../plugininterface.hpp"
-#include "../../gscreen.hpp"
 
-class Clock: public QObject, public PluginInterface
-{
-	Q_OBJECT
-    Q_INTERFACES(PluginInterface)
+class Clock : public QObject, public PluginInterface {
+  Q_OBJECT
+  Q_INTERFACES(PluginInterface)
 
-        Q_PLUGIN_METADATA(IID "clock")
-	
-	public:
-                Clock();
-                ~Clock();
-		void lKeys(int keys);
-		QString getName();
-		QImage getIcon();
-		void setActive(bool active);
-		bool isPopup();
-		QObject *getQObject();
-	
-	private:
-		Gscreen *screen;
-		bool isActive;
-		void paint();
+  Q_PLUGIN_METADATA(IID "clock")
 
-	signals:
-		void doAction(gAction action, void *data);			// Signal to draw img on screen
-		
+public:
+  Clock();
+  ~Clock();
+  void lKeys(int keys);
+  QString getName();
+  QImage getIcon();
+  void setActive(bool active);
+  bool isPopup();
+  QObject *getQObject();
+
+private:
+  Gscreen *screen;
+  bool isActive;
+  void paint();
+
+signals:
+  void doAction(gAction action, void *data); // Signal to draw img on screen
 };
 
 #endif // CLOCK_H

@@ -1,171 +1,125 @@
 #include "Defines.h"
 
-Defines::Defines()
-{
+Defines::Defines() {}
+
+Defines::~Defines() {}
+
+QString Defines::translateMonitorSystemEnum(MonitorSystem system) {
+  switch (system) {
+  case MonitorSystem::INFLUXDB:
+    return "InfluxDb";
+  default:
+    return "NONE";
+  };
 }
 
-Defines::~Defines()
-{
+QString Defines::translateQueryValueEnum(QueryValue value) {
+  switch (value) {
+  case QueryValue::Current:
+    return "Current";
+    break;
+
+  case QueryValue::Max:
+    return "Max";
+    break;
+  case QueryValue::Min:
+    return "Min";
+    break;
+  };
+
+  return "";
 }
 
-QString Defines::translateMonitorSystemEnum(MonitorSystem system)
-{
-	switch (system)
-	{
-     case MonitorSystem::INFLUXDB:
-        return "InfluxDb";
-     default:
-        return "NONE";
-	};
+MonitorSystem Defines::translateMonitorSystemEnum(QString string) {
+  if (string == "InfluxDb") {
+    return MonitorSystem::INFLUXDB;
+  }
+
+  return MonitorSystem::NONE;
 }
 
-QString Defines::translateQueryValueEnum(QueryValue value)
-{
-	switch (value)
-	{
-	case QueryValue::Current:
-		return "Current";
-		break;
+QueryValue Defines::translateQueryValueEnum(QString string) {
+  QueryValue value = QueryValue::Current;
 
-	case QueryValue::Max:
-		return "Max";
-		break;
-	case QueryValue::Min:
-		return "Min";
-		break;
-	};
+  if (string == "Current") {
+    value = QueryValue::Current;
+  } else if (string == "Max") {
+    value = QueryValue::Max;
+  } else if (string == "Min") {
+    value = QueryValue::Min;
+  }
 
-	return "";
+  return value;
 }
 
-MonitorSystem Defines::translateMonitorSystemEnum(QString string)
-{
- if(string == "InfluxDb")
-    {
-        return MonitorSystem::INFLUXDB;
-    }
+QString Defines::translateScreenTypeEnum(ScreenType type) {
+  if (type == ScreenType::Graph) {
+    return "Graph";
+  } else if (type == ScreenType::Normal) {
+    return "Normal";
+  } else if (type == ScreenType::Start) {
+    return "Start";
+  }
 
-	return MonitorSystem::NONE;
+  return "No";
 }
 
-QueryValue Defines::translateQueryValueEnum(QString string)
-{
-	QueryValue value = QueryValue::Current;
+ScreenType Defines::translateScreenTypeEnum(QString type) {
+  if (type == "Graph") {
+    return ScreenType::Graph;
+  } else if (type == "Normal") {
+    return ScreenType::Normal;
+  } else if (type == "Start") {
+    return ScreenType::Start;
+  }
 
-		if (string == "Current")
-		{
-			value = QueryValue::Current;
-		}
-		else if (string == "Max")
-		{
-			value = QueryValue::Max;
-		}
-		else if (string == "Min")
-		{
-			value = QueryValue::Min;
-		}
-
-		return value;
+  return ScreenType::No;
 }
 
-QString Defines::translateScreenTypeEnum(ScreenType type)
-{
-	if (type == ScreenType::Graph)
-	{
-		return "Graph";
-	}
-	else if (type == ScreenType::Normal)
-	{
-		return "Normal";
-	}
-	else if (type == ScreenType::Start)
-	{
-		return "Start";
-	}
+QString Defines::translateAligmentEnum(Alignment aligment) {
+  if (aligment == Alignment::Center) {
+    return "Center";
+  } else if (aligment == Alignment::Left) {
+    return "Left";
+  } else if (aligment == Alignment::Right) {
+    return "Right";
+  }
 
-	return "No";
+  return "Left";
 }
 
-ScreenType Defines::translateScreenTypeEnum(QString type)
-{
-	if (type == "Graph")
-	{
-		return ScreenType::Graph;
-	}
-	else if (type == "Normal")
-	{
-		return ScreenType::Normal;
-	}
-	else if (type == "Start")
-	{
-		return ScreenType::Start;
-	}
+Alignment Defines::translateAligmentEnum(QString aligment) {
+  if (aligment == "Center") {
+    return Alignment::Center;
+  } else if (aligment == "Left") {
+    return Alignment::Left;
+  } else if (aligment == "Right") {
+    return Alignment::Right;
+  }
 
-	return ScreenType::No;
+  return Alignment::Center;
 }
 
-QString Defines::translateAligmentEnum(Alignment aligment)
-{
-	if (aligment == Alignment::Center)
-	{
-		return "Center";
-	}
-	else if (aligment == Alignment::Left)
-	{
-		return "Left";
-	}
-	else if (aligment == Alignment::Right)
-	{
-		return "Right";
-	}
-
-	return "Left";
+QString Defines::translateTemperatureEnum(TemperatureType temp) {
+  switch (temp) {
+  case Celsius:
+    return "Celsius";
+    break;
+  case Fahrenheit:
+    return "Fahrenheit";
+    break;
+  default:
+    return "Celsius";
+    break;
+  }
 }
 
-Alignment Defines::translateAligmentEnum(QString aligment)
-{
-	if (aligment == "Center")
-	{
-		return Alignment::Center;
-	}
-	else if (aligment == "Left")
-	{
-		return Alignment::Left;
-	}
-	else if (aligment == "Right")
-	{
-		return Alignment::Right;
-	}
+TemperatureType Defines::translateTemperatureEnum(QString temp) {
+  if (temp == "Celsius") {
+    return TemperatureType::Celsius;
+  } else if (temp == "Fahrenheit") {
+    return TemperatureType::Fahrenheit;
+  }
 
-	return Alignment::Center;
-}
-
-QString Defines::translateTemperatureEnum(TemperatureType temp)
-{
-	switch (temp)
-	{
-	case Celsius:
-		return "Celsius";
-		break;
-	case Fahrenheit:
-		return "Fahrenheit";
-		break;
-	default:
-		return "Celsius";
-		break;
-	}
-}
-
-TemperatureType Defines::translateTemperatureEnum(QString temp)
-{
-	if (temp == "Celsius")
-	{
-		return TemperatureType::Celsius;
-	}
-	else if (temp == "Fahrenheit")
-	{
-		return TemperatureType::Fahrenheit;
-	}
-
-	return TemperatureType::Celsius;
+  return TemperatureType::Celsius;
 }

@@ -20,74 +20,73 @@
 #ifndef MPRIS_H
 #define MPRIS_H
 
-#include <QtCore>
-#include <QtPlugin>
-#include <QtConcurrent/QtConcurrent>
-#include <QtDBus/QtDBus>
-#include <QTimer>
+#include "../../gscreen.hpp"
+#include "../../plugininterface.hpp"
+#include "mprisfetcher2.hpp"
 #include <QFont>
 #include <QFontMetrics>
-#include <QSettings>
-#include <QUrl>
+#include <QImage>
 #include <QNetworkAccessManager>
 #include <QNetworkReply>
-#include <QImage>
-#include "../../plugininterface.hpp"
-#include "../../gscreen.hpp"
-#include "mprisfetcher2.hpp"
+#include <QSettings>
+#include <QTimer>
+#include <QUrl>
+#include <QtConcurrent/QtConcurrent>
+#include <QtCore>
+#include <QtDBus/QtDBus>
+#include <QtPlugin>
 
-class Mpris : public QObject, PluginInterface
-{
-		Q_OBJECT
-		Q_INTERFACES(PluginInterface)
+class Mpris : public QObject, PluginInterface {
+  Q_OBJECT
+  Q_INTERFACES(PluginInterface)
 
-		Q_PLUGIN_METADATA(IID "MPRIS Plugin")
+  Q_PLUGIN_METADATA(IID "MPRIS Plugin")
 
-	public:
-		Mpris();
-		~Mpris();
-		void lKeys(int keys);
-		QString getName();
-		QImage getIcon();
-		void setActive(bool active);
-		bool isPopup();
-		QObject *getQObject();
+public:
+  Mpris();
+  ~Mpris();
+  void lKeys(int keys);
+  QString getName();
+  QImage getIcon();
+  void setActive(bool active);
+  bool isPopup();
+  QObject *getQObject();
 
-	private:
-		Gscreen *screen;
-		bool isActive;
-		QStringList players; 
-		QString player;
-		MprisFetcher2 *mpris;
-		MediaData *mediadata;
-		PlayerStatus *playerstatus;
-		QTimer *timer;
-        int lastPos[4];
-        int lastPosDir[4];
-		int speed;
-		bool menuActive;
-		int menuSelect;
-		QSettings *settings;
-        QNetworkAccessManager *networkManager;
-		QList<QNetworkReply *> currentDownloads;
-		QImage *albumArt;
-		
-		QStringList getPlayersList();
-		void paint();
-		void menu();
-		void doDownload(const QUrl &url);
+private:
+  Gscreen *screen;
+  bool isActive;
+  QStringList players;
+  QString player;
+  MprisFetcher2 *mpris;
+  MediaData *mediadata;
+  PlayerStatus *playerstatus;
+  QTimer *timer;
+  int lastPos[4];
+  int lastPosDir[4];
+  int speed;
+  bool menuActive;
+  int menuSelect;
+  QSettings *settings;
+  QNetworkAccessManager *networkManager;
+  QList<QNetworkReply *> currentDownloads;
+  QImage *albumArt;
 
-	public slots:
-		void onStatusChanged(PlayerStatus);
-		void onTrackChanged(MediaData);
-		void onTimer();
+  QStringList getPlayersList();
+  void paint();
+  void menu();
+  void doDownload(const QUrl &url);
 
-	private slots:
-		void loadImage(QNetworkReply *reply);
-		void sslErrors(const QList<QSslError> &sslErrors);
+public slots:
+  void onStatusChanged(PlayerStatus);
+  void onTrackChanged(MediaData);
+  void onTimer();
 
-	signals:
-		void doAction(gAction action, void *data);			// Signal to draw img on screen
+private slots:
+  void loadImage(QNetworkReply *reply);
+  void sslErrors(const QList<QSslError> &sslErrors);
+
+signals:
+  void doAction(gAction action, void *data); // Signal to draw img on screen
 };
 
 #endif // MPRIS_H

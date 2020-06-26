@@ -20,145 +20,118 @@
 #include "backlight.hpp"
 #include "../../g19daemon.hpp"
 #include "../../gscreen.hpp"
-#include <QtCore>
 #include <QImage>
 #include <QPainter>
-#include <QString>
 #include <QSettings>
+#include <QString>
+#include <QtCore>
 
-Backlight::Backlight()
-{
-	Q_INIT_RESOURCE(backlight);
+Backlight::Backlight() {
+  Q_INIT_RESOURCE(backlight);
 
-	isActive = false;
-	QImage icon(":/backlight/icon.png");
-	screen = new Gscreen(icon, tr("Hello World"));
-	
-	settings = new QSettings("Dynamite", "G19Daemon");
-	
-	Value = settings->value("Backlight").toInt();
-	step = 10;
-	
-	selected = 1;
-	
+  isActive = false;
+  QImage icon(":/backlight/icon.png");
+  screen = new Gscreen(icon, tr("Hello World"));
+
+  settings = new QSettings("Dynamite", "G19Daemon");
+
+  Value = settings->value("Backlight").toInt();
+  step = 10;
+
+  selected = 1;
 }
 
-Backlight::~Backlight()
-{
-	settings->sync();
+Backlight::~Backlight() {
+  settings->sync();
 
-	delete settings;
-	delete screen;
+  delete settings;
+  delete screen;
 }
 
-void Backlight::lKeys(int keys)
-{
-	if (keys & G19_KEY_LUP)
-	{
-		Value += step;
-		if (Value > 127)
-			Value = 127;
-		paint();
-	}
+void Backlight::lKeys(int keys) {
+  if (keys & G19_KEY_LUP) {
+    Value += step;
+    if (Value > 127)
+      Value = 127;
+    paint();
+  }
 
-	if (keys & G19_KEY_LDOWN)
-	{
-		Value -= step;
-		if (Value < 0)
-			Value = 0;
-		paint();
-	}
+  if (keys & G19_KEY_LDOWN) {
+    Value -= step;
+    if (Value < 0)
+      Value = 0;
+    paint();
+  }
 
-	if (keys & G19_KEY_LCANCEL)
-	{
-		switch (step)
-		{
-			case 1:
-				step = 10;
-				break;
-			case 10:
-				step = 20;
-				break;
-			case 20:
-				step = 1;
-				break;
-		}
-		paint();
-	}
-	
-	if (keys & G19_KEY_LOK)
-	{
-		settings->setValue("Backlight", Value);
-		emit doAction(setLcdBrightness, &Value);
-	}
+  if (keys & G19_KEY_LCANCEL) {
+    switch (step) {
+    case 1:
+      step = 10;
+      break;
+    case 10:
+      step = 20;
+      break;
+    case 20:
+      step = 1;
+      break;
+    }
+    paint();
+  }
+
+  if (keys & G19_KEY_LOK) {
+    settings->setValue("Backlight", Value);
+    emit doAction(setLcdBrightness, &Value);
+  }
 }
 
-void Backlight::setActive(bool active)
-{
-	if (active)
-	{
-		isActive = true;
-		paint();
-	}
-	else
-	{
-		isActive = false;
-	}
+void Backlight::setActive(bool active) {
+  if (active) {
+    isActive = true;
+    paint();
+  } else {
+    isActive = false;
+  }
 }
 
-void Backlight::paint()
-{
-	QPainter *p;
-	QColor color;
-	QString text;
-	
-	p = screen->begin();
+void Backlight::paint() {
+  QPainter *p;
+  QColor color;
+  QString text;
 
-	drawGuage(132, 30, 40, 170, (Value * 100) / 127, qRgb(116, 119, 123), p);
+  p = screen->begin();
 
-	text = "Current step: " + QString::number(step) + ", Value: " + QString::number(Value);
-	
-	p->setPen(Qt::white);
-	p->drawText(0, 0, 320, 30, Qt::AlignCenter, text);
+  drawGuage(132, 30, 40, 170, (Value * 100) / 127, qRgb(116, 119, 123), p);
 
-	p->end();
-	emit doAction(displayScreen, screen);
+  text = "Current step: " + QString::number(step) +
+         ", Value: " + QString::number(Value);
+
+  p->setPen(Qt::white);
+  p->drawText(0, 0, 320, 30, Qt::AlignCenter, text);
+
+  p->end();
+  emit doAction(displayScreen, screen);
 }
 
-void Backlight::drawGuage(int x, int y, int w, int h, int pos, QColor color, QPainter *p)
-{
-	int cy1, cy2, cheight;
-	
-	cheight = (h / 100.0) * pos;
-	cy1 = y + h - cheight;
-	cy2 = y + h - cy1;
-	
-	p->setPen(qRgb(183, 184, 187));
-	p->setBrush(QBrush(qRgb(183, 184, 187)));
-	p->drawRoundedRect(x, y, w, h, 8, 8);
-	p->setPen(color);
-	p->setBrush(color);
-	p->drawRoundedRect(x, cy1, w, cy2, 8, 8);
-	
+void Backlight::drawGuage(int x, int y, int w, int h, int pos, QColor color,
+                          QPainter *p) {
+  int cy1, cy2, cheight;
+
+  cheight = (h / 100.0) * pos;
+  cy1 = y + h - cheight;
+  cy2 = y + h - cy1;
+
+  p->setPen(qRgb(183, 184, 187));
+  p->setBrush(QBrush(qRgb(183, 184, 187)));
+  p->drawRoundedRect(x, y, w, h, 8, 8);
+  p->setPen(color);
+  p->setBrush(color);
+  p->drawRoundedRect(x, cy1, w, cy2, 8, 8);
 }
 
+bool Backlight::isPopup() { return false; }
 
-bool Backlight::isPopup()
-{
-	return false;
-}
+QImage Backlight::getIcon() { return QImage(":/backlight/menu_icon.png"); }
 
-QImage Backlight::getIcon()
-{
-	return QImage(":/backlight/menu_icon.png");
-}
+QObject *Backlight::getQObject() { return this; }
 
-QObject * Backlight::getQObject()
-{
-	return this;
-}
-
-QString Backlight::getName()
-{
-    return tr("LCD Brightness");
-}
+QString Backlight::getName() { return tr("LCD Brightness"); }

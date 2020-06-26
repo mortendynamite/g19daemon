@@ -1,34 +1,23 @@
 #include "MonitorTool.h"
 
-
-MonitorTool::MonitorTool()
-{
-	//Nothing to be created
+MonitorTool::MonitorTool() {
+  // Nothing to be created
 }
 
-MonitorTool::~MonitorTool()
-{
-	// nothing to destroy
+MonitorTool::~MonitorTool() {
+  // nothing to destroy
 }
 
-QVector<Query> MonitorTool::getAllSensors()
-{
-    QVector<Query> sensors;
+QVector<Query> MonitorTool::getAllSensors() {
+  QVector<Query> sensors;
 
-	return sensors;
+  return sensors;
 }
 
 /// <summary>
 /// Gets the monitor system.
 /// </summary>
 /// <returns>MonitorSystem::NONE</returns>
-MonitorSystem MonitorTool::getMonitorSystem()
-{
-	return MonitorSystem::NONE;
-}
+MonitorSystem MonitorTool::getMonitorSystem() { return MonitorSystem::NONE; }
 
-
-double MonitorTool::getData(Query query)
-{
-    return 0;
-}
+double MonitorTool::getData(Query query) { return 0; }

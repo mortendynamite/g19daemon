@@ -17,27 +17,26 @@
  *
  */
 
+#include "plugin_template.hpp"
 #include <QCoreApplication>
 #include <QTimer>
-#include "plugin_template.hpp"
 
+int main(int argc, char **argv) {
+  QCoreApplication app(argc, argv);
+  QCoreApplication::setApplicationName("plugin-template");
+  QCoreApplication::setApplicationVersion("0.1");
 
-int main(int argc, char** argv)
-{
-    QCoreApplication app(argc, argv);
-	QCoreApplication::setApplicationName("plugin-template");
-	QCoreApplication::setApplicationVersion("0.1");
-	
-	// create the main class
-    plugin_template plugin_template;
-	
-	 // connect up the signals
-    QObject::connect(&plugin_template, SIGNAL(finished()), &app, SLOT(quit()));
-    QObject::connect(&app, SIGNAL(aboutToQuit()), &plugin_template, SLOT(aboutToQuitApp()));
-	
-	// This code will start the messaging engine in QT and in
-    // 10ms it will start the execution in the MainClass.run routine;
-    QTimer::singleShot(10, &plugin_template, SLOT(run())); 
-	
-    return app.exec();
+  // create the main class
+  plugin_template plugin_template;
+
+  // connect up the signals
+  QObject::connect(&plugin_template, SIGNAL(finished()), &app, SLOT(quit()));
+  QObject::connect(&app, SIGNAL(aboutToQuit()), &plugin_template,
+                   SLOT(aboutToQuitApp()));
+
+  // This code will start the messaging engine in QT and in
+  // 10ms it will start the execution in the MainClass.run routine;
+  QTimer::singleShot(10, &plugin_template, SLOT(run()));
+
+  return app.exec();
 }

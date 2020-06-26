@@ -20,36 +20,34 @@
 #ifndef HELLOWORLD_H
 #define HELLOWORLD_H
 
+#include "../../gscreen.hpp"
+#include "../../plugininterface.hpp"
 #include <QtCore>
 #include <QtPlugin>
-#include "../../plugininterface.hpp"
-#include "../../gscreen.hpp"
 
-class HelloWorld : public QObject, public PluginInterface
-{
-	Q_OBJECT
-    Q_INTERFACES(PluginInterface)
+class HelloWorld : public QObject, public PluginInterface {
+  Q_OBJECT
+  Q_INTERFACES(PluginInterface)
 
-	Q_PLUGIN_METADATA(IID "your-string-here")
-	
-	public:
-		HelloWorld();
-		~HelloWorld();
-		void lKeys(int keys);
-		QString getName();
-		QImage getIcon();
-		void setActive(bool active);
-		bool isPopup();
-		QObject *getQObject();
-	
-	private:
-		Gscreen *screen;
-		bool isActive;
-		void paint();
+  Q_PLUGIN_METADATA(IID "your-string-here")
 
-	signals:
-		void doAction(gAction action, void *data);			// Signal to draw img on screen
-		
+public:
+  HelloWorld();
+  ~HelloWorld();
+  void lKeys(int keys);
+  QString getName();
+  QImage getIcon();
+  void setActive(bool active);
+  bool isPopup();
+  QObject *getQObject();
+
+private:
+  Gscreen *screen;
+  bool isActive;
+  void paint();
+
+signals:
+  void doAction(gAction action, void *data); // Signal to draw img on screen
 };
 
 #endif // HELLOWORLD_H

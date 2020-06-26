@@ -20,67 +20,46 @@
 #include "helloworld.hpp"
 #include "../../g19daemon.hpp"
 #include "../../gscreen.hpp"
-#include <QtCore>
 #include <QImage>
 #include <QPainter>
 #include <QString>
+#include <QtCore>
 
-HelloWorld::HelloWorld()
-{
-	Q_INIT_RESOURCE(helloworld);
+HelloWorld::HelloWorld() {
+  Q_INIT_RESOURCE(helloworld);
 
-	isActive = false;
-	screen = new Gscreen(QImage(":/helloworld/icon.png"), tr("Hello World"));
+  isActive = false;
+  screen = new Gscreen(QImage(":/helloworld/icon.png"), tr("Hello World"));
 }
 
-HelloWorld::~HelloWorld()
-{
-	delete screen;
+HelloWorld::~HelloWorld() { delete screen; }
+
+QString HelloWorld::getName() { return tr("Hello World"); }
+
+void HelloWorld::lKeys(int keys) {}
+
+void HelloWorld::setActive(bool active) {
+  isActive = active;
+
+  if (active) {
+    paint();
+  }
 }
 
-QString HelloWorld::getName()
-{
-    return tr("Hello World");
+void HelloWorld::paint() {
+  QPainter *p;
+
+  if (!isActive)
+    return;
+
+  p = screen->begin();
+  p->drawText(0, 0, 320, 206, Qt::AlignCenter, tr("Hello World!"));
+  screen->end();
+  emit doAction(displayScreen, screen);
 }
 
-void HelloWorld::lKeys(int keys)
-{
-}
+bool HelloWorld::isPopup() { return false; }
 
-void HelloWorld::setActive(bool active)
-{
-	isActive = active;
+QObject *HelloWorld::getQObject() { return this; }
 
-	if (active)
-	{
-		paint();
-	}
-}
-
-void HelloWorld::paint()
-{
-	QPainter *p;
-
-	if (!isActive)
-		return;
-
-	p = screen->begin();
-	p->drawText(0, 0, 320, 206, Qt::AlignCenter, tr("Hello World!"));
-	screen->end();
-	emit doAction(displayScreen, screen);
-}
-
-bool HelloWorld::isPopup()
-{
-	return false;
-}
-
-QObject * HelloWorld::getQObject()
-{
-	return this;
-}
-
-QImage HelloWorld::getIcon()
-{
-	return QImage(":/helloworld/menu_icon.png");
-}
+QImage HelloWorld::getIcon() { return QImage(":/helloworld/menu_icon.png"); }
