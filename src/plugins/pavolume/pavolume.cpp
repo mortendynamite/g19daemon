@@ -132,7 +132,7 @@ PAVolume::PAVolume() {
   connect(this, SIGNAL(volumeChanged()), this, SLOT(doVolumeChanged()));
   connect(this, SIGNAL(Release()), this, SLOT(doRelease()));
 
-  settings = new QSettings("Dynamite", "G19Daemon");
+  settings = new QSettings("G19Daemon", "G19Daemon");
   timer = new QTimer(this);
   connect(timer, SIGNAL(timeout()), this, SLOT(BlinkKeyBackground()));
 }

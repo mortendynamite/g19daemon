@@ -31,9 +31,9 @@ Backlight::Backlight() {
 
   isActive = false;
   QImage icon(":/backlight/icon.png");
-  screen = new Gscreen(icon, tr("Hello World"));
+  screen = new Gscreen(icon, tr("LCD Brightness"));
 
-  settings = new QSettings("Dynamite", "G19Daemon");
+  settings = new QSettings("G19Daemon", "G19Daemon");
 
   Value = settings->value("Backlight").toInt();
   step = 10;

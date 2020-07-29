@@ -43,7 +43,7 @@ Mpris::Mpris() {
 
   players = getPlayersList();
 
-  settings = new QSettings("Dynamite", "G19Daemon");
+  settings = new QSettings("G19Daemon", "G19Daemon");
   player = settings->value("Mpris.player").toString();
   if (player.isEmpty())
     player = "juk";
