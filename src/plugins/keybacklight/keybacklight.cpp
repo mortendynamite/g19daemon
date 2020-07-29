@@ -31,9 +31,9 @@ KeyBacklight::KeyBacklight() {
 
   isActive = false;
   QImage icon(":/keybacklight/icon.png");
-  screen = new Gscreen(icon, tr("Hello World"));
+  screen = new Gscreen(icon, tr("Key Backlight"));
 
-  settings = new QSettings("Dynamite", "G19Daemon");
+  settings = new QSettings("G19Daemon", "G19Daemon");
 
   color = new QColor();
 
