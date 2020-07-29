@@ -195,7 +195,7 @@ void G19daemon::gKeys() {
       QString command =
           settings->value(translateKey(device->getActiveMKey()) + "_" + gKey)
               .toString();
-      qDebug() << "Run command: " << command;
+      qDebug() << gKey << " Pressed, Run command: " << command;
       QProcess::startDetached(command);
     } else {
       pressedKey.removeAll((G19Keys)keys);
