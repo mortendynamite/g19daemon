@@ -189,17 +189,11 @@ void G19daemon::gKeys() {
   QString gKey = translateKey((G19Keys)keys);
 
   if (!gKey.isEmpty()) {
-    // Fix double actions for same key
-    if (!pressedKey.contains((G19Keys)keys)) {
-      pressedKey.append((G19Keys)keys);
       QString command =
           settings->value(translateKey(device->getActiveMKey()) + "_" + gKey)
               .toString();
       qDebug() << gKey << " Pressed, Run command: " << command;
       QProcess::startDetached(command);
-    } else {
-      pressedKey.removeAll((G19Keys)keys);
-    }
   }
 }
 

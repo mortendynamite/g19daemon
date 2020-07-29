@@ -76,7 +76,6 @@ private:
   G19Device *device;
   QVector<PluginInterface *> plugins;
   QVector<PluginInterface *> PopupPlugins;
-  QList<G19Keys> pressedKey;
 
   PluginInterface *activePlugin;
 
