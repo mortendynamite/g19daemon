@@ -32,8 +32,9 @@ extern "C" void LIBUSB_CALL _GKeysCallback(libusb_transfer *transfer) {
   unsigned int keys;
   G19Device *cthis = static_cast<G19Device *>(transfer->user_data);
   keys = 0x00;
+  libusb_transfer_status status = transfer->status;
 
-  if (transfer->status == LIBUSB_TRANSFER_CANCELLED) {
+  if (status == LIBUSB_TRANSFER_CANCELLED) {
     cthis->gKeysTransferCancelled = true;
     return;
   }
@@ -41,67 +42,74 @@ extern "C" void LIBUSB_CALL _GKeysCallback(libusb_transfer *transfer) {
   //    cthis->rawkey = transfer->buffer[0] << 24 | transfer->buffer[1] << 16 |
   //    transfer->buffer[2] << 8 | transfer->buffer[3];
 
-  if (transfer->length < 3)
-    return;
+  if(status == LIBUSB_TRANSFER_COMPLETED) {
+      if (transfer->length < 3)
+        return;
 
-  if (transfer->buffer[0] < 1)
-    return;
+      if (transfer->buffer[0] < 1)
+        return;
 
-  if ((transfer->buffer[1] & 0x00) && (transfer->buffer[2] & 0x00))
-    return;
+      if ((transfer->buffer[1] & 0x00) && (transfer->buffer[2] & 0x00))
+        return;
 
-  if (transfer->buffer[1] & 0x01)
-    keys |= G19_KEY_G1;
+      if (transfer->buffer[1] & 0x01)
+        keys |= G19_KEY_G1;
 
-  if (transfer->buffer[1] & 0x02)
-    keys |= G19_KEY_G2;
+      if (transfer->buffer[1] & 0x02)
+        keys |= G19_KEY_G2;
 
-  if (transfer->buffer[1] & 0x04)
-    keys |= G19_KEY_G3;
+      if (transfer->buffer[1] & 0x04)
+        keys |= G19_KEY_G3;
 
-  if (transfer->buffer[1] & 0x08)
-    keys |= G19_KEY_G4;
+      if (transfer->buffer[1] & 0x08)
+        keys |= G19_KEY_G4;
 
-  if (transfer->buffer[1] & 0x10)
-    keys |= G19_KEY_G5;
+      if (transfer->buffer[1] & 0x10)
+        keys |= G19_KEY_G5;
 
-  if (transfer->buffer[1] & 0x20)
-    keys |= G19_KEY_G6;
+      if (transfer->buffer[1] & 0x20)
+        keys |= G19_KEY_G6;
 
-  if (transfer->buffer[1] & 0x40)
-    keys |= G19_KEY_G7;
+      if (transfer->buffer[1] & 0x40)
+        keys |= G19_KEY_G7;
 
-  if (transfer->buffer[1] & 0x80)
-    keys |= G19_KEY_G8;
+      if (transfer->buffer[1] & 0x80)
+        keys |= G19_KEY_G8;
 
-  if (transfer->buffer[2] & 0x01)
-    keys |= G19_KEY_G9;
+      if (transfer->buffer[2] & 0x01)
+        keys |= G19_KEY_G9;
 
-  if (transfer->buffer[2] & 0x02)
-    keys |= G19_KEY_G10;
+      if (transfer->buffer[2] & 0x02)
+        keys |= G19_KEY_G10;
 
-  if (transfer->buffer[2] & 0x04)
-    keys |= G19_KEY_G11;
+      if (transfer->buffer[2] & 0x04)
+        keys |= G19_KEY_G11;
 
-  if (transfer->buffer[2] & 0x08)
-    keys |= G19_KEY_G12;
+      if (transfer->buffer[2] & 0x08)
+        keys |= G19_KEY_G12;
 
-  if (transfer->buffer[2] & 0x10)
-    keys |= G19_KEY_M1;
+      if (transfer->buffer[2] & 0x10)
+        keys |= G19_KEY_M1;
 
-  if (transfer->buffer[2] & 0x20)
-    keys |= G19_KEY_M2;
+      if (transfer->buffer[2] & 0x20)
+        keys |= G19_KEY_M2;
 
-  if (transfer->buffer[2] & 0x40)
-    keys |= G19_KEY_M3;
+      if (transfer->buffer[2] & 0x40)
+        keys |= G19_KEY_M3;
 
-  if (transfer->buffer[2] & 0x80)
-    keys |= G19_KEY_MR;
+      if (transfer->buffer[2] & 0x80)
+        keys |= G19_KEY_MR;
 
-  if (transfer->buffer[3] & 0x48)
-    keys |= G19_KEY_LIGHT;
+      if (transfer->buffer[3] & 0x48)
+        keys |= G19_KEY_LIGHT;
 
-  cthis->gKeyCallback(keys);
+      cthis->gKeyCallback(keys);
+
+  }
+  else {
+    cthis->gKeyCallback(0);
+  }
+
 }
 
 extern "C" void LIBUSB_CALL _LKeysCallback(libusb_transfer *transfer) {
@@ -301,8 +309,8 @@ void G19Device::eventThread() {
 }
 
 void G19Device::gKeyCallback(unsigned int keys) {
-  lastkeys = keys;
 
+  lastkeys = keys;
   /*	QString str = QString::number(rawkey, 16);
           while (str.length() < 16)
           {
@@ -310,10 +318,13 @@ void G19Device::gKeyCallback(unsigned int keys) {
           }
           qDebug() << "G-Keys: " << str; */
 
-  emit gKey();
+  if(keys != 0) {
+    emit gKey();
+  }
 
-  if (gKeysTransfer != NULL)
+  if (gKeysTransfer != NULL) {
     libusb_submit_transfer(gKeysTransfer);
+  }
 }
 
 void G19Device::lKeyCallback(unsigned int keys) {
