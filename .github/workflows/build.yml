@@ -10,7 +10,7 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - name: Install build dependencies
-      run: sudo apt-get install debhelper libusb-1.0-0-dev libpulse-dev cppcheck
+      run: sudo apt update && sudo apt install debhelper libusb-1.0-0-dev libpulse-dev cppcheck
     - name: Cache Qt
       id: cache-qt
       uses: actions/cache@v1
