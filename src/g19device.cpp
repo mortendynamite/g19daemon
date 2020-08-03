@@ -433,6 +433,7 @@ void G19Device::setMKeys(bool m1, bool m2, bool m3, bool mr) {
 
   if (mr) {
     mkeys |= 0x10;
+    activeMKey = G19_KEY_MR;
   }
 
   memset(dataBuff, '\0', BUFF_SIZE);

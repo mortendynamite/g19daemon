@@ -173,27 +173,25 @@ void G19daemon::gKeys() {
   if (keys & G19_KEY_M1) {
     device->setMKeys(true, false, false, false);
   }
-
-  if (keys & G19_KEY_M2) {
+  else if (keys & G19_KEY_M2) {
     device->setMKeys(false, true, false, false);
   }
-
-  if (keys & G19_KEY_M3) {
+  else if (keys & G19_KEY_M3) {
     device->setMKeys(false, false, true, false);
   }
-
-  if (keys & G19_KEY_MR) {
+  else if (keys & G19_KEY_MR) {
     device->setMKeys(false, false, false, true);
   }
+  else {
+      QString gKey = translateKey((G19Keys)keys);
 
-  QString gKey = translateKey((G19Keys)keys);
-
-  if (!gKey.isEmpty()) {
-      QString command =
-          settings->value(translateKey(device->getActiveMKey()) + "_" + gKey)
-              .toString();
-      qDebug() << gKey << " Pressed, Run command: " << command;
-      QProcess::startDetached(command);
+      if (!gKey.isEmpty()) {
+          QString command =
+              settings->value(translateKey(device->getActiveMKey()) + "_" + gKey)
+                  .toString();
+          qDebug() << translateKey(device->getActiveMKey())<< ":" << gKey << " Pressed, Run command: " << command;
+          QProcess::startDetached(command);
+  }
   }
 }
 
@@ -228,6 +226,8 @@ QString G19daemon::translateKey(G19Keys keys) {
     return QString("m2");
   } else if (keys & G19_KEY_M3) {
     return QString("m3");
+  } else if(keys & G19_KEY_MR) {
+      return QString("mr");
   }
 
   return QString("");
