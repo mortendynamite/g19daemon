@@ -34,6 +34,8 @@
 #include <QSystemTrayIcon>
 #include <QWidget>
 #include <QtCore/QObject>
+#include <QColorDialog>
+#include <QPalette>
 
 namespace Ui {
 class G19daemon;
@@ -65,6 +67,8 @@ public slots:
   void gKeys();
   void lKeys();
   void Show();
+
+  void changeBackgroundColor();
 
   void saveSettings();
 

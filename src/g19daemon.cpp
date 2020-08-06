@@ -62,6 +62,11 @@ G19daemon::G19daemon(QWidget *parent)
 
   connect(ui->actionSave_settings, SIGNAL(triggered()), SLOT(saveSettings()));
 
+  connect(ui->m1BackgroundColorButton, SIGNAL(clicked()), SLOT(changeBackgroundColor()));
+  connect(ui->m2BackgroundColorButton, SIGNAL(clicked()), SLOT(changeBackgroundColor()));
+  connect(ui->m3BackgroundColorButton, SIGNAL(clicked()), SLOT(changeBackgroundColor()));
+  connect(ui->mrBackgroundColorButton, SIGNAL(clicked()), SLOT(changeBackgroundColor()));
+
   micon = QImage(":/menu_icon.png");
   menuScreen = new Gscreen(micon, tr("Logitech G19s Linux"));
   menuSelect = 0;
@@ -73,11 +78,7 @@ G19daemon::G19daemon(QWidget *parent)
   else
     menuActive = true;
 
-  BackLight.setRed(settings->value("KeyBacklight_Red", "255").toInt());
-  BackLight.setGreen(settings->value("KeyBacklight_Green", "255").toInt());
-  BackLight.setBlue(settings->value("KeyBacklight_Blue", "255").toInt());
-
-  device->setKeysBacklight(BackLight);
+  device->setKeysBacklight(settings->value(ui->m1BackgroundColorButton->objectName(), qRgb(183, 184, 187)).value<QColor>());
   device->setDisplayBrightness(settings->value("Backlight", "255").toInt());
   device->setMKeys(true, false, false, false);
 
@@ -133,6 +134,20 @@ void G19daemon::loadSettings() {
 
     lineEdit->setText(settings->value(lineEdit->objectName()).toString());
   }
+
+  for(QPushButton * button: {ui->m1BackgroundColorButton, ui->m2BackgroundColorButton, ui->m3BackgroundColorButton, ui->mrBackgroundColorButton})
+  {
+      QPalette palette = button->palette();
+
+      QColor color = settings->value(button->objectName(), qRgb(183, 184, 187)).value<QColor>();
+
+      if(color.isValid()) {
+         palette.setColor(QPalette::Button, color);
+
+         button->setPalette(palette);
+      }
+  }
+
 }
 
 void G19daemon::Show() {
@@ -150,6 +165,12 @@ void G19daemon::saveSettings() {
 
     settings->setValue(lineEdit->objectName(), lineEdit->text());
   }
+
+  settings->setValue(ui->m1BackgroundColorButton->objectName(), ui->m1BackgroundColorButton->palette().color(QPalette::Button));
+  settings->setValue(ui->m2BackgroundColorButton->objectName(), ui->m2BackgroundColorButton->palette().color(QPalette::Button));
+  settings->setValue(ui->m3BackgroundColorButton->objectName(), ui->m3BackgroundColorButton->palette().color(QPalette::Button));
+  settings->setValue(ui->mrBackgroundColorButton->objectName(), ui->mrBackgroundColorButton->palette().color(QPalette::Button));
+
 }
 
 void G19daemon::resetLcdBacklight() {
@@ -172,15 +193,23 @@ void G19daemon::gKeys() {
 
   if (keys & G19_KEY_M1) {
     device->setMKeys(true, false, false, false);
+    ui->mKeyTabWidget->setCurrentWidget(ui->mKeyTabWidget->widget(0));
+    device->setKeysBacklight(settings->value(ui->m1BackgroundColorButton->objectName(), qRgb(183, 184, 187)).value<QColor>());
   }
   else if (keys & G19_KEY_M2) {
     device->setMKeys(false, true, false, false);
+    ui->mKeyTabWidget->setCurrentWidget(ui->mKeyTabWidget->widget(1));
+    device->setKeysBacklight(settings->value(ui->m2BackgroundColorButton->objectName(), qRgb(183, 184, 187)).value<QColor>());
   }
   else if (keys & G19_KEY_M3) {
     device->setMKeys(false, false, true, false);
+    ui->mKeyTabWidget->setCurrentWidget(ui->mKeyTabWidget->widget(2));
+    device->setKeysBacklight(settings->value(ui->m3BackgroundColorButton->objectName(), qRgb(183, 184, 187)).value<QColor>());
   }
   else if (keys & G19_KEY_MR) {
     device->setMKeys(false, false, false, true);
+    ui->mKeyTabWidget->setCurrentWidget(ui->mKeyTabWidget->widget(3));
+    device->setKeysBacklight(settings->value(ui->mrBackgroundColorButton->objectName(), qRgb(183, 184, 187)).value<QColor>());
   }
   else {
       QString gKey = translateKey((G19Keys)keys);
@@ -521,4 +550,19 @@ void G19daemon::doAction(gAction action, void *data) {
     device->setKeysBacklight(BackLight);
     break;
   }
+}
+
+
+void G19daemon::changeBackgroundColor()
+{
+    QPushButton* button = qobject_cast<QPushButton*>(sender());
+    QPalette palette = button->palette();
+
+    QColor color = QColorDialog::getColor(palette.color(QPalette::Button), this);
+
+    if(color.isValid()) {
+       palette.setColor(QPalette::Button, color);
+
+       button->setPalette(palette);
+    }
 }
