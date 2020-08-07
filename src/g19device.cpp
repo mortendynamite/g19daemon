@@ -381,6 +381,11 @@ void G19Device::updateLcd(QImage *imgin) {
   libusb_submit_transfer(dataTransfer);
 }
 
+void G19Device::changeKeysBacklight(const QColor& color)
+{
+    setKeysBacklight(color);
+}
+
 void G19Device::setKeysBacklight(QColor color) {
   if (!isDeviceConnected) {
     return;

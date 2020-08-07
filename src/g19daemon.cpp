@@ -556,12 +556,25 @@ void G19daemon::changeBackgroundColor()
     QPushButton* button = qobject_cast<QPushButton*>(sender());
     QPalette palette = button->palette();
 
-    QColor color = QColorDialog::getColor(palette.color(QPalette::Button), this);
+    QColorDialog * dialog = new QColorDialog(this);
+    dialog->setCurrentColor(palette.color(QPalette::Button));
 
-    if(color.isValid()) {
-       palette.setColor(QPalette::Button, color);
+    connect(
+            dialog, SIGNAL(currentColorChanged(const QColor&)),
+            device, SLOT(changeKeysBacklight(const QColor&)));
 
-       button->setPalette(palette);
+    if (dialog->exec() == QColorDialog::Accepted)
+    {
+        QColor color = dialog->currentColor();
+
+        if(color.isValid()) {
+           palette.setColor(QPalette::Button, color);
+
+           button->setPalette(palette);
+        }
+    }
+    else {
+        device->setKeysBacklight(palette.color(QPalette::Button));
     }
 }
 
