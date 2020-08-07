@@ -105,6 +105,7 @@ private:
   void deactiveAllPlugins();
 
 private slots:
+  void swithProfile(int);
 };
 
 #endif // g19daemon_H

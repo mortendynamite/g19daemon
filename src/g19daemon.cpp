@@ -67,6 +67,8 @@ G19daemon::G19daemon(QWidget *parent)
   connect(ui->m3BackgroundColorButton, SIGNAL(clicked()), SLOT(changeBackgroundColor()));
   connect(ui->mrBackgroundColorButton, SIGNAL(clicked()), SLOT(changeBackgroundColor()));
 
+  connect(ui->mKeyTabWidget, SIGNAL(currentChanged(int)), SLOT(swithProfile(int)));
+
   micon = QImage(":/menu_icon.png");
   menuScreen = new Gscreen(micon, tr("Logitech G19s Linux"));
   menuSelect = 0;
@@ -192,24 +194,20 @@ void G19daemon::gKeys() {
   keys = device->getKeys();
 
   if (keys & G19_KEY_M1) {
-    device->setMKeys(true, false, false, false);
-    ui->mKeyTabWidget->setCurrentWidget(ui->mKeyTabWidget->widget(0));
-    device->setKeysBacklight(settings->value(ui->m1BackgroundColorButton->objectName(), qRgb(183, 184, 187)).value<QColor>());
+    swithProfile(0);
   }
   else if (keys & G19_KEY_M2) {
     device->setMKeys(false, true, false, false);
-    ui->mKeyTabWidget->setCurrentWidget(ui->mKeyTabWidget->widget(1));
-    device->setKeysBacklight(settings->value(ui->m2BackgroundColorButton->objectName(), qRgb(183, 184, 187)).value<QColor>());
+    swithProfile(1);
   }
   else if (keys & G19_KEY_M3) {
     device->setMKeys(false, false, true, false);
-    ui->mKeyTabWidget->setCurrentWidget(ui->mKeyTabWidget->widget(2));
-    device->setKeysBacklight(settings->value(ui->m3BackgroundColorButton->objectName(), qRgb(183, 184, 187)).value<QColor>());
+    swithProfile(2);
+
   }
   else if (keys & G19_KEY_MR) {
     device->setMKeys(false, false, false, true);
-    ui->mKeyTabWidget->setCurrentWidget(ui->mKeyTabWidget->widget(3));
-    device->setKeysBacklight(settings->value(ui->mrBackgroundColorButton->objectName(), qRgb(183, 184, 187)).value<QColor>());
+    swithProfile(3);
   }
   else {
       QString gKey = translateKey((G19Keys)keys);
@@ -566,3 +564,30 @@ void G19daemon::changeBackgroundColor()
        button->setPalette(palette);
     }
 }
+
+void G19daemon::swithProfile(int index)
+{
+    ui->mKeyTabWidget->setCurrentWidget(ui->mKeyTabWidget->widget(index));
+
+    if(index == 0) {
+
+        device->setMKeys(true, false, false, false);
+        device->setKeysBacklight(settings->value(ui->m1BackgroundColorButton->objectName(), qRgb(183, 184, 187)).value<QColor>());
+    }
+    else if (index == 1)
+    {
+            device->setMKeys(false, true , false, false);
+    device->setKeysBacklight(settings->value(ui->m2BackgroundColorButton->objectName(), qRgb(183, 184, 187)).value<QColor>());
+    }
+    else if(index == 2)
+    {
+        device->setMKeys(false, false, true, false);
+        device->setKeysBacklight(settings->value(ui->m3BackgroundColorButton->objectName(), qRgb(183, 184, 187)).value<QColor>());
+    }
+    else if(index==3)
+    {
+        device->setMKeys(false, false , false, true);
+        device->setKeysBacklight(settings->value(ui->mrBackgroundColorButton->objectName(), qRgb(183, 184, 187)).value<QColor>());
+    }
+}
+
