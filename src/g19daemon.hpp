@@ -87,6 +87,7 @@ private:
   int menuSelect;
   bool menuActive;
   bool menuSettingsActive;
+  bool unsavedSettings;
 
   Gscreen *menuScreen;
 

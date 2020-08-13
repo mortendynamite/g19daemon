@@ -56,6 +56,7 @@ G19daemon::G19daemon(QWidget *parent)
   activePlugin = nullptr;
   isActive = true;
   menuSettingsActive = false;
+  unsavedSettings = false;
 
   connect(device, SIGNAL(gKey()), SLOT(gKeys()));
   connect(device, SIGNAL(lKey()), SLOT(lKeys()));
@@ -150,6 +151,33 @@ void G19daemon::loadSettings() {
       }
   }
 
+  for(QComboBox * button: {ui->m1DefaultPlugin, ui->m2DefaultPlugin, ui->m3DefaultPlugin, ui->mrDefaultPlugin})
+  {
+      button->addItem("");
+        for(PluginInterface * plugin : plugins)
+        {
+            button->addItem(plugin->getName());
+        }
+
+        QString defaultPlugin = settings->value(button->objectName()).toString();
+
+        if(!defaultPlugin.isEmpty())
+        {
+            button->setCurrentText(defaultPlugin);
+        }
+
+  }
+
+  for(QSpinBox * button: {ui->m1Brightness, ui->m2Brightness, ui->m3Brightness, ui->mrBrightness})
+  {
+        button->setValue(settings->value(button->objectName(), 255).toInt());
+  }
+
+  for(QListView * button: {ui->m1PluginlistView, ui->m2PluginlistView, ui->m3PluginlistView, ui->mrPluginlistView})
+  {
+
+  }
+
 }
 
 void G19daemon::Show() {
@@ -168,11 +196,24 @@ void G19daemon::saveSettings() {
     settings->setValue(lineEdit->objectName(), lineEdit->text());
   }
 
-  settings->setValue(ui->m1BackgroundColorButton->objectName(), ui->m1BackgroundColorButton->palette().color(QPalette::Button));
-  settings->setValue(ui->m2BackgroundColorButton->objectName(), ui->m2BackgroundColorButton->palette().color(QPalette::Button));
-  settings->setValue(ui->m3BackgroundColorButton->objectName(), ui->m3BackgroundColorButton->palette().color(QPalette::Button));
-  settings->setValue(ui->mrBackgroundColorButton->objectName(), ui->mrBackgroundColorButton->palette().color(QPalette::Button));
+  for(QPushButton * button: {ui->m1BackgroundColorButton, ui->m2BackgroundColorButton, ui->m3BackgroundColorButton, ui->mrBackgroundColorButton})
+  {
+    settings->setValue(button->objectName(), button->palette().color(QPalette::Button));
+  }
 
+  for(QComboBox * button: {ui->m1DefaultPlugin, ui->m2DefaultPlugin, ui->m3DefaultPlugin, ui->mrDefaultPlugin})
+  {
+        settings->setValue(button->objectName(), button->currentText());
+  }
+
+  for(QSpinBox * button: {ui->m1Brightness, ui->m2Brightness, ui->m3Brightness, ui->mrBrightness})
+  {
+      settings->setValue(button->objectName(), button->value());
+  }
+
+  unsavedSettings = false;
+
+    //TODO load current profile settings
 }
 
 void G19daemon::resetLcdBacklight() {
@@ -197,16 +238,13 @@ void G19daemon::gKeys() {
     swithProfile(0);
   }
   else if (keys & G19_KEY_M2) {
-    device->setMKeys(false, true, false, false);
     swithProfile(1);
   }
   else if (keys & G19_KEY_M3) {
-    device->setMKeys(false, false, true, false);
     swithProfile(2);
 
   }
   else if (keys & G19_KEY_MR) {
-    device->setMKeys(false, false, false, true);
     swithProfile(3);
   }
   else {
@@ -571,6 +609,8 @@ void G19daemon::changeBackgroundColor()
            palette.setColor(QPalette::Button, color);
 
            button->setPalette(palette);
+
+           unsavedSettings = true;
         }
     }
     else {
@@ -585,22 +625,59 @@ void G19daemon::swithProfile(int index)
     if(index == 0) {
 
         device->setMKeys(true, false, false, false);
-        device->setKeysBacklight(settings->value(ui->m1BackgroundColorButton->objectName(), qRgb(183, 184, 187)).value<QColor>());
+
+        if(unsavedSettings)
+        {
+            device->setKeysBacklight(ui->m1BackgroundColorButton->palette().color(QPalette::Button));
+        }
+        else
+        {
+            device->setDisplayBrightness(settings->value(ui->m1Brightness->objectName(), 255).toInt());
+            device->setKeysBacklight(settings->value(ui->m1BackgroundColorButton->objectName(), qRgb(183, 184, 187)).value<QColor>());
+        }
     }
     else if (index == 1)
     {
             device->setMKeys(false, true , false, false);
-    device->setKeysBacklight(settings->value(ui->m2BackgroundColorButton->objectName(), qRgb(183, 184, 187)).value<QColor>());
+
+            if(unsavedSettings)
+            {
+                device->setKeysBacklight(ui->m2BackgroundColorButton->palette().color(QPalette::Button));
+            }
+            else
+            {
+                device->setDisplayBrightness(settings->value(ui->m2Brightness->objectName(), 255).toInt());
+                device->setKeysBacklight(settings->value(ui->m2BackgroundColorButton->objectName(), qRgb(183, 184, 187)).value<QColor>());
+            }
     }
     else if(index == 2)
     {
         device->setMKeys(false, false, true, false);
-        device->setKeysBacklight(settings->value(ui->m3BackgroundColorButton->objectName(), qRgb(183, 184, 187)).value<QColor>());
+
+        if(unsavedSettings)
+        {
+            device->setKeysBacklight(ui->m3BackgroundColorButton->palette().color(QPalette::Button));
+        }
+        else
+        {
+            device->setDisplayBrightness(settings->value(ui->m3Brightness->objectName(), 255).toInt());
+            device->setKeysBacklight(settings->value(ui->m3BackgroundColorButton->objectName(), qRgb(183, 184, 187)).value<QColor>());
+        }
     }
     else if(index==3)
     {
         device->setMKeys(false, false , false, true);
-        device->setKeysBacklight(settings->value(ui->mrBackgroundColorButton->objectName(), qRgb(183, 184, 187)).value<QColor>());
+
+        if(unsavedSettings)
+        {
+            device->setKeysBacklight(ui->mrBackgroundColorButton->palette().color(QPalette::Button));
+        }
+        else
+        {
+            device->setDisplayBrightness(settings->value(ui->mrBrightness->objectName(), 255).toInt());
+            device->setKeysBacklight(settings->value(ui->mrBackgroundColorButton->objectName(), qRgb(183, 184, 187)).value<QColor>());
+        }
     }
+
 }
 
