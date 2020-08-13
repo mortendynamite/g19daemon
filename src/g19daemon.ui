@@ -236,7 +236,7 @@
             </layout>
            </item>
            <item>
-            <layout class="QHBoxLayout" name="horizontalLayout_52">
+            <layout class="QHBoxLayout" name="m1HorizontalLayout">
              <property name="sizeConstraint">
               <enum>QLayout::SetDefaultConstraint</enum>
              </property>
@@ -507,7 +507,7 @@
             </layout>
            </item>
            <item>
-            <layout class="QHBoxLayout" name="horizontalLayout_54">
+            <layout class="QHBoxLayout" name="m2HorizontalLayout">
              <property name="sizeConstraint">
               <enum>QLayout::SetDefaultConstraint</enum>
              </property>
@@ -778,7 +778,7 @@
             </layout>
            </item>
            <item>
-            <layout class="QHBoxLayout" name="horizontalLayout_57">
+            <layout class="QHBoxLayout" name="m3HorizontalLayout">
              <property name="sizeConstraint">
               <enum>QLayout::SetDefaultConstraint</enum>
              </property>
@@ -1046,7 +1046,7 @@
             </layout>
            </item>
            <item>
-            <layout class="QHBoxLayout" name="horizontalLayout_59">
+            <layout class="QHBoxLayout" name="mrHorizontalLayout">
              <property name="sizeConstraint">
               <enum>QLayout::SetDefaultConstraint</enum>
              </property>
@@ -1130,6 +1130,8 @@
     <bool>false</bool>
    </attribute>
    <addaction name="actionSave_settings"/>
+   <addaction name="separator"/>
+   <addaction name="actionDisable_plugin_profile"/>
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
   <action name="actionSave_settings">
@@ -1142,6 +1144,17 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+S</string>
+   </property>
+  </action>
+  <action name="actionDisable_plugin_profile">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset theme="plugin.png"/>
+   </property>
+   <property name="text">
+    <string>Disable plugin/profile</string>
    </property>
   </action>
  </widget>

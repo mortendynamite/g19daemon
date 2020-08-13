@@ -67,9 +67,11 @@ G19daemon::G19daemon(QWidget *parent)
   connect(ui->m2BackgroundColorButton, SIGNAL(clicked()), SLOT(changeBackgroundColor()));
   connect(ui->m3BackgroundColorButton, SIGNAL(clicked()), SLOT(changeBackgroundColor()));
   connect(ui->mrBackgroundColorButton, SIGNAL(clicked()), SLOT(changeBackgroundColor()));
+  connect(ui->actionDisable_plugin_profile, SIGNAL(changed()), SLOT(disablePluginProfile()));
 
   connect(ui->mKeyTabWidget, SIGNAL(currentChanged(int)), SLOT(swithProfile(int)));
 
+  ui->actionDisable_plugin_profile->setIcon(QIcon("://plugin.png"));
   micon = QImage(":/menu_icon.png");
   menuScreen = new Gscreen(micon, tr("Logitech G19s Linux"));
   menuSelect = 0;
@@ -98,6 +100,7 @@ G19daemon::G19daemon(QWidget *parent)
   trayIcon->show();
 
   loadSettings();
+  disablePluginProfile();
 }
 
 G19daemon::~G19daemon() {
@@ -133,6 +136,9 @@ void G19daemon::quit() {
 void G19daemon::aboutToQuitApp() {}
 
 void G19daemon::loadSettings() {
+
+    ui->actionDisable_plugin_profile->setChecked(settings->value(ui->actionDisable_plugin_profile->objectName(), false).toBool());
+
   for (QLineEdit *lineEdit : ui->mKeyTabWidget->findChildren<QLineEdit *>()) {
 
     lineEdit->setText(settings->value(lineEdit->objectName()).toString());
@@ -190,6 +196,8 @@ void G19daemon::Show() {
 void G19daemon::saveSettings() {
 
   qDebug() << "Save Settings";
+
+  settings->setValue(ui->actionDisable_plugin_profile->objectName(), ui->actionDisable_plugin_profile->isChecked());
 
   for (QLineEdit *lineEdit : ui->mKeyTabWidget->findChildren<QLineEdit *>()) {
 
@@ -616,6 +624,15 @@ void G19daemon::changeBackgroundColor()
     else {
         device->setKeysBacklight(palette.color(QPalette::Button));
     }
+}
+
+void G19daemon::disablePluginProfile()
+{
+    for(QComboBox * button: {ui->m1DefaultPlugin, ui->m2DefaultPlugin, ui->m3DefaultPlugin, ui->mrDefaultPlugin})
+    {
+         button->setEnabled(ui->actionDisable_plugin_profile->isChecked());
+    }
+
 }
 
 void G19daemon::swithProfile(int index)
