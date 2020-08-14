@@ -105,6 +105,7 @@ private:
   void loadSettings();
   void deactiveAllPlugins();
   void switchActivePlugin(G19Keys);
+  void loadPluginsIntoMenubar();
 
 private slots:
   void swithProfile(int);

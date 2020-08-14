@@ -277,14 +277,17 @@
             </layout>
            </item>
            <item>
-            <widget class="QListView" name="m1PluginlistView">
-             <property name="maximumSize">
+            <spacer name="verticalSpacer">
+             <property name="orientation">
+              <enum>Qt::Vertical</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
               <size>
-               <width>300</width>
-               <height>16777215</height>
+               <width>20</width>
+               <height>40</height>
               </size>
              </property>
-            </widget>
+            </spacer>
            </item>
           </layout>
          </widget>
@@ -548,14 +551,17 @@
             </layout>
            </item>
            <item>
-            <widget class="QListView" name="m2PluginlistView">
-             <property name="maximumSize">
+            <spacer name="verticalSpacer_2">
+             <property name="orientation">
+              <enum>Qt::Vertical</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
               <size>
-               <width>300</width>
-               <height>16777215</height>
+               <width>20</width>
+               <height>40</height>
               </size>
              </property>
-            </widget>
+            </spacer>
            </item>
           </layout>
          </widget>
@@ -819,14 +825,17 @@
             </layout>
            </item>
            <item>
-            <widget class="QListView" name="m3PluginlistView">
-             <property name="maximumSize">
+            <spacer name="verticalSpacer_3">
+             <property name="orientation">
+              <enum>Qt::Vertical</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
               <size>
-               <width>300</width>
-               <height>16777215</height>
+               <width>20</width>
+               <height>40</height>
               </size>
              </property>
-            </widget>
+            </spacer>
            </item>
           </layout>
          </widget>
@@ -1087,14 +1096,17 @@
             </layout>
            </item>
            <item>
-            <widget class="QListView" name="mrPluginlistView">
-             <property name="maximumSize">
+            <spacer name="verticalSpacer_4">
+             <property name="orientation">
+              <enum>Qt::Vertical</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
               <size>
-               <width>300</width>
-               <height>16777215</height>
+               <width>20</width>
+               <height>40</height>
               </size>
              </property>
-            </widget>
+            </spacer>
            </item>
           </layout>
          </widget>
@@ -1120,7 +1132,13 @@
     </property>
     <addaction name="actionSave_settings"/>
    </widget>
+   <widget class="QMenu" name="menuPlugins">
+    <property name="title">
+     <string>Plugins</string>
+    </property>
+   </widget>
    <addaction name="menuFile"/>
+   <addaction name="menuPlugins"/>
   </widget>
   <widget class="QToolBar" name="mainToolBar">
    <attribute name="toolBarArea">
@@ -1151,7 +1169,8 @@
     <bool>true</bool>
    </property>
    <property name="icon">
-    <iconset theme="plugin.png"/>
+    <iconset theme="plugin.png">
+     <normaloff>.</normaloff>.</iconset>
    </property>
    <property name="text">
     <string>Disable plugin/profile</string>

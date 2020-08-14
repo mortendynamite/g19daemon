@@ -99,6 +99,7 @@ G19daemon::G19daemon(QWidget *parent)
   trayIcon->setIcon(QIcon(":/tray_icon.png"));
   trayIcon->show();
 
+  loadPluginsIntoMenubar();
   loadSettings();
   disablePluginProfile();
 }
@@ -177,11 +178,6 @@ void G19daemon::loadSettings() {
   for(QSpinBox * button: {ui->m1Brightness, ui->m2Brightness, ui->m3Brightness, ui->mrBrightness})
   {
         button->setValue(settings->value(button->objectName(), 255).toInt());
-  }
-
-  for(QListView * button: {ui->m1PluginlistView, ui->m2PluginlistView, ui->m3PluginlistView, ui->mrPluginlistView})
-  {
-
   }
 
 }
@@ -745,3 +741,27 @@ void G19daemon::switchActivePlugin(G19Keys key)
 
 }
 
+void G19daemon::loadPluginsIntoMenubar()
+{
+    QVector<PluginInterface*> activeplugins = getActivePlugins();
+
+    for (int i = 0; i < plugins.size(); i++) {
+        QAction * action = new QAction(plugins[i]->getName(), ui->menuPlugins);
+
+        connect(action, &QAction::changed, this, [=](){
+        QAction * currentSender = dynamic_cast<QAction*>(sender());
+            settings->setValue(currentSender->text() + "-enabled", currentSender->isChecked());
+        });
+
+       action->setCheckable(true);
+
+       for(int j = 0; j< activeplugins.size(); j++)
+       {
+           if(plugins[i] == activeplugins[j]) {
+               action->setChecked(true);
+           }
+        }
+        ui->menuPlugins->addAction(action);
+    }
+
+}
