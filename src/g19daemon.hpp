@@ -34,6 +34,8 @@
 #include <QSystemTrayIcon>
 #include <QWidget>
 #include <QtCore/QObject>
+#include <QColorDialog>
+#include <QPalette>
 
 namespace Ui {
 class G19daemon;
@@ -66,6 +68,8 @@ public slots:
   void lKeys();
   void Show();
 
+  void changeBackgroundColor();
+
   void saveSettings();
 
   void doAction(gAction, void *data);
@@ -83,6 +87,7 @@ private:
   int menuSelect;
   bool menuActive;
   bool menuSettingsActive;
+  bool unsavedSettings;
 
   Gscreen *menuScreen;
 
@@ -99,8 +104,12 @@ private:
   QString translateKey(G19Keys);
   void loadSettings();
   void deactiveAllPlugins();
+  void switchActivePlugin(G19Keys);
+  void loadPluginsIntoMenubar();
 
 private slots:
+  void swithProfile(int);
+  void disablePluginProfile();
 };
 
 #endif // g19daemon_H

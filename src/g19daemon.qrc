@@ -1,9 +1,10 @@
-<!DOCTYPE RCC><RCC version="1.0">
-<qresource>
-    <file alias="tray_icon.png">images/tray_icon.png</file>
-	<file alias="off.png">images/off.png</file>
-	<file alias="menu_icon.png">images/menu.png</file>
-    <file alias="checked.png">images/checked.png</file>
-    <file alias="unchecked.png">images/unchecked.png</file>
-</qresource>
+<RCC>
+    <qresource prefix="/">
+        <file alias="tray_icon.png">images/tray_icon.png</file>
+        <file alias="off.png">images/off.png</file>
+        <file alias="menu_icon.png">images/menu.png</file>
+        <file alias="checked.png">images/checked.png</file>
+        <file alias="unchecked.png">images/unchecked.png</file>
+        <file alias="plugin.png">images/plugin.png</file>
+    </qresource>
 </RCC>

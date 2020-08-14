@@ -127,6 +127,7 @@ signals:
   void lKey();
 
 public slots:
+  void changeKeysBacklight(const QColor& color);
 };
 
 #endif // G19_H

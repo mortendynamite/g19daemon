@@ -56,12 +56,22 @@ G19daemon::G19daemon(QWidget *parent)
   activePlugin = nullptr;
   isActive = true;
   menuSettingsActive = false;
+  unsavedSettings = false;
 
   connect(device, SIGNAL(gKey()), SLOT(gKeys()));
   connect(device, SIGNAL(lKey()), SLOT(lKeys()));
 
   connect(ui->actionSave_settings, SIGNAL(triggered()), SLOT(saveSettings()));
 
+  connect(ui->m1BackgroundColorButton, SIGNAL(clicked()), SLOT(changeBackgroundColor()));
+  connect(ui->m2BackgroundColorButton, SIGNAL(clicked()), SLOT(changeBackgroundColor()));
+  connect(ui->m3BackgroundColorButton, SIGNAL(clicked()), SLOT(changeBackgroundColor()));
+  connect(ui->mrBackgroundColorButton, SIGNAL(clicked()), SLOT(changeBackgroundColor()));
+  connect(ui->actionDisable_plugin_profile, SIGNAL(changed()), SLOT(disablePluginProfile()));
+
+  connect(ui->mKeyTabWidget, SIGNAL(currentChanged(int)), SLOT(swithProfile(int)));
+
+  ui->actionDisable_plugin_profile->setIcon(QIcon("://plugin.png"));
   micon = QImage(":/menu_icon.png");
   menuScreen = new Gscreen(micon, tr("Logitech G19s Linux"));
   menuSelect = 0;
@@ -73,11 +83,7 @@ G19daemon::G19daemon(QWidget *parent)
   else
     menuActive = true;
 
-  BackLight.setRed(settings->value("KeyBacklight_Red", "255").toInt());
-  BackLight.setGreen(settings->value("KeyBacklight_Green", "255").toInt());
-  BackLight.setBlue(settings->value("KeyBacklight_Blue", "255").toInt());
-
-  device->setKeysBacklight(BackLight);
+  device->setKeysBacklight(settings->value(ui->m1BackgroundColorButton->objectName(), qRgb(183, 184, 187)).value<QColor>());
   device->setDisplayBrightness(settings->value("Backlight", "255").toInt());
   device->setMKeys(true, false, false, false);
 
@@ -93,7 +99,9 @@ G19daemon::G19daemon(QWidget *parent)
   trayIcon->setIcon(QIcon(":/tray_icon.png"));
   trayIcon->show();
 
+  loadPluginsIntoMenubar();
   loadSettings();
+  disablePluginProfile();
 }
 
 G19daemon::~G19daemon() {
@@ -129,10 +137,49 @@ void G19daemon::quit() {
 void G19daemon::aboutToQuitApp() {}
 
 void G19daemon::loadSettings() {
+
+    ui->actionDisable_plugin_profile->setChecked(settings->value(ui->actionDisable_plugin_profile->objectName(), false).toBool());
+
   for (QLineEdit *lineEdit : ui->mKeyTabWidget->findChildren<QLineEdit *>()) {
 
     lineEdit->setText(settings->value(lineEdit->objectName()).toString());
   }
+
+  for(QPushButton * button: {ui->m1BackgroundColorButton, ui->m2BackgroundColorButton, ui->m3BackgroundColorButton, ui->mrBackgroundColorButton})
+  {
+      QPalette palette = button->palette();
+
+      QColor color = settings->value(button->objectName(), qRgb(183, 184, 187)).value<QColor>();
+
+      if(color.isValid()) {
+         palette.setColor(QPalette::Button, color);
+
+         button->setPalette(palette);
+      }
+  }
+
+  for(QComboBox * button: {ui->m1DefaultPlugin, ui->m2DefaultPlugin, ui->m3DefaultPlugin, ui->mrDefaultPlugin})
+  {
+      button->addItem("");
+        for(PluginInterface * plugin : plugins)
+        {
+            button->addItem(plugin->getName());
+        }
+
+        QString defaultPlugin = settings->value(button->objectName()).toString();
+
+        if(!defaultPlugin.isEmpty())
+        {
+            button->setCurrentText(defaultPlugin);
+        }
+
+  }
+
+  for(QSpinBox * button: {ui->m1Brightness, ui->m2Brightness, ui->m3Brightness, ui->mrBrightness})
+  {
+        button->setValue(settings->value(button->objectName(), 255).toInt());
+  }
+
 }
 
 void G19daemon::Show() {
@@ -146,10 +193,31 @@ void G19daemon::saveSettings() {
 
   qDebug() << "Save Settings";
 
+  settings->setValue(ui->actionDisable_plugin_profile->objectName(), ui->actionDisable_plugin_profile->isChecked());
+
   for (QLineEdit *lineEdit : ui->mKeyTabWidget->findChildren<QLineEdit *>()) {
 
     settings->setValue(lineEdit->objectName(), lineEdit->text());
   }
+
+  for(QPushButton * button: {ui->m1BackgroundColorButton, ui->m2BackgroundColorButton, ui->m3BackgroundColorButton, ui->mrBackgroundColorButton})
+  {
+    settings->setValue(button->objectName(), button->palette().color(QPalette::Button));
+  }
+
+  for(QComboBox * button: {ui->m1DefaultPlugin, ui->m2DefaultPlugin, ui->m3DefaultPlugin, ui->mrDefaultPlugin})
+  {
+        settings->setValue(button->objectName(), button->currentText());
+  }
+
+  for(QSpinBox * button: {ui->m1Brightness, ui->m2Brightness, ui->m3Brightness, ui->mrBrightness})
+  {
+      settings->setValue(button->objectName(), button->value());
+  }
+
+  unsavedSettings = false;
+
+    //TODO load current profile settings
 }
 
 void G19daemon::resetLcdBacklight() {
@@ -171,16 +239,17 @@ void G19daemon::gKeys() {
   keys = device->getKeys();
 
   if (keys & G19_KEY_M1) {
-    device->setMKeys(true, false, false, false);
+    swithProfile(0);
   }
   else if (keys & G19_KEY_M2) {
-    device->setMKeys(false, true, false, false);
+    swithProfile(1);
   }
   else if (keys & G19_KEY_M3) {
-    device->setMKeys(false, false, true, false);
+    swithProfile(2);
+
   }
   else if (keys & G19_KEY_MR) {
-    device->setMKeys(false, false, false, true);
+    swithProfile(3);
   }
   else {
       QString gKey = translateKey((G19Keys)keys);
@@ -521,4 +590,178 @@ void G19daemon::doAction(gAction action, void *data) {
     device->setKeysBacklight(BackLight);
     break;
   }
+}
+
+
+void G19daemon::changeBackgroundColor()
+{
+    QPushButton* button = qobject_cast<QPushButton*>(sender());
+    QPalette palette = button->palette();
+
+    QColorDialog * dialog = new QColorDialog(this);
+    dialog->setCurrentColor(palette.color(QPalette::Button));
+
+    connect(
+            dialog, SIGNAL(currentColorChanged(const QColor&)),
+            device, SLOT(changeKeysBacklight(const QColor&)));
+
+    if (dialog->exec() == QColorDialog::Accepted)
+    {
+        QColor color = dialog->currentColor();
+
+        if(color.isValid()) {
+           palette.setColor(QPalette::Button, color);
+
+           button->setPalette(palette);
+
+           unsavedSettings = true;
+        }
+    }
+    else {
+        device->setKeysBacklight(palette.color(QPalette::Button));
+    }
+}
+
+void G19daemon::disablePluginProfile()
+{
+    for(QComboBox * button: {ui->m1DefaultPlugin, ui->m2DefaultPlugin, ui->m3DefaultPlugin, ui->mrDefaultPlugin})
+    {
+         button->setEnabled(ui->actionDisable_plugin_profile->isChecked());
+    }
+
+}
+
+void G19daemon::swithProfile(int index)
+{
+    ui->mKeyTabWidget->setCurrentWidget(ui->mKeyTabWidget->widget(index));
+
+    if(index == 0) {
+
+        device->setMKeys(true, false, false, false);
+
+        if(unsavedSettings)
+        {
+            device->setKeysBacklight(ui->m1BackgroundColorButton->palette().color(QPalette::Button));
+        }
+        else
+        {
+            device->setDisplayBrightness(settings->value(ui->m1Brightness->objectName(), 255).toInt());
+            device->setKeysBacklight(settings->value(ui->m1BackgroundColorButton->objectName(), qRgb(183, 184, 187)).value<QColor>());
+
+            switchActivePlugin(G19Keys::G19_KEY_M1);
+        }
+    }
+    else if (index == 1)
+    {
+            device->setMKeys(false, true , false, false);
+
+            if(unsavedSettings)
+            {
+                device->setKeysBacklight(ui->m2BackgroundColorButton->palette().color(QPalette::Button));
+            }
+            else
+            {
+                device->setDisplayBrightness(settings->value(ui->m2Brightness->objectName(), 255).toInt());
+                device->setKeysBacklight(settings->value(ui->m2BackgroundColorButton->objectName(), qRgb(183, 184, 187)).value<QColor>());
+                switchActivePlugin(G19Keys::G19_KEY_M2);
+            }
+    }
+    else if(index == 2)
+    {
+        device->setMKeys(false, false, true, false);
+
+        if(unsavedSettings)
+        {
+            device->setKeysBacklight(ui->m3BackgroundColorButton->palette().color(QPalette::Button));
+        }
+        else
+        {
+            device->setDisplayBrightness(settings->value(ui->m3Brightness->objectName(), 255).toInt());
+            device->setKeysBacklight(settings->value(ui->m3BackgroundColorButton->objectName(), qRgb(183, 184, 187)).value<QColor>());
+            switchActivePlugin(G19Keys::G19_KEY_M3);
+        }
+    }
+    else if(index==3)
+    {
+        device->setMKeys(false, false , false, true);
+
+        if(unsavedSettings)
+        {
+            device->setKeysBacklight(ui->mrBackgroundColorButton->palette().color(QPalette::Button));
+        }
+        else
+        {
+            device->setDisplayBrightness(settings->value(ui->mrBrightness->objectName(), 255).toInt());
+            device->setKeysBacklight(settings->value(ui->mrBackgroundColorButton->objectName(), qRgb(183, 184, 187)).value<QColor>());
+            switchActivePlugin(G19Keys::G19_KEY_MR);
+        }
+    }
+
+}
+
+void G19daemon::switchActivePlugin(G19Keys key)
+{
+        QString defaultPlugin = "";
+
+        switch(key)
+        {
+            case G19_KEY_M1:
+            defaultPlugin = settings->value(ui->m1DefaultPlugin->objectName(), "").toString();
+            break;
+
+            case G19_KEY_M2:
+            defaultPlugin = settings->value(ui->m2DefaultPlugin->objectName(), "").toString();
+            break;
+
+            case G19_KEY_M3:
+            defaultPlugin = settings->value(ui->m3DefaultPlugin->objectName(), "").toString();
+            break;
+
+            case G19_KEY_MR:
+            defaultPlugin = settings->value(ui->mrDefaultPlugin->objectName(), "").toString();
+            break;
+
+        default:
+            defaultPlugin = "";
+          }
+
+        if(!defaultPlugin.isEmpty() && settings->value(ui->actionDisable_plugin_profile->objectName(), true).toBool())
+        {
+
+        activePlugin->setActive(false);
+
+        for (int i = 0; i < getActivePlugins().size(); i++) {
+          if (getActivePlugins()[i]->getName() == defaultPlugin) {
+            getActivePlugins()[i]->setActive(true);
+            activePlugin = getActivePlugins()[i];
+            break;
+          }
+        }
+    }
+
+}
+
+void G19daemon::loadPluginsIntoMenubar()
+{
+    QVector<PluginInterface*> activeplugins = getActivePlugins();
+
+    for (int i = 0; i < plugins.size(); i++) {
+        QAction * action = new QAction(plugins[i]->getName(), ui->menuPlugins);
+
+        connect(action, &QAction::changed, this, [=](){
+        QAction * currentSender = dynamic_cast<QAction*>(sender());
+            settings->setValue(currentSender->text() + "-enabled", currentSender->isChecked());
+        });
+
+       action->setCheckable(true);
+
+       for(int j = 0; j< activeplugins.size(); j++)
+       {
+           if(plugins[i] == activeplugins[j]) {
+               action->setChecked(true);
+           }
+        }
+        ui->menuPlugins->addAction(action);
+    }
+
 }
