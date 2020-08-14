@@ -652,7 +652,7 @@ void G19daemon::swithProfile(int index)
             device->setDisplayBrightness(settings->value(ui->m1Brightness->objectName(), 255).toInt());
             device->setKeysBacklight(settings->value(ui->m1BackgroundColorButton->objectName(), qRgb(183, 184, 187)).value<QColor>());
 
-            setActivePlugin(G19Keys::G19_KEY_M1);
+            switchActivePlugin(G19Keys::G19_KEY_M1);
         }
     }
     else if (index == 1)
@@ -667,7 +667,7 @@ void G19daemon::swithProfile(int index)
             {
                 device->setDisplayBrightness(settings->value(ui->m2Brightness->objectName(), 255).toInt());
                 device->setKeysBacklight(settings->value(ui->m2BackgroundColorButton->objectName(), qRgb(183, 184, 187)).value<QColor>());
-                setActivePlugin(G19Keys::G19_KEY_M2);
+                switchActivePlugin(G19Keys::G19_KEY_M2);
             }
     }
     else if(index == 2)
@@ -682,7 +682,7 @@ void G19daemon::swithProfile(int index)
         {
             device->setDisplayBrightness(settings->value(ui->m3Brightness->objectName(), 255).toInt());
             device->setKeysBacklight(settings->value(ui->m3BackgroundColorButton->objectName(), qRgb(183, 184, 187)).value<QColor>());
-            setActivePlugin(G19Keys::G19_KEY_M3);
+            switchActivePlugin(G19Keys::G19_KEY_M3);
         }
     }
     else if(index==3)
@@ -697,15 +697,14 @@ void G19daemon::swithProfile(int index)
         {
             device->setDisplayBrightness(settings->value(ui->mrBrightness->objectName(), 255).toInt());
             device->setKeysBacklight(settings->value(ui->mrBackgroundColorButton->objectName(), qRgb(183, 184, 187)).value<QColor>());
-            setActivePlugin(G19Keys::G19_KEY_MR);
+            switchActivePlugin(G19Keys::G19_KEY_MR);
         }
     }
 
 }
 
-void G19daemon::setActivePlugin(G19Keys key)
+void G19daemon::switchActivePlugin(G19Keys key)
 {
-
         QString defaultPlugin = "";
 
         switch(key)
