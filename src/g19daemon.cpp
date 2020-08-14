@@ -651,6 +651,8 @@ void G19daemon::swithProfile(int index)
         {
             device->setDisplayBrightness(settings->value(ui->m1Brightness->objectName(), 255).toInt());
             device->setKeysBacklight(settings->value(ui->m1BackgroundColorButton->objectName(), qRgb(183, 184, 187)).value<QColor>());
+
+            setActivePlugin(G19Keys::G19_KEY_M1);
         }
     }
     else if (index == 1)
@@ -665,6 +667,7 @@ void G19daemon::swithProfile(int index)
             {
                 device->setDisplayBrightness(settings->value(ui->m2Brightness->objectName(), 255).toInt());
                 device->setKeysBacklight(settings->value(ui->m2BackgroundColorButton->objectName(), qRgb(183, 184, 187)).value<QColor>());
+                setActivePlugin(G19Keys::G19_KEY_M2);
             }
     }
     else if(index == 2)
@@ -679,6 +682,7 @@ void G19daemon::swithProfile(int index)
         {
             device->setDisplayBrightness(settings->value(ui->m3Brightness->objectName(), 255).toInt());
             device->setKeysBacklight(settings->value(ui->m3BackgroundColorButton->objectName(), qRgb(183, 184, 187)).value<QColor>());
+            setActivePlugin(G19Keys::G19_KEY_M3);
         }
     }
     else if(index==3)
@@ -693,6 +697,50 @@ void G19daemon::swithProfile(int index)
         {
             device->setDisplayBrightness(settings->value(ui->mrBrightness->objectName(), 255).toInt());
             device->setKeysBacklight(settings->value(ui->mrBackgroundColorButton->objectName(), qRgb(183, 184, 187)).value<QColor>());
+            setActivePlugin(G19Keys::G19_KEY_MR);
+        }
+    }
+
+}
+
+void G19daemon::setActivePlugin(G19Keys key)
+{
+
+        QString defaultPlugin = "";
+
+        switch(key)
+        {
+            case G19_KEY_M1:
+            defaultPlugin = settings->value(ui->m1DefaultPlugin->objectName(), "").toString();
+            break;
+
+            case G19_KEY_M2:
+            defaultPlugin = settings->value(ui->m2DefaultPlugin->objectName(), "").toString();
+            break;
+
+            case G19_KEY_M3:
+            defaultPlugin = settings->value(ui->m3DefaultPlugin->objectName(), "").toString();
+            break;
+
+            case G19_KEY_MR:
+            defaultPlugin = settings->value(ui->mrDefaultPlugin->objectName(), "").toString();
+            break;
+
+        default:
+            defaultPlugin = "";
+          }
+
+        if(!defaultPlugin.isEmpty() && settings->value(ui->actionDisable_plugin_profile->objectName(), true).toBool())
+        {
+
+        activePlugin->setActive(false);
+
+        for (int i = 0; i < getActivePlugins().size(); i++) {
+          if (getActivePlugins()[i]->getName() == defaultPlugin) {
+            getActivePlugins()[i]->setActive(true);
+            activePlugin = getActivePlugins()[i];
+            break;
+          }
         }
     }
 

@@ -104,6 +104,7 @@ private:
   QString translateKey(G19Keys);
   void loadSettings();
   void deactiveAllPlugins();
+  void setActivePlugin(G19Keys);
 
 private slots:
   void swithProfile(int);
