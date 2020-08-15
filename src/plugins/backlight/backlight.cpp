@@ -105,7 +105,10 @@ void Backlight::mKeys(int keys)
 
     Value = settings->value(profile + "Brightness", 127).toInt();
 
-    paint();
+    if(isActive)
+    {
+        paint();
+    }
 }
 
 void Backlight::setActive(bool active) {

@@ -115,7 +115,7 @@ void KeyBacklight::lKeys(int keys) {
       step = 1;
       break;
     }
-    paint();
+
   }
 
   if (keys & G19_KEY_LOK) {
@@ -151,7 +151,10 @@ void KeyBacklight::mKeys(int keys) {
     greenValue = color.green();
     blueValue = color.blue();
 
-    paint();
+    if(isActive)
+    {
+        paint();
+    }
 }
 
 void KeyBacklight::setActive(bool active) {
