@@ -35,7 +35,7 @@ Backlight::Backlight() {
 
   settings = new QSettings("G19Daemon", "G19Daemon");
 
-  Value = settings->value("Backlight").toInt();
+  Value = 127;
   step = 10;
 
   selected = 1;
@@ -79,9 +79,33 @@ void Backlight::lKeys(int keys) {
   }
 
   if (keys & G19_KEY_LOK) {
-    settings->setValue("Backlight", Value);
+    settings->setValue(profile + "Brightness", Value);
     emit doAction(setLcdBrightness, &Value);
   }
+}
+
+void Backlight::mKeys(int keys)
+{
+    if(keys & G19_KEY_M1)
+    {
+        profile = "m1";
+    }
+    else if(keys & G19_KEY_M2)
+    {
+        profile = "m2";
+    }
+    else if(keys & G19_KEY_M3)
+    {
+        profile = "m3";
+    }
+    else if(keys & G19_KEY_MR)
+    {
+        profile = "mr";
+    }
+
+    Value = settings->value(profile + "Brightness", 127).toInt();
+
+    paint();
 }
 
 void Backlight::setActive(bool active) {

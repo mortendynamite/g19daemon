@@ -1,4 +1,4 @@
-﻿/*
+/*
  * <one line to give the program's name and a brief idea of what it does.>
  * Copyright (C) 2014  <copyright holder> <email>
  *
@@ -106,6 +106,7 @@ private:
   void deactiveAllPlugins();
   void switchActivePlugin(G19Keys);
   void loadPluginsIntoMenubar();
+  void sendProfileToPlugins(G19Keys);
 
 private slots:
   void swithProfile(int);

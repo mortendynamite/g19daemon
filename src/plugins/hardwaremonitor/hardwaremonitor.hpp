@@ -54,7 +54,7 @@ public:
   void setActive(bool active);
   bool isPopup();
   QObject *getQObject();
-
+  void mKeys(int keys);
 private:
   void loadsettings();
   Gscreen *screen;

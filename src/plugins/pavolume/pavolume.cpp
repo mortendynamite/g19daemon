@@ -203,6 +203,8 @@ QString PAVolume::getName() { return tr("Volume"); }
 
 void PAVolume::lKeys(int keys) {}
 
+void PAVolume::mKeys(int keys) {}
+
 void PAVolume::setActive(bool active) {
   isActive = active;
 

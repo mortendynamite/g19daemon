@@ -83,8 +83,8 @@ G19daemon::G19daemon(QWidget *parent)
   else
     menuActive = true;
 
-  device->setKeysBacklight(settings->value(ui->m1BackgroundColorButton->objectName(), qRgb(183, 184, 187)).value<QColor>());
-  device->setDisplayBrightness(settings->value("Backlight", "255").toInt());
+  //device->setKeysBacklight(settings->value(ui->m1BackgroundColorButton->objectName(), qRgb(183, 184, 187)).value<QColor>());
+  //device->setDisplayBrightness(settings->value("Backlight", "255").toInt());
   device->setMKeys(true, false, false, false);
 
   trayIconMenu = new QMenu(this);
@@ -102,6 +102,7 @@ G19daemon::G19daemon(QWidget *parent)
   loadPluginsIntoMenubar();
   loadSettings();
   disablePluginProfile();
+  sendProfileToPlugins(G19_KEY_M1);
 }
 
 G19daemon::~G19daemon() {
@@ -216,13 +217,15 @@ void G19daemon::saveSettings() {
   }
 
   unsavedSettings = false;
-
-    //TODO load current profile settings
 }
 
 void G19daemon::resetLcdBacklight() {
-  device->setDisplayBrightness(255);
-  settings->setValue("Backlight", 255);
+  device->setDisplayBrightness(127);
+
+  settings->setValue("m1Brightness", 127);
+  settings->setValue("m2Brightness", 127);
+  settings->setValue("m3Brightness", 127);
+  settings->setValue("mrBrightness", 127);
 }
 
 void G19daemon::run() {
@@ -583,10 +586,8 @@ void G19daemon::doAction(gAction action, void *data) {
     device->setDisplayBrightness(b);
     break;
   case restoreKeyBackground:
-    QColor BackLight;
-    BackLight.setRed(settings->value("KeyBacklight_Red", "255").toInt());
-    BackLight.setGreen(settings->value("KeyBacklight_Green", "255").toInt());
-    BackLight.setBlue(settings->value("KeyBacklight_Blue", "255").toInt());
+    QColor BackLight =  qvariant_cast<QColor>(settings->value(ui->m1BackgroundColorButton->objectName()));
+
     device->setKeysBacklight(BackLight);
     break;
   }
@@ -627,6 +628,16 @@ void G19daemon::disablePluginProfile()
     for(QComboBox * button: {ui->m1DefaultPlugin, ui->m2DefaultPlugin, ui->m3DefaultPlugin, ui->mrDefaultPlugin})
     {
          button->setEnabled(ui->actionDisable_plugin_profile->isChecked());
+    }
+
+}
+
+void G19daemon::sendProfileToPlugins(G19Keys key)
+{
+
+    for(int i = 0; i < plugins.size(); i++)
+    {
+        plugins[i]->mKeys(key);
     }
 
 }
@@ -701,6 +712,7 @@ void G19daemon::swithProfile(int index)
 
 void G19daemon::switchActivePlugin(G19Keys key)
 {
+    sendProfileToPlugins(key);
         QString defaultPlugin = "";
 
         switch(key)

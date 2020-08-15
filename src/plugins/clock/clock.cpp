@@ -44,6 +44,8 @@ QString Clock::getName() { return tr("Clock"); }
 
 void Clock::lKeys(int keys) {}
 
+void Clock::mKeys(int keys) {}
+
 void Clock::setActive(bool active) {
   isActive = active;
 

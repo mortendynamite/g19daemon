@@ -44,10 +44,11 @@ public:
   virtual void setActive(bool active) = 0;
   virtual bool isPopup() = 0;
   virtual QObject *getQObject() = 0;
+  virtual void mKeys(int keys) = 0;
 
 private:
 };
 
-Q_DECLARE_INTERFACE(PluginInterface, "g19daemon.plugin/0.3");
+Q_DECLARE_INTERFACE(PluginInterface, "g19daemon.plugin/0.4");
 
 #endif
