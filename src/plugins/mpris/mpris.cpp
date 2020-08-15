@@ -163,6 +163,8 @@ void Mpris::lKeys(int keys) {
   }
 }
 
+void Mpris::mKeys(int keys) {}
+
 void Mpris::setActive(bool active) {
   if (active) {
     isActive = true;

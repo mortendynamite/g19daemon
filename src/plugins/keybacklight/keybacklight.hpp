@@ -42,6 +42,7 @@ public:
   void setActive(bool active);
   bool isPopup();
   QObject *getQObject();
+  void mKeys(int keys);
 
 private:
   Gscreen *screen;
@@ -52,7 +53,8 @@ private:
   int greenValue;
   int blueValue;
   int step;
-  QColor *color;
+  QColor color;
+  QString profile;
 
   void drawGuage(int x, int y, int w, int h, int pos, QColor color,
                  QPainter *p);

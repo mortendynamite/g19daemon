@@ -38,6 +38,8 @@ QString HelloWorld::getName() { return tr("Hello World"); }
 
 void HelloWorld::lKeys(int keys) {}
 
+void HelloWorld::mKeys(int keys) {}
+
 void HelloWorld::setActive(bool active) {
   isActive = active;
 

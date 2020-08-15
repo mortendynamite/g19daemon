@@ -35,11 +35,8 @@ KeyBacklight::KeyBacklight() {
 
   settings = new QSettings("G19Daemon", "G19Daemon");
 
-  color = new QColor();
+  color = QColor();
 
-  redValue = settings->value("KeyBacklight_Red").toInt();
-  greenValue = settings->value("KeyBacklight_Green").toInt();
-  blueValue = settings->value("KeyBacklight_Blue").toInt();
   step = 10;
   selected = 1;
 }
@@ -48,7 +45,6 @@ KeyBacklight::~KeyBacklight() {
   settings->sync();
 
   delete settings;
-  delete color;
   delete screen;
 }
 
@@ -123,14 +119,39 @@ void KeyBacklight::lKeys(int keys) {
   }
 
   if (keys & G19_KEY_LOK) {
-    settings->setValue("KeyBacklight_Red", redValue);
-    settings->setValue("KeyBacklight_Green", greenValue);
-    settings->setValue("KeyBacklight_Blue", blueValue);
-    color->setRed(redValue);
-    color->setGreen(greenValue);
-    color->setBlue(blueValue);
-    emit doAction(setKeyBackground, color);
+    color.setRed(redValue);
+    color.setGreen(greenValue);
+    color.setBlue(blueValue);
+    settings->setValue(profile +"BackgroundColorButton", color);
+
+    emit doAction(setKeyBackground, &color);
   }
+}
+
+void KeyBacklight::mKeys(int keys) {
+    if(keys & G19_KEY_M1)
+    {
+        profile = "m1";
+    }
+    else if(keys & G19_KEY_M2)
+    {
+        profile = "m2";
+    }
+    else if(keys & G19_KEY_M3)
+    {
+        profile = "m3";
+    }
+    else if(keys & G19_KEY_MR)
+    {
+        profile = "mr";
+    }
+
+    color = qvariant_cast<QColor>(settings->value(profile +"BackgroundColorButton"));
+    redValue = color.red();
+    greenValue = color.green();
+    blueValue = color.blue();
+
+    paint();
 }
 
 void KeyBacklight::setActive(bool active) {

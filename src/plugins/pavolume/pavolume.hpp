@@ -49,7 +49,7 @@ public:
   void setVolume(int vol, bool mute);
   bool isPopup();
   QObject *getQObject();
-
+  void mKeys(int keys);
   void eventThread();
 
 private:

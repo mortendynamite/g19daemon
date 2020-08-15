@@ -146,6 +146,11 @@ void HardwareMonitor::lKeys(int keys) {
   paint();
 }
 
+void HardwareMonitor::mKeys(int keys)
+{
+
+}
+
 void HardwareMonitor::setActive(bool active) {
   isActive = active;
 
