@@ -231,7 +231,7 @@ void G19daemon::resetLcdBacklight() {
 void G19daemon::run() {
   if (menuActive) {
     menu();
-  } else {
+  } else if(activePlugin != nullptr) {
     activePlugin->setActive(true);
   }
 }
