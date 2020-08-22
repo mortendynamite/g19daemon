@@ -83,8 +83,6 @@ G19daemon::G19daemon(QWidget *parent)
   else
     menuActive = true;
 
-  //device->setKeysBacklight(settings->value(ui->m1BackgroundColorButton->objectName(), qRgb(183, 184, 187)).value<QColor>());
-  //device->setDisplayBrightness(settings->value("Backlight", "255").toInt());
   device->setMKeys(true, false, false, false);
 
   trayIconMenu = new QMenu(this);

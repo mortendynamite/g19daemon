@@ -1,3 +1,8 @@
+g19daemon (0.4) stable; urgency=low
+  * Feature: Add profiles to application
+
+ -- JimmyD-be <Lonelobo0070@g19daemon.com>  Sat, 22 Aug 2020 13:23:51 +0200
+
 g19daemon (0.3-1) stable; urgency=low
   * Feature: Map g-keys to custom commands
   * BugFix: Fixed deprecation
