@@ -4,6 +4,7 @@
 #include "../Defines.h"
 
 #include "influxdb.h"
+#include "commandtool.h"
 
 #include "MonitorTool.h"
 

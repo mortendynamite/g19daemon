@@ -166,7 +166,21 @@ void HardwareMonitor::paint() {
       currentScreen_->update();
       currentScreen_->draw(screen);
     }
-
+    
+    //update data from screens in the background
+    QVectorIterator<Screen *> screenIterator(screens);
+    
+    while (screenIterator.hasNext())
+    {
+        Screen * refreshScreen = screenIterator.next();
+        
+        if (refreshScreen != nullptr && refreshScreen != currentScreen_)
+        {
+            qDebug() << "Refresh data for: " << refreshScreen->getName();
+            refreshScreen->update();
+        }
+    }
+    
     emit doAction(displayFullScreen, screen);
   }
 }

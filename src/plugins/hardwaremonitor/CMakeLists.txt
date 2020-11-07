@@ -30,6 +30,7 @@ Defines.cpp
   Tools/Data.cpp
   Tools/influxdb.cpp
   Tools/MonitorTool.cpp
+  Tools/commandtool.cpp
 )
 
 qt5_add_resources(hardwaremonitor_QRC hardwaremonitor.qrc)

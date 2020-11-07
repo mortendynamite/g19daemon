@@ -31,8 +31,11 @@ void Data::removeInstance() {
 /// </summary>
 Data::Data() {
   MonitorTool *influx = new InfluxDb(nullptr);
+  
+  CommandTool * commandTool = new CommandTool();
 
   tools_.append(influx);
+  tools_.append(commandTool);
 }
 
 /// <summary>

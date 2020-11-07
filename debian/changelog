@@ -1,3 +1,9 @@
+
+g19daemon (0.5) stable; urgency=low
+  * Feature: Changed Hardware monitor plugin to support new features
+  * BufFix: Fixed some bugs in Hardware monitor plugin
+
+
 g19daemon (0.4) stable; urgency=low
   * Feature: Add profiles to application
 

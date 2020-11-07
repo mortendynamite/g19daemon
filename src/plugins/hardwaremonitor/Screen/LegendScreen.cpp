@@ -25,7 +25,7 @@ void LegendScreen::draw(Gscreen *screen) {
 
   QFontMetrics titleMetric(settings_.titleFont);
 
-  int textPosition = titleMetric.height() + settings_.titleFont.pointSize();
+  int textPosition = titleMetric.height() + settings_.titleFont.pointSize() + 5;
 
   for (int i = 0; i < graphData_.size(); i++) {
     const QRect rectangle = QRect(0, textPosition, 320, 50);

@@ -48,17 +48,6 @@ void NormalScreen::draw(Gscreen *screen) {
 
     Qt::AlignmentFlag aligment;
 
-    /*
-     *LGObjectType objectType;
-     * if (custom.textScrolling)
-    {
-        objectType = LG_SCROLLING_TEXT;
-    }
-    else
-    {
-        objectType = LG_STATIC_TEXT;
-    }*/
-
     switch (custom.aligment) {
     case Alignment::Center:
       aligment = Qt::AlignCenter;
@@ -76,6 +65,8 @@ void NormalScreen::draw(Gscreen *screen) {
     p->setFont(custom.font);
 
     const QRect rectangle = QRect(0, textPosition, 320, 50);
+    
+    p->setPen(custom.fontColor);
     p->drawText(rectangle, aligment | Qt::AlignTop | Qt::TextSingleLine,
                 lines[i]);
 

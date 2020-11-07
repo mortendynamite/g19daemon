@@ -8,6 +8,10 @@ QString Defines::translateMonitorSystemEnum(MonitorSystem system) {
   switch (system) {
   case MonitorSystem::INFLUXDB:
     return "InfluxDb";
+    break;
+  case MonitorSystem::COMMAND:
+    return "COMMAND";
+    break;
   default:
     return "NONE";
   };
@@ -33,6 +37,10 @@ QString Defines::translateQueryValueEnum(QueryValue value) {
 MonitorSystem Defines::translateMonitorSystemEnum(QString string) {
   if (string == "InfluxDb") {
     return MonitorSystem::INFLUXDB;
+  }
+  else if(string == "COMMAND")
+  {
+        return MonitorSystem::COMMAND;
   }
 
   return MonitorSystem::NONE;

@@ -11,7 +11,7 @@ G19daemon provides multiple virtual screens for the LCD on the Logitech G19 keyb
 - Plugin support  
     - Clock
     - Media Player (mris)
-    - [Hardware monitor](https://github.com/lonelobo0070/Hardware-Monitor-Applet)
+    - [Hardware monitor](https://github.com/jimmyd-be/Hardware-Monitor-Applet)
     - Blacklight color changer
     - LCD brightness changer
     - Hello world

@@ -1,5 +1,8 @@
 # Changelog
 
+## Version 0.5-1 by Lonelobo0070 (07 Nov 2020)
+* Changed Hardware monitor plugin to support new features + bug fixes
+
 ## Version 0.3-1 by Lonelobo0070 (21 Jun 2020)
 * Added Hardware monitor plugin
 * Fixed Pulseaudio plugin not loading issue
