@@ -38,5 +38,5 @@ double CommandTool::getData(Query query)
     
     qDebug() << "Command result: " << stdout;
 
-    return stdout.toDouble();
+    return QLocale::system().toDouble(stdout);
 }

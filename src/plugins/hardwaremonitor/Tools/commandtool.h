@@ -6,6 +6,7 @@
 #include <QProcess>
 #include <QStringList>
 #include <QVector>
+#include <QLocale>
 
 
 class CommandTool : public MonitorTool
