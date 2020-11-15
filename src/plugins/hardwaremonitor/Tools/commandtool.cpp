@@ -34,9 +34,13 @@ double CommandTool::getData(Query query)
 
     process.waitForFinished(10000); // will wait for 10 seconds or until finished
 
-    QString stdout = process.readAllStandardOutput();
+    QString stdout = process.readAllStandardOutput().trimmed();
     
     qDebug() << "Command result: " << stdout;
+ 
+    //Convert string to double with locale decimalPoint
+    stdout = stdout.replace(",", QString(QLocale::system().decimalPoint()));
+    stdout = stdout.replace(".", QString(QLocale::system().decimalPoint()));
 
     return QLocale::system().toDouble(stdout);
 }
