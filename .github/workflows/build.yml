@@ -9,6 +9,8 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
+    - name: Pull git submodules
+      run: git submodule update --init --recursive
     - name: Install build dependencies
       run: sudo apt update && sudo apt install debhelper libusb-1.0-0-dev libpulse-dev cppcheck
     - name: Cache Qt
