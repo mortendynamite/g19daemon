@@ -72,6 +72,6 @@ add_subdirectory(src/plugins/clock)
 add_subdirectory(src/plugins/hardwaremonitor)
 
 set(QAPPLICATION_CLASS QApplication CACHE STRING "Inheritance class for SingleApplication")
-add_subdirectory(./singleapplication)
+add_subdirectory(./src/singleapplication)
 target_link_libraries(${PROJECT_NAME} SingleApplication::SingleApplication)
 
