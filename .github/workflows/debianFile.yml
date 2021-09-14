@@ -8,7 +8,10 @@ jobs:
     runs-on: ubuntu-20.04
 
     steps:
-    - uses: actions/checkout@v2
+    - name: Checkout repository and submodules
+      uses: actions/checkout@v2
+      with:
+        submodules: recursive
     - name: Install build dependencies
       run: sudo apt update && sudo apt install debhelper libusb-1.0-0-dev libpulse-dev
     - name: Cache Qt
