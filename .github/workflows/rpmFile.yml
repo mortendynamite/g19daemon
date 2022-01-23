@@ -23,7 +23,7 @@ jobs:
     - name: Install Qt
       uses: jurplel/install-qt-action@v2
       with:
-        cached: ${{ steps.cache-qt.outputs.cache-hit }} 
+        version: '5.12.6'
     - name: Build G19daemon
       run: mkdir build && cd build && cmake -DCMAKE_INSTALL_PREFIX:PATH=/usr .. && make
     - name: Build rpm file
