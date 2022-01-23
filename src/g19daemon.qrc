@@ -1,6 +1,6 @@
 <RCC>
     <qresource prefix="/">
-        <file alias="tray_icon.png">images/tray_icon.png</file>
+        <file alias="g19daemon.png">images/g19daemon.png</file>
         <file alias="off.png">images/off.png</file>
         <file alias="menu_icon.png">images/menu.png</file>
         <file alias="checked.png">images/checked.png</file>

@@ -23,6 +23,7 @@ jobs:
     - name: Install Qt
       uses: jurplel/install-qt-action@v2
       with:
+        version: '5.12.6'
         cached: ${{ steps.cache-qt.outputs.cache-hit }} 
     - name: Build deb file
       run: dpkg-buildpackage -b --no-sign

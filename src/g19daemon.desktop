@@ -4,6 +4,6 @@ Name=g19daemon
 Comment=Daemon for the Logitech G19 Keyboard
 Terminal=false
 Exec=g19daemon
-Icon=input-keyboard
+Icon=g19daemon
 Categories=Settings
 

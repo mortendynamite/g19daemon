@@ -94,7 +94,7 @@ G19daemon::G19daemon(QWidget *parent)
     trayIcon = new QSystemTrayIcon(this);
     trayIcon->setContextMenu(trayIconMenu);
     trayIcon->setToolTip("Logitech G19 Daemon");
-    trayIcon->setIcon(QIcon(":/tray_icon.png"));
+    trayIcon->setIcon(QIcon(":/g19daemon.png"));
     trayIcon->show();
 
     loadPluginsIntoMenubar();
