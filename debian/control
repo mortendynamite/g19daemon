@@ -6,7 +6,7 @@ Build-Depends: debhelper (>= 9),  libusb-1.0-0-dev, libpulse-dev, build-essentia
 
 Package: g19daemon
 Architecture: any
-Depends: libusb-1.0-0, libpulse0, libqt5gui, libqt5core5a, libqt5widgets5
+Depends: libusb-1.0-0, libpulse0, libqt5gui5, libqt5core5a, libqt5widgets5
 Description: Screen multiplexer for Logitech G19 Keyboard
  G19daemon provides multiple virtual screens for the LCD on the Logitech
  G19 Keyboard
