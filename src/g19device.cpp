@@ -35,6 +35,21 @@ static G19DeviceType deviceTypes[] =
   };
 
 
+extern "C" int LIBUSB_CALL _HotplugCallback(libusb_context *ctx, libusb_device *device, libusb_hotplug_event event, void *user_data) {
+  unsigned int keys;
+  G19Device *cthis = static_cast<G19Device *>(user_data);
+  if (event == LIBUSB_HOTPLUG_EVENT_DEVICE_ARRIVED) {
+    qDebug() << "New Logitech device detected." << endl;
+    cthis->probeDevice(device);
+  } else if (event == LIBUSB_HOTPLUG_EVENT_DEVICE_LEFT) {
+    if (cthis->isDevice(device)) {
+      qDebug() << "Our device was unplugged." << endl;
+      cthis->closeDevice();
+    }
+  }
+  return 0;
+}
+
 extern "C" void LIBUSB_CALL _GKeysCallback(libusb_transfer *transfer) {
   unsigned int keys;
   G19Device *cthis = static_cast<G19Device *>(transfer->user_data);
@@ -184,7 +199,7 @@ G19Device::G19Device() {
 
 G19Device::~G19Device() { delete[] dataBuff; }
 
-void G19Device::initializeDevice() {
+void G19Device::initialize() {
   int status;
 
   status = libusb_init(&context);
@@ -202,23 +217,34 @@ void G19Device::initializeDevice() {
   future = QtConcurrent::run(this, &G19Device::eventThread);
 
   libusb_set_option(context, LIBUSB_OPTION_LOG_LEVEL, LIBUSB_LOG_LEVEL_INFO);
+
+  // FIXME check for failure
+  libusb_hotplug_register_callback(context, 
+                                   LIBUSB_HOTPLUG_EVENT_DEVICE_ARRIVED|LIBUSB_HOTPLUG_EVENT_DEVICE_LEFT,
+                                   LIBUSB_HOTPLUG_ENUMERATE,
+                                   0x046d, LIBUSB_HOTPLUG_MATCH_ANY, LIBUSB_HOTPLUG_MATCH_ANY,
+                                   _HotplugCallback, this, &hotplugCallback);
+
 }
 
 
 bool G19Device::probeDevice(libusb_device *device) {
 	struct libusb_device_descriptor desc;
+  libusb_device_handle *handle;
+  int ret;
 	libusb_get_device_descriptor(device, &desc);
 
   for(G19DeviceType t: deviceTypes) {
     if (desc.idVendor == t.vid && desc.idProduct == t.pid) {
-			libusb_open(device, &deviceHandle);
+			ret = libusb_open(device, &handle);
 
-      if (deviceHandle == NULL) {
-        cstatus = tr("Cannot open device");
-        qDebug() << cstatus << endl;
+      if (handle == NULL) {
+        cstatus = tr("Cannot open device: ");
+        qDebug() << cstatus << libusb_error_name(ret) << endl;
         continue;
 		  } else {
         type = t;
+        openDevice(handle);
   		  return true;
       }
     }
@@ -249,45 +275,54 @@ bool G19Device::probeDevices() {
   return false;
 }
 
-void G19Device::openDevice() {
+void G19Device::openDevice(libusb_device_handle *handle) {
   int status;
 
-  if (!isInitialized)
-    return;
+  libusb_detach_kernel_driver(handle, type.interface);
 
-
-  if (!probeDevices()) {
-    cstatus = tr("Probe Devices Failed");
-    qDebug() << cstatus << endl;
-    return;
-  }
-
-  libusb_detach_kernel_driver(deviceHandle, type.interface);
-
-  status = libusb_claim_interface(deviceHandle, type.interface);
+  status = libusb_claim_interface(handle, type.interface);
 
   if (status == LIBUSB_SUCCESS) {
     isDeviceConnected = true;
 
     if (type.flags & G19_HAS_G_KEYS) {
       gKeysTransfer = libusb_alloc_transfer(0);
-      libusb_fill_interrupt_transfer(gKeysTransfer, deviceHandle,
+      libusb_fill_interrupt_transfer(gKeysTransfer, handle,
                                    LIBUSB_ENDPOINT_IN | LIBUSB_RECIPIENT_OTHER,
                                    gKeysBuffer, 4, _GKeysCallback, this, 0);
       libusb_submit_transfer(gKeysTransfer);
     }
 
     lKeysTransfer = libusb_alloc_transfer(0);
-    libusb_fill_interrupt_transfer(lKeysTransfer, deviceHandle,
+    libusb_fill_interrupt_transfer(lKeysTransfer, handle,
                                    LIBUSB_ENDPOINT_IN |
                                        LIBUSB_RECIPIENT_INTERFACE,
                                    lKeysBuffer, 2, _LKeysCallback, this, 0);
     libusb_submit_transfer(lKeysTransfer);
+    deviceHandle = handle;
   } else {
     qDebug() << "Cannot claim Interface" << endl;
     isDeviceConnected = false;
-    libusb_close(deviceHandle);
+    deviceHandle = NULL;
+    libusb_close(handle);
   }
+}
+
+void G19Device::uninitialize() {
+  if (isInitialized) {
+    libusb_hotplug_deregister_callback(context, hotplugCallback);
+    enableEventThread = false;
+    future.waitForFinished();
+    libusb_exit(context);
+    context = NULL;
+    isDeviceConnected = false;
+    isInitialized = false;
+  }
+}
+
+bool G19Device::isDevice(libusb_device *device) {
+  if (!isDeviceConnected || deviceHandle == NULL) { return false; }
+  return device == libusb_get_device(deviceHandle);
 }
 
 void G19Device::closeDevice() {
@@ -318,26 +353,12 @@ void G19Device::closeDevice() {
       lKeysTransfer = NULL;
     }
 
-    enableEventThread = false;
-    future.cancel();
-    future.waitForFinished();
-
     libusb_reset_device(deviceHandle);
     libusb_release_interface(deviceHandle,  type.interface);
     libusb_attach_kernel_driver(deviceHandle, type.interface);
     libusb_close(deviceHandle);
-    deviceHandle = NULL;
-    libusb_exit(context);
-    context = NULL;
+    deviceHandle = NULL;;
     isDeviceConnected = false;
-    isInitialized = false;
-  } else if (isInitialized) {
-    enableEventThread = false;
-    future.waitForFinished();
-    libusb_exit(context);
-    context = NULL;
-    isDeviceConnected = false;
-    isInitialized = false;
   }
 }
 

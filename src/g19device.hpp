@@ -85,10 +85,13 @@ public:
   G19Device();
   ~G19Device();
 
-  void initializeDevice();
-  void openDevice();
+  void initialize();
+  void uninitialize();
+  void openDevice(libusb_device_handle* device);
   void closeDevice();
   void eventThread();
+  bool probeDevice(libusb_device *device);
+  bool isDevice(libusb_device *device);
 
   void updateLcd(QImage *img);
   void setKeysBacklight(QColor color);
@@ -127,8 +130,7 @@ private:
   libusb_context *context;
   libusb_device_handle *deviceHandle;
   libusb_device_descriptor deviceDesc;
-
-  bool probeDevice(libusb_device *device);
+  libusb_hotplug_callback_handle hotplugCallback;
   bool probeDevices();
 
   QFuture<void> future;
