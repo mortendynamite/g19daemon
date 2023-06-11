@@ -62,6 +62,19 @@ enum G19Keys {
   G19_KEY_LIGHT = 1 << 24
 };
 
+#define G19_HAS_G_KEYS (1 << 0)
+#define G19_HAS_M_KEYS (1 << 1)
+#define G19_HAS_BACKLIGHT_CONTROL (1 << 2)
+#define G19_HAS_BRIGHTNESS_CONTROL (1 << 3)
+
+
+typedef struct  {
+  uint16_t vid;
+  uint16_t pid;
+  int flags;
+  int interface;
+} G19DeviceType;
+
 typedef void (*G19KeysCallback)(unsigned int keys);
 
 class G19Device : public QObject {
@@ -72,10 +85,13 @@ public:
   G19Device();
   ~G19Device();
 
-  void initializeDevice();
-  void openDevice();
+  void initialize();
+  void uninitialize();
+  void openDevice(libusb_device_handle* device);
   void closeDevice();
   void eventThread();
+  bool probeDevice(libusb_device *device);
+  bool isDevice(libusb_device *device);
 
   void updateLcd(QImage *img);
   void setKeysBacklight(QColor color);
@@ -92,6 +108,8 @@ public:
 
   bool gKeysTransferCancelled;
   bool lKeysTransferCancelled;
+
+  G19DeviceType type;
 
 private:
   unsigned int lastkeys;
@@ -112,9 +130,8 @@ private:
   libusb_context *context;
   libusb_device_handle *deviceHandle;
   libusb_device_descriptor deviceDesc;
-  libusb_device **devs;
-  libusb_device *dev;
-  //		int usbInterfaceNumber;
+  libusb_hotplug_callback_handle hotplugCallback;
+  bool probeDevices();
 
   QFuture<void> future;
 
