@@ -3,6 +3,7 @@
 #include <QtDBus/QDBusConnection>
 #include <QtDBus/QtDBus>
 #include <QtDebug>
+#include <QMultiMap>
 
 MprisFetcher2::MprisFetcher2(const QString &APlayerName) {
   QDBusConnection::sessionBus().connect(
@@ -208,21 +209,22 @@ void MprisFetcher2::parsePlaybackStatus(const QString &AStatus) {
 }
 
 void MprisFetcher2::onPropertyChange(QDBusMessage AMsg) {
-  QVariantMap map;
+    QMultiMap<QString, QVariant> map;
 
-  const QList<QVariant> arguments = AMsg.arguments();
+    const QList<QVariant> arguments = AMsg.arguments();
 
-  // find argument in received message
-  for (QList<QVariant>::const_iterator iter = arguments.constBegin();
-       iter != arguments.constEnd(); ++iter) {
-    if (iter->canConvert<QDBusArgument>()) {
-      map.unite(qdbus_cast<QVariantMap>(iter->value<QDBusArgument>()));
+    for (const QVariant& argument : arguments) {
+        if (argument.canConvert<QDBusArgument>()) {
+            QVariantMap convertedMap = qdbus_cast<QVariantMap>(argument.value<QDBusArgument>());
+            for (const QString& key : convertedMap.keys()) {
+                map.insert(key, convertedMap.value(key));
+            }
+        }
     }
-  }
 
   if (map.contains(QLatin1String("Metadata"))) {
     const QVariantMap trackInfo =
-        qdbus_cast<QVariantMap>(map[QLatin1String("Metadata")]);
+        qdbus_cast<QVariantMap>(map.value(QLatin1String("Metadata")));
     parseTrackInfo(trackInfo);
   }
 
@@ -239,8 +241,8 @@ void MprisFetcher2::onPlayersExistenceChanged(QString AName, QString /*empty*/,
     return;
   }
 
-  const QStringRef thisPlayer =
-      AName.midRef(QString("org.mpris.MediaPlayer2.").length());
+  const QStringView thisPlayer =
+      AName.mid(QString("org.mpris.MediaPlayer2.").length());
 
   if (thisPlayer == FPlayerName) {
     // player did not closed and did not opened before
