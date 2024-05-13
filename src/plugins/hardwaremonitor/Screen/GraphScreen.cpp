@@ -78,11 +78,12 @@ void GraphScreen::setSettings(GraphSettings settings) {
   if (settings_.addTitle) {
     plot_->plotLayout()->insertRow(0);
 
-    QCPPlotTitle *plotTitle = new QCPPlotTitle(plot_, name_);
+    QCPItemText *plotTitle = new QCPItemText(plot_);
+    plotTitle->setText(name_);
     plotTitle->setFont(settings.titleFont);
-    plotTitle->setTextColor(settings.titleColor);
+//    plotTitle->setTextColor(settings.titleColor);
 
-    plot_->plotLayout()->addElement(0, 0, plotTitle);
+//    plot_->plotLayout()->addElement(0, 0, plotTitle);
   }
 
   if (settings_.yMaxRange != -1 && settings_.yMinRange != -1) {

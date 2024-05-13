@@ -80,8 +80,5 @@ add_subdirectory(src/plugins/backlight)
 add_subdirectory(src/plugins/pavolume)
 add_subdirectory(src/plugins/mpris)
 add_subdirectory(src/plugins/clock)
-#add_subdirectory(src/plugins/hardwaremonitor)
-
-#
-#target_link_libraries(${PROJECT_NAME} SingleApplication::SingleApplication)
+add_subdirectory(src/plugins/hardwaremonitor)
 
