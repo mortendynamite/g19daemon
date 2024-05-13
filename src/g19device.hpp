@@ -80,10 +80,10 @@ typedef void (*G19KeysCallback)(unsigned int keys);
 class G19Device : public QObject {
   Q_OBJECT
 public:
-  int rawkey;
+  int rawkey{};
 
   G19Device();
-  ~G19Device();
+  ~G19Device() override;
 
   void initialize();
   void uninitialize();
@@ -109,7 +109,7 @@ public:
   bool gKeysTransferCancelled;
   bool lKeysTransferCancelled;
 
-  G19DeviceType type;
+  G19DeviceType type{};
 
 private:
   unsigned int lastkeys;
@@ -122,15 +122,15 @@ private:
 
   libusb_transfer *gKeysTransfer;
   libusb_transfer *lKeysTransfer;
-  libusb_transfer *dataTransfer;
+  libusb_transfer *dataTransfer{};
 
-  unsigned char gKeysBuffer[4];
-  unsigned char lKeysBuffer[2];
+  unsigned char gKeysBuffer[4]{};
+  unsigned char lKeysBuffer[2]{};
 
   libusb_context *context;
   libusb_device_handle *deviceHandle;
-  libusb_device_descriptor deviceDesc;
-  libusb_hotplug_callback_handle hotplugCallback;
+  libusb_device_descriptor deviceDesc{};
+  libusb_hotplug_callback_handle hotplugCallback{};
   bool probeDevices();
 
   QFuture<void> future;

@@ -39,11 +39,11 @@ extern "C" int LIBUSB_CALL _HotplugCallback(libusb_context *ctx, libusb_device *
   unsigned int keys;
   G19Device *cthis = static_cast<G19Device *>(user_data);
   if (event == LIBUSB_HOTPLUG_EVENT_DEVICE_ARRIVED) {
-    qDebug() << "New Logitech device detected." << endl;
+    qDebug() << "New Logitech device detected." <<  Qt::endl;
     cthis->probeDevice(device);
   } else if (event == LIBUSB_HOTPLUG_EVENT_DEVICE_LEFT) {
     if (cthis->isDevice(device)) {
-      qDebug() << "Our device was unplugged." << endl;
+      qDebug() << "Our device was unplugged." <<  Qt::endl;
       cthis->closeDevice();
     }
   }
@@ -206,7 +206,7 @@ void G19Device::initialize() {
 
   if (status < 0) {
     cstatus = tr("Initialization Error!");
-    qDebug() << cstatus << " : " << status << endl;
+    qDebug() << cstatus << " : " << status << Qt::endl;
     isInitialized = false;
     context = NULL;
     return;
@@ -214,7 +214,7 @@ void G19Device::initialize() {
 
   isInitialized = true;
 
-  future = QtConcurrent::run(this, &G19Device::eventThread);
+  future = QtConcurrent::run([this] {eventThread(); });
 
   libusb_set_option(context, LIBUSB_OPTION_LOG_LEVEL, LIBUSB_LOG_LEVEL_INFO);
 
@@ -240,7 +240,7 @@ bool G19Device::probeDevice(libusb_device *device) {
 
       if (handle == NULL) {
         cstatus = tr("Cannot open device: ");
-        qDebug() << cstatus << libusb_error_name(ret) << endl;
+        qDebug() << cstatus << libusb_error_name(ret) <<  Qt::endl;
         continue;
 		  } else {
         type = t;
@@ -259,7 +259,7 @@ bool G19Device::probeDevices() {
 
   if (count < 0) {
     cstatus = tr("Could not enumerate USB devices!");
-    qDebug() << cstatus << endl;
+    qDebug() << cstatus <<  Qt::endl;
     return false;
   }
 
@@ -301,7 +301,7 @@ void G19Device::openDevice(libusb_device_handle *handle) {
     libusb_submit_transfer(lKeysTransfer);
     deviceHandle = handle;
   } else {
-    qDebug() << "Cannot claim Interface" << endl;
+    qDebug() << "Cannot claim Interface" <<  Qt::endl;
     isDeviceConnected = false;
     deviceHandle = NULL;
     libusb_close(handle);

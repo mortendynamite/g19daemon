@@ -26,6 +26,7 @@
 #include <QPainter>
 #include <QRgb>
 #include <QString>
+#include <QObject>
 
 class Gscreen : public QObject {
   Q_OBJECT

@@ -1,6 +1,9 @@
-cmake_minimum_required(VERSION 3.1)
+cmake_minimum_required(VERSION 3.24)
 
 project(g19daemon)
+
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 
 set(CPACK_RPM_PACKAGE_SUMMARY "G19daemon provides multiple virtual screens for the LCD on the Logitech G19 Keyboar")
@@ -26,14 +29,15 @@ set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_CURRENT_SOURCE_DIR}/CMakeMod
 
 set(CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS} "-std=c++11 -ggdb")
 
-find_package(Qt5Core REQUIRED)
-find_package(Qt5Gui REQUIRED)
-find_package(Qt5Widgets REQUIRED)
+add_compile_definitions(QT_DISABLE_DEPRECATED_UP_TO=0x050F00)
+
+find_package(Qt6 REQUIRED COMPONENTS Core Gui Widgets DBus)
+qt_standard_project_setup()
 
 find_package(libusb-1.0 REQUIRED)
 find_package(PulseAudio REQUIRED)
 
-include_directories(${Qt5Core_INCLUDE_DIRS} ${Qt5Gui_INCLUDE_DIRS} ${Qt5Widgets_INCLUDE_DIRS} ${LIBUSB_1_INCLUDE_DIRS})
+include_directories(${Qt6Core_INCLUDE_DIRS} ${Qt6Gui_INCLUDE_DIRS} ${Qt6Widgets_INCLUDE_DIRS} ${LIBUSB_1_INCLUDE_DIRS})
 
 # Find includes in corresponding build directories
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
@@ -52,27 +56,32 @@ set(g19daemon_SRC
   src/gscreen.cpp
 )
 
-qt5_add_resources(g19daemon_QRC src/g19daemon.qrc)
+qt_add_resources(g19daemon_QRC src/g19daemon.qrc)
+
+set(QAPPLICATION_CLASS QApplication CACHE STRING "Inheritance class for SingleApplication")
+# If using Qt6, override DEFAULT_MAJOR_VERSION
+set(QT_DEFAULT_MAJOR_VERSION 6 CACHE STRING "Qt version to use, defaults to 6")
+
+add_subdirectory(./src/singleapplication)
 
 add_executable(g19daemon ${g19daemon_SRC} ${g19daemon_QRC})
-target_link_libraries(g19daemon ${Qt5Core_LIBRARIES} ${Qt5Gui_LIBRARIES} ${Qt5Widgets_LIBRARIES} ${LIBUSB_1_LIBRARIES} ${PULSEAUDIO_LIBRARY} ${PULSEAUDIO_MAINLOOP_LIBRARY})
+target_link_libraries(g19daemon ${Qt6Core_LIBRARIES} ${Qt6Gui_LIBRARIES} ${Qt6Widgets_LIBRARIES} ${LIBUSB_1_LIBRARIES} ${PULSEAUDIO_LIBRARY} ${PULSEAUDIO_MAINLOOP_LIBRARY} SingleApplication::SingleApplication)
 
-qt5_use_modules(g19daemon Core Gui)
+#qt5_use_modules(g19daemon Core Gui)
 
 install(TARGETS g19daemon RUNTIME DESTINATION bin)
 install(PROGRAMS src/g19daemon.desktop DESTINATION share/applications)
 install(FILES helper/80-hid-g19.rules DESTINATION /etc/udev/rules.d)
 install(FILES src/images/g19daemon.png DESTINATION /usr/share/icons)
 
-add_subdirectory(src/plugins/helloworld)
-add_subdirectory(src/plugins/keybacklight)
-add_subdirectory(src/plugins/backlight)
-add_subdirectory(src/plugins/pavolume)
-add_subdirectory(src/plugins/mpris)
-add_subdirectory(src/plugins/clock)
-add_subdirectory(src/plugins/hardwaremonitor)
+#add_subdirectory(src/plugins/helloworld)
+#add_subdirectory(src/plugins/keybacklight)
+#add_subdirectory(src/plugins/backlight)
+#add_subdirectory(src/plugins/pavolume)
+#add_subdirectory(src/plugins/mpris)
+#add_subdirectory(src/plugins/clock)
+#add_subdirectory(src/plugins/hardwaremonitor)
 
-set(QAPPLICATION_CLASS QApplication CACHE STRING "Inheritance class for SingleApplication")
-add_subdirectory(./src/singleapplication)
-target_link_libraries(${PROJECT_NAME} SingleApplication::SingleApplication)
+#
+#target_link_libraries(${PROJECT_NAME} SingleApplication::SingleApplication)
 

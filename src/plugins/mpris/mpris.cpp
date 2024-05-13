@@ -109,7 +109,7 @@ void Mpris::lKeys(int keys) {
     }
 
     if (keys & G19_KEY_LDOWN) {
-      menuSelect = min(menuSelect + 1, players.count() - 1);
+      menuSelect = min(qsizetype(menuSelect + 1), players.count() - 1);
       menu();
     }
 
@@ -250,7 +250,7 @@ void Mpris::menu() {
 
   // Some information to display to the user
   menuStart = page * 4;
-  menuEnd = min(menuStart + 4, players.count() - 1);
+  menuEnd = min(qsizetype(menuStart + 4), players.count() - 1);
   y = 0;
 
   for (int i = menuStart; i <= menuEnd; i++) {
@@ -417,8 +417,8 @@ void Mpris::paint() {
   p->setOpacity(0.6);
   screen->drawVGuage(5, 171, 310, 30, pos);
   p->setOpacity(1);
-  s = QDateTime::fromTime_t(pos2).toString("mm:ss") + " / " +
-      QDateTime::fromTime_t(mediadata->length).toString("mm:ss");
+  s = QDateTime::fromSecsSinceEpoch(pos2).toString("mm:ss") + " / " +
+      QDateTime::fromSecsSinceEpoch(mediadata->length).toString("mm:ss");
   p->setPen(qRgb(0, 0, 0));
   p->drawText(5, 171, 310, 30, Qt::AlignCenter, s);
   p->drawImage(10, 176, bkg);
