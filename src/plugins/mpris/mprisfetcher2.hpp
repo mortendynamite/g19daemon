@@ -28,7 +28,7 @@ struct MediaData {
 class MprisFetcher2 : public QObject {
   Q_OBJECT
 public:
-  MprisFetcher2(const QString &APlayerName = QString::Null());
+  MprisFetcher2(const QString &APlayerName = QString());
   ~MprisFetcher2();
 
   void updateStatus();
