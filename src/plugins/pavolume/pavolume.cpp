@@ -159,7 +159,7 @@ void PAVolume::setVolume(int vol, bool mute) {
   emit volumeChanged();
 
   if (!future.isRunning())
-    future = QtConcurrent::run(this, &PAVolume::eventThread);
+    future = QtConcurrent::run([this] {eventThread();});
 
   ftime = QTime::currentTime().addSecs(2);
 }
