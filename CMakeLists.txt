@@ -4,6 +4,7 @@ project(g19daemon)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_INSTALL_PREFIX /usr)
 
 
 set(CPACK_RPM_PACKAGE_SUMMARY "G19daemon provides multiple virtual screens for the LCD on the Logitech G19 Keyboar")
@@ -15,8 +16,8 @@ set(VERSION_MAJOR 0 CACHE STRING "Major version" FORCE)
 set(VERSION_MINOR 1 CACHE STRING "Minor version" FORCE)
 set(VERSION_REVISION 2 CACHE STRING "Revison" FORCE)
 
-set(PLUGINS_DIR lib/g19daemon/${VERSION_MAJOR}.${VERSION_MINOR}/plugins CACHE PATH "Path to installed plugins")
-set(THEMES_DIR lib/g19daemon/${VERSION_MAJOR}.${VERSION_MINOR}/themes CACHE PATH "Path to installed themes")
+set(PLUGINS_DIR lib/g19daemon/plugins CACHE PATH "Path to installed plugins")
+set(THEMES_DIR lib/g19daemon/themes CACHE PATH "Path to installed themes")
 
 # Forbid in-tree building
 if(${CMAKE_SOURCE_DIR} MATCHES ${CMAKE_BINARY_DIR})

@@ -35,9 +35,8 @@ static G19DeviceType deviceTypes[] =
   };
 
 
-extern "C" int LIBUSB_CALL _HotplugCallback(libusb_context *ctx, libusb_device *device, libusb_hotplug_event event, void *user_data) {
-  unsigned int keys;
-  G19Device *cthis = static_cast<G19Device *>(user_data);
+extern "C" int LIBUSB_CALL HotplugCallback(libusb_context *ctx, libusb_device *device, libusb_hotplug_event event, void *user_data) {
+  auto * cthis = static_cast<G19Device *>(user_data);
   if (event == LIBUSB_HOTPLUG_EVENT_DEVICE_ARRIVED) {
     qDebug() << "New Logitech device detected." <<  Qt::endl;
     cthis->probeDevice(device);
@@ -50,9 +49,9 @@ extern "C" int LIBUSB_CALL _HotplugCallback(libusb_context *ctx, libusb_device *
   return 0;
 }
 
-extern "C" void LIBUSB_CALL _GKeysCallback(libusb_transfer *transfer) {
+extern "C" void LIBUSB_CALL GKeysCallback(libusb_transfer *transfer) {
   unsigned int keys;
-  G19Device *cthis = static_cast<G19Device *>(transfer->user_data);
+  auto *cthis = static_cast<G19Device *>(transfer->user_data);
   keys = 0x00;
   libusb_transfer_status status = transfer->status;
 
@@ -60,9 +59,6 @@ extern "C" void LIBUSB_CALL _GKeysCallback(libusb_transfer *transfer) {
     cthis->gKeysTransferCancelled = true;
     return;
   }
-
-  //    cthis->rawkey = transfer->buffer[0] << 24 | transfer->buffer[1] << 16 |
-  //    transfer->buffer[2] << 8 | transfer->buffer[3];
 
   if(status == LIBUSB_TRANSFER_COMPLETED) {
       if (transfer->length < 3)
@@ -134,14 +130,11 @@ extern "C" void LIBUSB_CALL _GKeysCallback(libusb_transfer *transfer) {
 
 }
 
-extern "C" void LIBUSB_CALL _LKeysCallback(libusb_transfer *transfer) {
+extern "C" void LIBUSB_CALL LKeysCallback(libusb_transfer *transfer) {
   unsigned int keys;
-  G19Device *cthis = static_cast<G19Device *>(transfer->user_data);
+  auto *cthis = static_cast<G19Device *>(transfer->user_data);
 
   keys = 0x00;
-
-  //    cthis->rawkey = transfer->buffer[0] << 24 | transfer->buffer[1] << 16 |
-  //    transfer->buffer[2] << 8 | transfer->buffer[3];
 
   if (transfer->status == LIBUSB_TRANSFER_CANCELLED) {
     cthis->lKeysTransferCancelled = true;
@@ -223,7 +216,7 @@ void G19Device::initialize() {
                                    LIBUSB_HOTPLUG_EVENT_DEVICE_ARRIVED|LIBUSB_HOTPLUG_EVENT_DEVICE_LEFT,
                                    LIBUSB_HOTPLUG_ENUMERATE,
                                    0x046d, LIBUSB_HOTPLUG_MATCH_ANY, LIBUSB_HOTPLUG_MATCH_ANY,
-                                   _HotplugCallback, this, &hotplugCallback);
+                                   HotplugCallback, this, &hotplugCallback);
 
 }
 
@@ -289,7 +282,7 @@ void G19Device::openDevice(libusb_device_handle *handle) {
       gKeysTransfer = libusb_alloc_transfer(0);
       libusb_fill_interrupt_transfer(gKeysTransfer, handle,
                                    LIBUSB_ENDPOINT_IN | LIBUSB_RECIPIENT_OTHER,
-                                   gKeysBuffer, 4, _GKeysCallback, this, 0);
+                                   gKeysBuffer, 4, GKeysCallback, this, 0);
       libusb_submit_transfer(gKeysTransfer);
     }
 
@@ -297,7 +290,7 @@ void G19Device::openDevice(libusb_device_handle *handle) {
     libusb_fill_interrupt_transfer(lKeysTransfer, handle,
                                    LIBUSB_ENDPOINT_IN |
                                        LIBUSB_RECIPIENT_INTERFACE,
-                                   lKeysBuffer, 2, _LKeysCallback, this, 0);
+                                   lKeysBuffer, 2, LKeysCallback, this, 0);
     libusb_submit_transfer(lKeysTransfer);
     deviceHandle = handle;
   } else {
@@ -357,13 +350,13 @@ void G19Device::closeDevice() {
     libusb_release_interface(deviceHandle,  type.interface);
     libusb_attach_kernel_driver(deviceHandle, type.interface);
     libusb_close(deviceHandle);
-    deviceHandle = nullptr;;
+    deviceHandle = nullptr;
     isDeviceConnected = false;
   }
 }
 
 void G19Device::eventThread() {
-  struct timeval tv;
+  struct timeval tv{};
 
   while (enableEventThread) {
     tv.tv_sec = 1;
@@ -375,12 +368,6 @@ void G19Device::eventThread() {
 void G19Device::gKeyCallback(unsigned int keys) {
 
   lastkeys = keys;
-  /*	QString str = QString::number(rawkey, 16);
-          while (str.length() < 16)
-          {
-                  str.prepend('0');
-          }
-          qDebug() << "G-Keys: " << str; */
 
   if(keys != 0) {
     emit gKey();
@@ -394,13 +381,6 @@ void G19Device::gKeyCallback(unsigned int keys) {
 void G19Device::lKeyCallback(unsigned int keys) {
   lastkeys = keys;
 
-  /*	QString str = QString::number(rawkey, 16);
-          while (str.length() < 16)
-          {
-                  str.prepend('0');
-          }
-          qDebug() << "L-Keys: " << str; */
-
   emit lKey();
 
   if (lKeysTransfer != nullptr)
@@ -409,7 +389,7 @@ void G19Device::lKeyCallback(unsigned int keys) {
 
 unsigned int G19Device::getKeys() { return lastkeys; }
 
-void G19Device::updateLcd(QImage *imgin) {
+void G19Device::updateLcd(QImage *image) {
   int index, x, y;
   int color;
   QRgb *rowData;
@@ -425,7 +405,7 @@ void G19Device::updateLcd(QImage *imgin) {
 
   for (x = 0; x < 320; x++) {
     for (y = 0; y < 240; y++) {
-      rowData = (QRgb *)imgin->scanLine(y);
+      rowData = (QRgb *)image->scanLine(y);
       pixelData = rowData[x];
       color = (qRed(pixelData) / 8) << 11;
       color |= (qGreen(pixelData) / 4) << 5;
@@ -564,3 +544,4 @@ void G19Device::setDisplayBrightness(unsigned char brightness) {
                                _TransferCallback, &isTransfering, 0);
   libusb_submit_transfer(dataTransfer);
 }
+

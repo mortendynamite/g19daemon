@@ -100,7 +100,7 @@ public:
   bool probeDevice(libusb_device *device);
   bool isDevice(libusb_device *device);
 
-  void updateLcd(QImage *img);
+  void updateLcd(QImage *image);
   void setKeysBacklight(QColor color);
   QColor getKeysBacklight();
   void setMKeys(bool m1, bool m2, bool m3, bool mr);
