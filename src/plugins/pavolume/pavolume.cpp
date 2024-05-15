@@ -82,8 +82,8 @@ void state_cb(pa_context *c, void *userdata) {
   case PA_CONTEXT_READY:
     pa_context_set_subscribe_callback(c, subscribe_cb, pav);
     if (!(o = pa_context_subscribe(
-              c, (pa_subscription_mask_t)(PA_SUBSCRIPTION_MASK_SINK), NULL,
-              NULL))) {
+              c, (pa_subscription_mask_t)(PA_SUBSCRIPTION_MASK_SINK), nullptr,
+              nullptr))) {
       qDebug() << "pa_context_subscribe() failed";
       return;
     }
@@ -94,7 +94,7 @@ void state_cb(pa_context *c, void *userdata) {
 
   case PA_CONTEXT_FAILED:
     pa_context_unref(pav->pa_ctx);
-    pav->pa_ctx = NULL;
+    pav->pa_ctx = nullptr;
 
     break;
 
@@ -119,7 +119,7 @@ PAVolume::PAVolume() {
   pa_ctx = pa_context_new(pa_mlapi, "test");
 
   // This function connects to the pulse server
-  pa_context_connect(pa_ctx, NULL, PA_CONTEXT_NOFLAGS, NULL);
+  pa_context_connect(pa_ctx, nullptr, PA_CONTEXT_NOFLAGS, nullptr);
 
   // This function defines a callback so the server will tell us it's state.
   // Our callback will wait for the state to be ready.  The callback will
@@ -165,7 +165,7 @@ void PAVolume::setVolume(int vol, bool mute) {
 }
 
 void PAVolume::doVolumeChanged() {
-  emit doAction(grabFocus, NULL);
+  emit doAction(grabFocus, nullptr);
 
   if (!isMuted) {
     if (timer->isActive()) {
@@ -248,7 +248,7 @@ void PAVolume::eventThread() {
   }
   future.cancel();
   emit Release();
-  emit doAction(restoreKeyBackground, NULL);
+  emit doAction(restoreKeyBackground, nullptr);
 }
 
 void PAVolume::BlinkKeyBackground() {
@@ -277,7 +277,7 @@ void PAVolume::BlinkKeyBackground() {
   emit doAction(setKeyBackground, &color);
 }
 
-void PAVolume::doRelease() { emit doAction(releaseFocus, NULL); }
+void PAVolume::doRelease() { emit doAction(releaseFocus, nullptr); }
 
 bool PAVolume::isPopup() { return true; }
 

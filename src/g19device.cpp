@@ -30,8 +30,8 @@ using namespace std;
 
 static G19DeviceType deviceTypes[] = 
   {
-    {0x046d, 0xc229, G19_HAS_M_KEYS | G19_HAS_BACKLIGHT_CONTROL | G19_HAS_BRIGHTNESS_CONTROL | G19_HAS_M_KEYS, 1},
-    {0x046d, 0xc629, 0, 0},
+    {0x046d, 0xc229, QList({G19_HAS_G_KEYS, G19_HAS_BACKLIGHT_CONTROL, G19_HAS_BRIGHTNESS_CONTROL, G19_HAS_M_KEYS}), 1},
+    {0x046d, 0xc629, QList<Flags>(0), 0},
   };
 
 
@@ -183,13 +183,13 @@ extern "C" void LIBUSB_CALL _TransferCallback(libusb_transfer *transfer) {
 }
 
 G19Device::G19Device() {
-  context = NULL;
-  deviceHandle = NULL;
+  context = nullptr;
+  deviceHandle = nullptr;
   isDeviceConnected = false;
   isInitialized = false;
   enableEventThread = true;
-  gKeysTransfer = NULL;
-  lKeysTransfer = NULL;
+  gKeysTransfer = nullptr;
+  lKeysTransfer = nullptr;
   lastkeys = 0;
   isTransfering = false;
   gKeysTransferCancelled = false;
@@ -208,7 +208,7 @@ void G19Device::initialize() {
     cstatus = tr("Initialization Error!");
     qDebug() << cstatus << " : " << status << Qt::endl;
     isInitialized = false;
-    context = NULL;
+    context = nullptr;
     return;
   }
 
@@ -238,7 +238,7 @@ bool G19Device::probeDevice(libusb_device *device) {
     if (desc.idVendor == t.vid && desc.idProduct == t.pid) {
 			ret = libusb_open(device, &handle);
 
-      if (handle == NULL) {
+      if (handle == nullptr) {
         cstatus = tr("Cannot open device: ");
         qDebug() << cstatus << libusb_error_name(ret) <<  Qt::endl;
         continue;
@@ -285,7 +285,7 @@ void G19Device::openDevice(libusb_device_handle *handle) {
   if (status == LIBUSB_SUCCESS) {
     isDeviceConnected = true;
 
-    if (type.flags & G19_HAS_G_KEYS) {
+    if (type.flags.contains(G19_HAS_G_KEYS)) {
       gKeysTransfer = libusb_alloc_transfer(0);
       libusb_fill_interrupt_transfer(gKeysTransfer, handle,
                                    LIBUSB_ENDPOINT_IN | LIBUSB_RECIPIENT_OTHER,
@@ -303,7 +303,7 @@ void G19Device::openDevice(libusb_device_handle *handle) {
   } else {
     qDebug() << "Cannot claim Interface" <<  Qt::endl;
     isDeviceConnected = false;
-    deviceHandle = NULL;
+    deviceHandle = nullptr;
     libusb_close(handle);
   }
 }
@@ -314,14 +314,14 @@ void G19Device::uninitialize() {
     enableEventThread = false;
     future.waitForFinished();
     libusb_exit(context);
-    context = NULL;
+    context = nullptr;
     isDeviceConnected = false;
     isInitialized = false;
   }
 }
 
 bool G19Device::isDevice(libusb_device *device) {
-  if (!isDeviceConnected || deviceHandle == NULL) { return false; }
+  if (!isDeviceConnected || deviceHandle == nullptr) { return false; }
   return device == libusb_get_device(deviceHandle);
 }
 
@@ -340,7 +340,7 @@ void G19Device::closeDevice() {
           ;
       }
       libusb_free_transfer(gKeysTransfer);
-      gKeysTransfer = NULL;
+      gKeysTransfer = nullptr;
     }
 
     if (lKeysTransfer) {
@@ -350,14 +350,14 @@ void G19Device::closeDevice() {
           ;
       }
       libusb_free_transfer(lKeysTransfer);
-      lKeysTransfer = NULL;
+      lKeysTransfer = nullptr;
     }
 
     libusb_reset_device(deviceHandle);
     libusb_release_interface(deviceHandle,  type.interface);
     libusb_attach_kernel_driver(deviceHandle, type.interface);
     libusb_close(deviceHandle);
-    deviceHandle = NULL;;
+    deviceHandle = nullptr;;
     isDeviceConnected = false;
   }
 }
@@ -386,7 +386,7 @@ void G19Device::gKeyCallback(unsigned int keys) {
     emit gKey();
   }
 
-  if (gKeysTransfer != NULL) {
+  if (gKeysTransfer != nullptr) {
     libusb_submit_transfer(gKeysTransfer);
   }
 }
@@ -403,7 +403,7 @@ void G19Device::lKeyCallback(unsigned int keys) {
 
   emit lKey();
 
-  if (lKeysTransfer != NULL)
+  if (lKeysTransfer != nullptr)
     libusb_submit_transfer(lKeysTransfer);
 }
 
@@ -455,7 +455,7 @@ void G19Device::setKeysBacklight(QColor color) {
     return;
   }
 
-  if (!(type.flags & G19_HAS_BACKLIGHT_CONTROL)) {
+  if (!(type.flags.contains(G19_HAS_BACKLIGHT_CONTROL))) {
     return;
   }
 
@@ -489,7 +489,7 @@ void G19Device::setMKeys(bool m1, bool m2, bool m3, bool mr) {
     return;
   }
 
-  if (!(type.flags & G19_HAS_M_KEYS)) {
+  if (!(type.flags.contains(G19_HAS_M_KEYS))) {
     return;
   }
 
@@ -537,7 +537,7 @@ void G19Device::setDisplayBrightness(unsigned char brightness) {
     return;
   }
 
-  if (!(type.flags & G19_HAS_BRIGHTNESS_CONTROL)) {
+  if (!(type.flags.contains(G19_HAS_BRIGHTNESS_CONTROL))) {
     return;
   }
 

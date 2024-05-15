@@ -62,16 +62,23 @@ enum G19Keys {
   G19_KEY_LIGHT = 1 << 24
 };
 
-#define G19_HAS_G_KEYS (1 << 0)
-#define G19_HAS_M_KEYS (1 << 1)
-#define G19_HAS_BACKLIGHT_CONTROL (1 << 2)
-#define G19_HAS_BRIGHTNESS_CONTROL (1 << 3)
+enum Flags {
+    G19_HAS_G_KEYS,
+    G19_HAS_M_KEYS,
+    G19_HAS_BACKLIGHT_CONTROL,
+    G19_HAS_BRIGHTNESS_CONTROL
+};
+
+//#define G19_HAS_G_KEYS (1 << 0)
+//#define G19_HAS_M_KEYS (1 << 1)
+//#define G19_HAS_BACKLIGHT_CONTROL (1 << 2)
+//#define G19_HAS_BRIGHTNESS_CONTROL (1 << 3)
 
 
 typedef struct  {
   uint16_t vid;
   uint16_t pid;
-  int flags;
+  QList<Flags> flags;
   int interface;
 } G19DeviceType;
 
