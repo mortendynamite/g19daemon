@@ -33,14 +33,14 @@ class HelloWorld : public QObject, public PluginInterface {
 
 public:
   HelloWorld();
-  ~HelloWorld();
-  void lKeys(int keys);
-  QString getName();
-  QImage getIcon();
-  void setActive(bool active);
-  bool isPopup();
-  QObject *getQObject();
-  void mKeys(int keys);
+  ~HelloWorld() override;
+  void lKeys(int keys) override;
+  QString getName() override;
+  QImage getIcon() override;
+  void setActive(bool active) override;
+  bool isPopup() override;
+  QObject *getQObject() override;
+  void mKeys(int keys) override;
 
 private:
   Gscreen *screen;

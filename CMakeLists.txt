@@ -28,10 +28,6 @@ endif(${CMAKE_SOURCE_DIR} MATCHES ${CMAKE_BINARY_DIR})
 
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_CURRENT_SOURCE_DIR}/CMakeModules/")
 
-set(CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS} "-std=c++11 -ggdb")
-
-add_compile_definitions(QT_DISABLE_DEPRECATED_UP_TO=0x050F00)
-
 find_package(Qt6 REQUIRED COMPONENTS Core Gui Widgets DBus)
 qt_standard_project_setup()
 

@@ -19,7 +19,6 @@
 
 #include "helloworld.hpp"
 #include "../../g19daemon.hpp"
-#include "../../gscreen.hpp"
 #include <QImage>
 #include <QPainter>
 #include <QString>

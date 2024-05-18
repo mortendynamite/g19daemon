@@ -49,6 +49,6 @@ public:
 private:
 };
 
-Q_DECLARE_INTERFACE(PluginInterface, "g19daemon.plugin/0.4");
+Q_DECLARE_INTERFACE(PluginInterface, "PluginInterface");
 
 #endif
