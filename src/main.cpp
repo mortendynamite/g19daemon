@@ -21,7 +21,7 @@
 #include "g19daemon.hpp"
 #include <QApplication>
 #include <QtCore/QtCore>
-#include <src/singleapplication/singleapplication.h>
+#include <singleapplication.h>
 
 
 int main(int argc, char **argv) {
