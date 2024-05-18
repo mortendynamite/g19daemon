@@ -47,14 +47,14 @@ class HardwareMonitor : public QObject, public PluginInterface {
 
 public:
   HardwareMonitor();
-  ~HardwareMonitor();
-  void lKeys(int keys);
-  QString getName();
-  QImage getIcon();
-  void setActive(bool active);
-  bool isPopup();
-  QObject *getQObject();
-  void mKeys(int keys);
+  ~HardwareMonitor() override;
+  void lKeys(int keys) override;
+  QString getName() override;
+  QImage getIcon() override;
+  void setActive(bool active) override;
+  bool isPopup() override;
+  QObject *getQObject() override;
+  void mKeys(int keys) override;
 private:
   void loadsettings();
   Gscreen *screen;

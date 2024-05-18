@@ -19,13 +19,11 @@
 
 #include "clock.hpp"
 #include "../../g19daemon.hpp"
-#include "../../gscreen.hpp"
 #include <QImage>
 #include <QPainter>
 #include <QString>
 #include <QTime>
 #include <QTimer>
-#include <QtCore>
 
 Clock::Clock() {
   Q_INIT_RESOURCE(clock);
