@@ -17,9 +17,9 @@ include_directories(${Qt6Core_INCLUDE_DIRS} ${Qt6Gui_INCLUDE_DIRS} ${LIBUSB_1_IN
 set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -Wall -ggdb")
 
 set(helloworld_SRC
-  helloworld.cpp
-  ../../gscreen.cpp
-  ../../plugininterface.hpp
+        helloworld.cpp
+        ../../gscreen.cpp
+        ../../plugininterface.hpp
 )
 
 qt_add_resources(helloworld_QRC helloworld.qrc)

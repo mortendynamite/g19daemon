@@ -17,12 +17,13 @@
 //-----------------------------------------------------------------
 
 NormalScreen::NormalScreen(QString name) : Screen(name) {
-  // nothing to create
+    // nothing to create
 }
 
 NormalScreen::~NormalScreen() { screenLines_.clear(); }
 
 ScreenType NormalScreen::getScreenType() { return ScreenType::Normal; }
+
 QList<LineText> NormalScreen::getLines() { return screenLines_; }
 
 void NormalScreen::setData(QList<LineText> data) { screenLines_ = data; }
@@ -30,52 +31,52 @@ void NormalScreen::setData(QList<LineText> data) { screenLines_ = data; }
 QList<CustomSettings> NormalScreen::getSettings() { return lineSettings_; }
 
 void NormalScreen::setSettings(QList<CustomSettings> settings) {
-  lineSettings_ = settings;
+    lineSettings_ = settings;
 }
 
 void NormalScreen::draw(Gscreen *screen) {
-  QPainter *p = screen->beginFullScreen();
+    QPainter *p = screen->beginFullScreen();
 
-  QPixmap background(getBackground());
-  p->drawPixmap(0, 0, 320, 240, background);
+    QPixmap background(getBackground());
+    p->drawPixmap(0, 0, 320, 240, background);
 
-  int textPosition = 0;
+    int textPosition = 0;
 
-  QStringList lines = data_->translateLines(screenLines_);
+    QStringList lines = data_->translateLines(screenLines_);
 
-  for (int i = 0; i < lines.size(); i++) {
-    CustomSettings custom = lineSettings_[i];
+    for (int i = 0; i < lines.size(); i++) {
+        CustomSettings custom = lineSettings_[i];
 
-    Qt::AlignmentFlag aligment;
+        Qt::AlignmentFlag aligment;
 
-    switch (custom.aligment) {
-    case Alignment::Center:
-      aligment = Qt::AlignCenter;
-      break;
-    case Alignment::Left:
-      aligment = Qt::AlignLeft;
-      break;
-    case Alignment::Right:
-      aligment = Qt::AlignRight;
-      break;
-    default:
-      aligment = Qt::AlignLeft;
-      break;
+        switch (custom.aligment) {
+            case Alignment::Center:
+                aligment = Qt::AlignCenter;
+                break;
+            case Alignment::Left:
+                aligment = Qt::AlignLeft;
+                break;
+            case Alignment::Right:
+                aligment = Qt::AlignRight;
+                break;
+            default:
+                aligment = Qt::AlignLeft;
+                break;
+        }
+        p->setFont(custom.font);
+
+        const QRect rectangle = QRect(0, textPosition, 320, 50);
+
+        p->setPen(custom.fontColor);
+        p->drawText(rectangle, aligment | Qt::AlignTop | Qt::TextSingleLine,
+                    lines[i]);
+
+        QFontMetrics metric(custom.font);
+
+        textPosition += metric.height() + custom.lineSpacing;
     }
-    p->setFont(custom.font);
 
-    const QRect rectangle = QRect(0, textPosition, 320, 50);
-    
-    p->setPen(custom.fontColor);
-    p->drawText(rectangle, aligment | Qt::AlignTop | Qt::TextSingleLine,
-                lines[i]);
-
-    QFontMetrics metric(custom.font);
-
-    textPosition += metric.height() + custom.lineSpacing;
-  }
-
-  screen->end();
+    screen->end();
 }
 
 void NormalScreen::update() {}

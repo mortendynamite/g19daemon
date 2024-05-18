@@ -2,187 +2,186 @@
 #include "../HwaSettings.h"
 
 InfluxDb::InfluxDb(QObject *parent) : QObject(parent) {
-  manager = new QNetworkAccessManager(this);
+    manager = new QNetworkAccessManager(this);
 }
 
 InfluxDb::~InfluxDb() { delete manager; }
 
 QNetworkReply *InfluxDb::sendQuery(QString query) {
-  QNetworkRequest request(getUrl(query));
-  request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
+    QNetworkRequest request(getUrl(query));
+    request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
 
-  QNetworkReply *reply = manager->get(request);
+    QNetworkReply *reply = manager->get(request);
 
-  QTimer timer;
-  QEventLoop loop;
-  connect(manager, SIGNAL(finished(QNetworkReply *)), &loop, SLOT(quit()));
-  connect(&timer, SIGNAL(timeout()), &loop, SLOT(quit()));
-  ;
-  timer.start(60000);
-  loop.exec();
+    QTimer timer;
+    QEventLoop loop;
+    connect(manager, SIGNAL(finished(QNetworkReply * )), &loop, SLOT(quit()));
+    connect(&timer, SIGNAL(timeout()), &loop, SLOT(quit()));;
+    timer.start(60000);
+    loop.exec();
 
-  return reply;
+    return reply;
 }
 
 QVector<Query> InfluxDb::getAllSensors() {
-  QVector<Query> sensors;
+    QVector<Query> sensors;
 
-  QNetworkReply *reply = sendQuery("show series");
+    QNetworkReply *reply = sendQuery("show series");
 
-  QVector<QString> measurements = readValues(reply);
+    QVector<QString> measurements = readValues(reply);
 
-  QString sensorName;
+    QString sensorName;
 
-  for (int i = 0; i < measurements.size(); i++) {
-    QString value = measurements[i];
+    for (int i = 0; i < measurements.size(); i++) {
+        QString value = measurements[i];
 
-    QString hardware = value.mid(0, value.indexOf(','));
-    QString name = value.mid(value.indexOf(',') + 1);
+        QString hardware = value.mid(0, value.indexOf(','));
+        QString name = value.mid(value.indexOf(',') + 1);
 
-    if (hardware != sensorName) {
-      sensorName = hardware;
+        if (hardware != sensorName) {
+            sensorName = hardware;
 
-      QNetworkReply *fieldReply = sendQuery("show field keys from " + hardware);
+            QNetworkReply *fieldReply = sendQuery("show field keys from " + hardware);
 
-      QVector<QString> fields = readValues(fieldReply);
+            QVector<QString> fields = readValues(fieldReply);
 
-      for (int j = 0; j < fields.size(); j++) {
-        Query sensor;
-        sensor.hardware = hardware;
-        sensor.name = name;
-        sensor.field = fields[j];
+            for (int j = 0; j < fields.size(); j++) {
+                Query sensor;
+                sensor.hardware = hardware;
+                sensor.name = name;
+                sensor.field = fields[j];
 
-        sensors.append(sensor);
-      }
+                sensors.append(sensor);
+            }
+        }
     }
-  }
 
-  delete reply;
-  return sensors;
+    delete reply;
+    return sensors;
 }
 
 QVector<QString> InfluxDb::readValues(QNetworkReply *reply) {
-  QVector<QString> values;
+    QVector<QString> values;
 
-  if (reply->error() == QNetworkReply::NoError) {
-    QString response = reply->readAll();
+    if (reply->error() == QNetworkReply::NoError) {
+        QString response = reply->readAll();
 
-    QJsonDocument jsonResponse = QJsonDocument::fromJson(response.toUtf8());
-    QJsonObject root = jsonResponse.object();
+        QJsonDocument jsonResponse = QJsonDocument::fromJson(response.toUtf8());
+        QJsonObject root = jsonResponse.object();
 
-    QJsonObject results =
-        root.value(QString("results")).toArray()[0].toObject();
+        QJsonObject results =
+                root.value(QString("results")).toArray()[0].toObject();
 
-    QJsonArray result = results.value(QString("series"))
-                            .toArray()[0]
-                            .toObject()
-                            .value("values")
-                            .toArray();
+        QJsonArray result = results.value(QString("series"))
+                .toArray()[0]
+                .toObject()
+                .value("values")
+                .toArray();
 
-    for (int i = 0; i < result.size(); i++) {
-      values.append(result[i].toArray()[0].toString());
+        for (int i = 0; i < result.size(); i++) {
+            values.append(result[i].toArray()[0].toString());
+        }
+    } else // handle error
+    {
+        qDebug() << reply->errorString();
     }
-  } else // handle error
-  {
-    qDebug() << reply->errorString();
-  }
 
-  return values;
+    return values;
 }
 
 double InfluxDb::readQueryValue(QNetworkReply *reply) {
-  double value = 0;
+    double value = 0;
 
-  if (reply->error() == QNetworkReply::NoError) {
-    QString response = reply->readAll();
+    if (reply->error() == QNetworkReply::NoError) {
+        QString response = reply->readAll();
 
-    QJsonDocument jsonResponse = QJsonDocument::fromJson(response.toUtf8());
-    QJsonObject root = jsonResponse.object();
+        QJsonDocument jsonResponse = QJsonDocument::fromJson(response.toUtf8());
+        QJsonObject root = jsonResponse.object();
 
-    QJsonObject results =
-        root.value(QString("results")).toArray()[0].toObject();
+        QJsonObject results =
+                root.value(QString("results")).toArray()[0].toObject();
 
-    QJsonArray result = results.value(QString("series"))
-                            .toArray()[0]
-                            .toObject()
-                            .value("values")
-                            .toArray();
+        QJsonArray result = results.value(QString("series"))
+                .toArray()[0]
+                .toObject()
+                .value("values")
+                .toArray();
 
-    value = result[0].toArray()[1].toDouble();
+        value = result[0].toArray()[1].toDouble();
 
-  } else // handle error
-  {
-    qDebug() << reply->errorString();
-  }
+    } else // handle error
+    {
+        qDebug() << reply->errorString();
+    }
 
-  return value;
+    return value;
 }
 
 MonitorSystem InfluxDb::getMonitorSystem() { return MonitorSystem::INFLUXDB; }
 
 double InfluxDb::getData(Query query) {
-  QMap<QString, QString> arguments = parseQueryArguments(query);
+    QMap<QString, QString> arguments = parseQueryArguments(query);
 
-  QString function;
+    QString function;
 
-  switch (query.value) {
-  case QueryValue::Current:
-    function = "last";
-    break;
-  case QueryValue::Min:
-    function = "min";
-    break;
-  case QueryValue::Max:
-    function = "max";
-    break;
-  }
-
-  QString queryString = QString("SELECT " + function + "(\"") + query.field +
-                        "\") FROM " + query.hardware + " WHERE (";
-
-  QMap<QString, QString>::const_iterator i = arguments.constBegin();
-  while (i != arguments.constEnd()) {
-    if (i != arguments.constBegin()) {
-      queryString += " AND ";
+    switch (query.value) {
+        case QueryValue::Current:
+            function = "last";
+            break;
+        case QueryValue::Min:
+            function = "min";
+            break;
+        case QueryValue::Max:
+            function = "max";
+            break;
     }
 
-    queryString += ("\"" + i.key() + "\"='" + i.value() + "'");
-    ++i;
-  }
+    QString queryString = QString("SELECT " + function + "(\"") + query.field +
+                          "\") FROM " + query.hardware + " WHERE (";
 
-  queryString += ")";
+    QMap<QString, QString>::const_iterator i = arguments.constBegin();
+    while (i != arguments.constEnd()) {
+        if (i != arguments.constBegin()) {
+            queryString += " AND ";
+        }
 
-  QNetworkReply *reply = sendQuery(queryString);
+        queryString += ("\"" + i.key() + "\"='" + i.value() + "'");
+        ++i;
+    }
 
-  return readQueryValue(reply);
+    queryString += ")";
+
+    QNetworkReply *reply = sendQuery(queryString);
+
+    return readQueryValue(reply);
 }
 
 QMap<QString, QString> InfluxDb::parseQueryArguments(Query query) {
-  QMap<QString, QString> argumentList;
+    QMap<QString, QString> argumentList;
 
-  QStringList pieces = query.name.split(",");
+    QStringList pieces = query.name.split(",");
 
-  for (int i = 0; i < pieces.size(); i++) {
-    QStringList keyvalue = pieces[i].split("=");
-    argumentList.insert(keyvalue[0], keyvalue[1]);
-  }
+    for (int i = 0; i < pieces.size(); i++) {
+        QStringList keyvalue = pieces[i].split("=");
+        argumentList.insert(keyvalue[0], keyvalue[1]);
+    }
 
-  return argumentList;
+    return argumentList;
 }
 
 QUrl InfluxDb::getUrl(QString query) {
-  InfluxDbSettings influxSettings =
-      HwaSettings::getInstance()->getInfluxSettings();
+    InfluxDbSettings influxSettings =
+            HwaSettings::getInstance()->getInfluxSettings();
 
-  QString url = "http://" + influxSettings.hostname + ":" +
-                QString::number(influxSettings.port) +
-                "/query?db=" + influxSettings.database +
-                "&q=" + QUrl::toPercentEncoding(query);
+    QString url = "http://" + influxSettings.hostname + ":" +
+                  QString::number(influxSettings.port) +
+                  "/query?db=" + influxSettings.database +
+                  "&q=" + QUrl::toPercentEncoding(query);
 
-  if (!influxSettings.username.isEmpty() &&
-      !influxSettings.password.isEmpty()) {
-    url += "&u=" + influxSettings.username + "&p=" + influxSettings.password;
-  }
+    if (!influxSettings.username.isEmpty() &&
+        !influxSettings.password.isEmpty()) {
+        url += "&u=" + influxSettings.username + "&p=" + influxSettings.password;
+    }
 
-  return QUrl(url);
+    return QUrl(url);
 }

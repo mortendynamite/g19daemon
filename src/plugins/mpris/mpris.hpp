@@ -37,57 +37,75 @@
 #include <QtPlugin>
 
 class Mpris : public QObject, PluginInterface {
-  Q_OBJECT
-  Q_INTERFACES(PluginInterface)
+Q_OBJECT
 
-  Q_PLUGIN_METADATA(IID "MPRIS Plugin")
+    Q_INTERFACES(PluginInterface)
+
+    Q_PLUGIN_METADATA(IID "MPRIS Plugin")
 
 public:
-  Mpris();
-  ~Mpris() override;
-  void lKeys(int keys) override;
-  QString getName() override;
-  QImage getIcon() override;
-  void setActive(bool active) override;
-  bool isPopup() override;
-  QObject *getQObject() override;
-  void mKeys(int keys) override;
+    Mpris();
+
+    ~Mpris() override;
+
+    void lKeys(int keys) override;
+
+    QString getName() override;
+
+    QImage getIcon() override;
+
+    void setActive(bool active) override;
+
+    bool isPopup() override;
+
+    QObject *getQObject() override;
+
+    void mKeys(int keys) override;
 
 private:
-  Gscreen *screen;
-  bool isActive;
-  QStringList players;
-  QString player;
-  MprisFetcher2 *mpris;
-  MediaData *mediadata;
-  PlayerStatus *playerstatus;
-  QTimer *timer;
-  int lastPos[4];
-  int lastPosDir[4];
-  int speed;
-  bool menuActive;
-  int menuSelect;
-  QSettings *settings;
-  QNetworkAccessManager *networkManager;
-  QList<QNetworkReply *> currentDownloads;
-  QImage *albumArt;
+    Gscreen *screen;
+    bool isActive;
+    QStringList players;
+    QString player;
+    MprisFetcher2 *mpris;
+    MediaData *mediadata;
+    PlayerStatus *playerstatus;
+    QTimer *timer;
+    int lastPos[4];
+    int lastPosDir[4];
+    int speed;
+    bool menuActive;
+    int menuSelect;
+    QSettings *settings;
+    QNetworkAccessManager *networkManager;
+    QList<QNetworkReply *> currentDownloads;
+    QImage *albumArt;
 
-  QStringList getPlayersList();
-  void paint();
-  void menu();
-  void doDownload(const QUrl &url);
+    QStringList getPlayersList();
+
+    void paint();
+
+    void menu();
+
+    void doDownload(const QUrl &url);
 
 public slots:
-  void onStatusChanged(PlayerStatus);
-  void onTrackChanged(MediaData);
-  void onTimer();
+
+    void onStatusChanged(PlayerStatus);
+
+    void onTrackChanged(MediaData);
+
+    void onTimer();
 
 private slots:
-  void loadImage(QNetworkReply *reply);
-  void sslErrors(const QList<QSslError> &sslErrors);
+
+    void loadImage(QNetworkReply *reply);
+
+    void sslErrors(const QList<QSslError> &sslErrors);
 
 signals:
-  void doAction(gAction action, void *data); // Signal to draw img on screen
+
+    void doAction(gAction action, void *data); // Signal to draw img on screen
 };
 
 #endif // MPRIS_H

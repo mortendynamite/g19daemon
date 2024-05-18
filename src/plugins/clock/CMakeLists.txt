@@ -20,7 +20,7 @@ set(CMAKE_AUTOMOC ON)
 set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -Wall -ggdb")
 
 set(clock_SRC
-  clock.cpp
+        clock.cpp
         ../../gscreen.cpp
         ../../plugininterface.hpp
 )

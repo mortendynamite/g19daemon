@@ -26,22 +26,22 @@
 
 int main(int argc, char **argv) {
 
-  //Create a application with only one instance
-  SingleApplication app(argc, argv);
-  QCoreApplication::setApplicationName("G19");
-  QCoreApplication::setApplicationVersion(VERSION);
+    //Create a application with only one instance
+    SingleApplication app(argc, argv);
+    QCoreApplication::setApplicationName("G19");
+    QCoreApplication::setApplicationVersion(VERSION);
 
-  // create the main class
-  G19daemon task;
+    // create the main class
+    G19daemon task;
 
-  // connect up the signals
-  QObject::connect(&task, SIGNAL(finished()), &app, SLOT(quit()));
-  QObject::connect(&app, SIGNAL(aboutToQuit()), &task,
-                    SLOT(aboutToQuitApp()));
+    // connect up the signals
+    QObject::connect(&task, SIGNAL(finished()), &app, SLOT(quit()));
+    QObject::connect(&app, SIGNAL(aboutToQuit()), &task,
+                     SLOT(aboutToQuitApp()));
 
-  // This code will start the messaging engine in QT and in
-  // 10ms it will start the execution in the MainClass.run routine;
-  QTimer::singleShot(10, &task, SLOT(run()));
+    // This code will start the messaging engine in QT and in
+    // 10ms it will start the execution in the MainClass.run routine;
+    QTimer::singleShot(10, &task, SLOT(run()));
 
-  return app.exec();
+    return app.exec();
 }

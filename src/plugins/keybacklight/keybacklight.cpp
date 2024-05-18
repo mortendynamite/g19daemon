@@ -25,211 +25,203 @@
 #include <QString>
 
 KeyBacklight::KeyBacklight() {
-  Q_INIT_RESOURCE(keybacklight);
+    Q_INIT_RESOURCE(keybacklight);
 
-  isActive = false;
-  QImage icon(":/keybacklight/icon.png");
-  screen = new Gscreen(icon, tr("Key Backlight"));
+    isActive = false;
+    QImage icon(":/keybacklight/icon.png");
+    screen = new Gscreen(icon, tr("Key Backlight"));
 
-  settings = new QSettings("G19Daemon", "G19Daemon");
+    settings = new QSettings("G19Daemon", "G19Daemon");
 
-  color = QColor();
+    color = QColor();
 
-  step = 10;
-  selected = 1;
+    step = 10;
+    selected = 1;
 }
 
 KeyBacklight::~KeyBacklight() {
-  settings->sync();
+    settings->sync();
 
-  delete settings;
-  delete screen;
+    delete settings;
+    delete screen;
 }
 
 void KeyBacklight::lKeys(int keys) {
-  if (keys & G19_KEY_LLEFT) {
-    selected--;
-    if (selected < 1)
-      selected = 3;
-    paint();
-  }
-
-  if (keys & G19_KEY_LRIGHT) {
-    selected++;
-    if (selected > 3)
-      selected = 1;
-    paint();
-  }
-
-  if (keys & G19_KEY_LUP) {
-    switch (selected) {
-    case 1:
-      redValue += step;
-      if (redValue > 255)
-        redValue = 255;
-      break;
-    case 2:
-      greenValue += step;
-      if (greenValue > 255)
-        greenValue = 255;
-      break;
-    case 3:
-      blueValue += step;
-      if (blueValue > 255)
-        blueValue = 255;
-    }
-    paint();
-  }
-
-  if (keys & G19_KEY_LDOWN) {
-    switch (selected) {
-    case 1:
-      redValue -= step;
-      if (redValue < 0)
-        redValue = 0;
-      break;
-    case 2:
-      greenValue -= step;
-      if (greenValue < 0)
-        greenValue = 0;
-      break;
-    case 3:
-      blueValue -= step;
-      if (blueValue < 0)
-        blueValue = 0;
-    }
-    paint();
-  }
-
-  if (keys & G19_KEY_LCANCEL) {
-    switch (step) {
-    case 1:
-      step = 10;
-      break;
-    case 10:
-      step = 20;
-      break;
-    case 20:
-      step = 1;
-      break;
+    if (keys & G19_KEY_LLEFT) {
+        selected--;
+        if (selected < 1)
+            selected = 3;
+        paint();
     }
 
-  }
+    if (keys & G19_KEY_LRIGHT) {
+        selected++;
+        if (selected > 3)
+            selected = 1;
+        paint();
+    }
 
-  if (keys & G19_KEY_LOK) {
-    color.setRed(redValue);
-    color.setGreen(greenValue);
-    color.setBlue(blueValue);
-    settings->setValue(profile +"BackgroundColorButton", color);
+    if (keys & G19_KEY_LUP) {
+        switch (selected) {
+            case 1:
+                redValue += step;
+                if (redValue > 255)
+                    redValue = 255;
+                break;
+            case 2:
+                greenValue += step;
+                if (greenValue > 255)
+                    greenValue = 255;
+                break;
+            case 3:
+                blueValue += step;
+                if (blueValue > 255)
+                    blueValue = 255;
+        }
+        paint();
+    }
 
-    emit doAction(setKeyBackground, &color);
-  }
+    if (keys & G19_KEY_LDOWN) {
+        switch (selected) {
+            case 1:
+                redValue -= step;
+                if (redValue < 0)
+                    redValue = 0;
+                break;
+            case 2:
+                greenValue -= step;
+                if (greenValue < 0)
+                    greenValue = 0;
+                break;
+            case 3:
+                blueValue -= step;
+                if (blueValue < 0)
+                    blueValue = 0;
+        }
+        paint();
+    }
+
+    if (keys & G19_KEY_LCANCEL) {
+        switch (step) {
+            case 1:
+                step = 10;
+                break;
+            case 10:
+                step = 20;
+                break;
+            case 20:
+                step = 1;
+                break;
+        }
+
+    }
+
+    if (keys & G19_KEY_LOK) {
+        color.setRed(redValue);
+        color.setGreen(greenValue);
+        color.setBlue(blueValue);
+        settings->setValue(profile + "BackgroundColorButton", color);
+
+        emit doAction(setKeyBackground, &color);
+    }
 }
 
 void KeyBacklight::mKeys(int keys) {
-    if(keys & G19_KEY_M1)
-    {
+    if (keys & G19_KEY_M1) {
         profile = "m1";
-    }
-    else if(keys & G19_KEY_M2)
-    {
+    } else if (keys & G19_KEY_M2) {
         profile = "m2";
-    }
-    else if(keys & G19_KEY_M3)
-    {
+    } else if (keys & G19_KEY_M3) {
         profile = "m3";
-    }
-    else if(keys & G19_KEY_MR)
-    {
+    } else if (keys & G19_KEY_MR) {
         profile = "mr";
     }
 
-    color = qvariant_cast<QColor>(settings->value(profile +"BackgroundColorButton"));
+    color = qvariant_cast<QColor>(settings->value(profile + "BackgroundColorButton"));
     redValue = color.red();
     greenValue = color.green();
     blueValue = color.blue();
 
-    if(isActive)
-    {
+    if (isActive) {
         paint();
     }
 }
 
 void KeyBacklight::setActive(bool active) {
-  if (active) {
-    isActive = true;
-    paint();
-  } else {
-    isActive = false;
-  }
+    if (active) {
+        isActive = true;
+        paint();
+    } else {
+        isActive = false;
+    }
 }
 
 void KeyBacklight::paint() {
-  QPainter *p;
-  QColor color;
-  QString text;
-  int value;
+    QPainter *p;
+    QColor color;
+    QString text;
+    int value;
 
-  p = screen->begin();
+    p = screen->begin();
 
-  // Red
+    // Red
 
-  if (selected == 1) {
-    color = Qt::red;
-    value = redValue;
-  } else
-    color = Qt::darkRed;
+    if (selected == 1) {
+        color = Qt::red;
+        value = redValue;
+    } else
+        color = Qt::darkRed;
 
-  drawGuage(40, 30, 40, 170, (redValue * 100) / 255, color, p);
+    drawGuage(40, 30, 40, 170, (redValue * 100) / 255, color, p);
 
-  // Green
-  if (selected == 2) {
-    color = Qt::green;
-    value = greenValue;
-  } else
-    color = Qt::darkGreen;
+    // Green
+    if (selected == 2) {
+        color = Qt::green;
+        value = greenValue;
+    } else
+        color = Qt::darkGreen;
 
-  drawGuage(132, 30, 40, 170, (greenValue * 100) / 255, color, p);
+    drawGuage(132, 30, 40, 170, (greenValue * 100) / 255, color, p);
 
-  // Blue
-  if (selected == 3) {
-    color = Qt::blue;
-    value = blueValue;
-  } else
-    color = Qt::darkBlue;
+    // Blue
+    if (selected == 3) {
+        color = Qt::blue;
+        value = blueValue;
+    } else
+        color = Qt::darkBlue;
 
-  drawGuage(224, 30, 40, 170, (blueValue * 100) / 255, color, p);
+    drawGuage(224, 30, 40, 170, (blueValue * 100) / 255, color, p);
 
-  text = "Current step: " + QString::number(step) +
-         ", Value: " + QString::number(value);
+    text = "Current step: " + QString::number(step) +
+           ", Value: " + QString::number(value);
 
-  p->setPen(Qt::white);
-  p->drawText(0, 0, 320, 30, Qt::AlignCenter, text);
+    p->setPen(Qt::white);
+    p->drawText(0, 0, 320, 30, Qt::AlignCenter, text);
 
-  p->end();
-  emit doAction(displayScreen, screen);
+    p->end();
+    emit doAction(displayScreen, screen);
 }
 
 void KeyBacklight::drawGuage(int x, int y, int w, int h, int pos, QColor color,
                              QPainter *p) {
-  int cy1, cy2, cheight;
+    int cy1, cy2, cheight;
 
-  cheight = (h / 100.0) * pos;
-  cy1 = y + h - cheight;
-  cy2 = y + h - cy1;
+    cheight = (h / 100.0) * pos;
+    cy1 = y + h - cheight;
+    cy2 = y + h - cy1;
 
-  p->setPen(qRgb(183, 184, 187));
-  p->setBrush(QBrush(qRgb(183, 184, 187)));
-  p->drawRoundedRect(x, y, w, h, 8, 8);
-  p->setPen(color);
-  p->setBrush(color);
-  p->drawRoundedRect(x, cy1, w, cy2, 8, 8);
+    p->setPen(qRgb(183, 184, 187));
+    p->setBrush(QBrush(qRgb(183, 184, 187)));
+    p->drawRoundedRect(x, y, w, h, 8, 8);
+    p->setPen(color);
+    p->setBrush(color);
+    p->drawRoundedRect(x, cy1, w, cy2, 8, 8);
 }
 
 bool KeyBacklight::isPopup() { return false; }
 
 QImage KeyBacklight::getIcon() {
-  return QImage(":/keybacklight/menu_icon.png");
+    return QImage(":/keybacklight/menu_icon.png");
 }
 
 QObject *KeyBacklight::getQObject() { return this; }

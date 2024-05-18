@@ -9,8 +9,7 @@
 #include <QLocale>
 
 
-class CommandTool : public MonitorTool
-{
+class CommandTool : public MonitorTool {
 public:
     CommandTool();
 
@@ -23,7 +22,9 @@ public:
     // General Methods
     //---------------------------
     QVector<Query> getAllSensors();
+
     MonitorSystem getMonitorSystem();
+
     double getData(Query);
 };
 

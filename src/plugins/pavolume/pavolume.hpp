@@ -29,53 +29,70 @@
 #include <pulse/pulseaudio.h>
 
 class PAVolume : public QObject, public PluginInterface {
-  Q_OBJECT
-  Q_INTERFACES(PluginInterface)
+Q_OBJECT
 
-  Q_PLUGIN_METADATA(IID "your-string-here")
+    Q_INTERFACES(PluginInterface)
+
+    Q_PLUGIN_METADATA(IID "your-string-here")
 
 public:
-  pa_threaded_mainloop *pa_ml;
-  pa_mainloop_api *pa_mlapi;
-  pa_operation *pa_op;
-  pa_context *pa_ctx;
+    pa_threaded_mainloop *pa_ml;
+    pa_mainloop_api *pa_mlapi;
+    pa_operation *pa_op;
+    pa_context *pa_ctx;
 
-  PAVolume();
-  ~PAVolume() override;
-  void lKeys(int keys) override;
-  QString getName() override;
-  QImage getIcon() override;
-  void setActive(bool active) override;
-  void setVolume(int vol, bool mute);
-  bool isPopup() override;
-  QObject *getQObject() override;
-  void mKeys(int keys) override;
-  void eventThread();
+    PAVolume();
+
+    ~PAVolume() override;
+
+    void lKeys(int keys) override;
+
+    QString getName() override;
+
+    QImage getIcon() override;
+
+    void setActive(bool active) override;
+
+    void setVolume(int vol, bool mute);
+
+    bool isPopup() override;
+
+    QObject *getQObject() override;
+
+    void mKeys(int keys) override;
+
+    void eventThread();
 
 private:
-  QSettings *settings;
-  Gscreen *screen;
-  bool isActive;
-  int volume;
-  bool isMuted;
-  QFuture<void> future;
-  QTime ftime;
-  QTimer *timer;
+    QSettings *settings;
+    Gscreen *screen;
+    bool isActive;
+    int volume;
+    bool isMuted;
+    QFuture<void> future;
+    QTime ftime;
+    QTimer *timer;
 
-  void paint();
-  void setKeybackground();
+    void paint();
+
+    void setKeybackground();
 
 private slots:
-  void BlinkKeyBackground();
+
+    void BlinkKeyBackground();
 
 public slots:
-  void doVolumeChanged();
-  void doRelease();
+
+    void doVolumeChanged();
+
+    void doRelease();
 
 signals:
-  void doAction(gAction action, void *data); // Signal to draw img on screen
-  void volumeChanged();
-  void Release();
+
+    void doAction(gAction action, void *data); // Signal to draw img on screen
+    void volumeChanged();
+
+    void Release();
 };
 
 #endif // PAVOLUME_H

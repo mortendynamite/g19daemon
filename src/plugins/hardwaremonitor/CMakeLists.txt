@@ -12,25 +12,25 @@ set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_CURRENT_SOURCE_DIR}/CMakeMod
 find_package(Qt6 REQUIRED COMPONENTS Core Gui Network PrintSupport)
 qt_standard_project_setup()
 
-include_directories(${Qt6Core_INCLUDE_DIRS} ${Qt6Gui_INCLUDE_DIRS} ${Qt6PrintSupport_INCLUDE_DIRS} ${Qt6Network_INCLUDE_DIRS} ${LIBUSB_1_INCLUDE_DIRS} )
+include_directories(${Qt6Core_INCLUDE_DIRS} ${Qt6Gui_INCLUDE_DIRS} ${Qt6PrintSupport_INCLUDE_DIRS} ${Qt6Network_INCLUDE_DIRS} ${LIBUSB_1_INCLUDE_DIRS})
 
 set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -Wall -ggdb")
 
 set(hardwaremonitor_SRC
-Defines.cpp
-    hardwaremonitor.cpp
-  external/QCustomPlot/qcustomplot.cpp
-  HwaSettings.cpp
-  Screen/StartScreen.cpp
-  Screen/NormalScreen.cpp
-  Screen/LegendScreen.cpp
-  Screen/GraphScreen.cpp
-  Screen/Screen.cpp
-  hardwaremonitor.cpp
-  Tools/Data.cpp
-  Tools/influxdb.cpp
-  Tools/MonitorTool.cpp
-  Tools/commandtool.cpp
+        Defines.cpp
+        hardwaremonitor.cpp
+        external/QCustomPlot/qcustomplot.cpp
+        HwaSettings.cpp
+        Screen/StartScreen.cpp
+        Screen/NormalScreen.cpp
+        Screen/LegendScreen.cpp
+        Screen/GraphScreen.cpp
+        Screen/Screen.cpp
+        hardwaremonitor.cpp
+        Tools/Data.cpp
+        Tools/influxdb.cpp
+        Tools/MonitorTool.cpp
+        Tools/commandtool.cpp
         ../../gscreen.cpp
         ../../plugininterface.hpp
 )

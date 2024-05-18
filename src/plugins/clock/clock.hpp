@@ -26,29 +26,40 @@
 #include <QtPlugin>
 
 class Clock : public QObject, public PluginInterface {
-  Q_OBJECT
-  Q_INTERFACES(PluginInterface)
+Q_OBJECT
 
-  Q_PLUGIN_METADATA(IID "clock")
+    Q_INTERFACES(PluginInterface)
+
+    Q_PLUGIN_METADATA(IID "clock")
 
 public:
-  Clock();
-  ~Clock() override;
-  void lKeys(int keys) override;
-  QString getName() override;
-  QImage getIcon() override;
-  void setActive(bool active) override;
-  bool isPopup() override;
-  QObject *getQObject() override;
-  void mKeys(int keys) override;
+    Clock();
+
+    ~Clock() override;
+
+    void lKeys(int keys) override;
+
+    QString getName() override;
+
+    QImage getIcon() override;
+
+    void setActive(bool active) override;
+
+    bool isPopup() override;
+
+    QObject *getQObject() override;
+
+    void mKeys(int keys) override;
 
 private:
-  Gscreen *screen;
-  bool isActive;
-  void paint();
+    Gscreen *screen;
+    bool isActive;
+
+    void paint();
 
 signals:
-  void doAction(gAction action, void *data); // Signal to draw img on screen
+
+    void doAction(gAction action, void *data); // Signal to draw img on screen
 };
 
 #endif // CLOCK_H

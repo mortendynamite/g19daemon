@@ -26,25 +26,32 @@
 #include <QtPlugin>
 
 enum gAction {
-  displayFullScreen,
-  displayScreen,
-  setKeyBackground,
-  setLcdBrightness,
-  grabFocus,
-  releaseFocus,
-  restoreKeyBackground
+    displayFullScreen,
+    displayScreen,
+    setKeyBackground,
+    setLcdBrightness,
+    grabFocus,
+    releaseFocus,
+    restoreKeyBackground
 };
 
 class PluginInterface {
 public:
-  virtual ~PluginInterface() {}
-  virtual void lKeys(int keys) = 0;
-  virtual QString getName() = 0;
-  virtual QImage getIcon() = 0;
-  virtual void setActive(bool active) = 0;
-  virtual bool isPopup() = 0;
-  virtual QObject *getQObject() = 0;
-  virtual void mKeys(int keys) = 0;
+    virtual ~PluginInterface() {}
+
+    virtual void lKeys(int keys) = 0;
+
+    virtual QString getName() = 0;
+
+    virtual QImage getIcon() = 0;
+
+    virtual void setActive(bool active) = 0;
+
+    virtual bool isPopup() = 0;
+
+    virtual QObject *getQObject() = 0;
+
+    virtual void mKeys(int keys) = 0;
 
 private:
 };

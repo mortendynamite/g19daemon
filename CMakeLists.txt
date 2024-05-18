@@ -20,11 +20,11 @@ set(PLUGINS_DIR lib/g19daemon/plugins CACHE PATH "Path to installed plugins")
 set(THEMES_DIR lib/g19daemon/themes CACHE PATH "Path to installed themes")
 
 # Forbid in-tree building
-if(${CMAKE_SOURCE_DIR} MATCHES ${CMAKE_BINARY_DIR})
-      message(STATUS "Please do an out-of-tree build:")
-      message(STATUS "rm -f CMakeCache.txt && mkdir build && cd build; cmake .. && make")
-      message(FATAL_ERROR "In-tree-build detected!")
-endif(${CMAKE_SOURCE_DIR} MATCHES ${CMAKE_BINARY_DIR})
+if (${CMAKE_SOURCE_DIR} MATCHES ${CMAKE_BINARY_DIR})
+    message(STATUS "Please do an out-of-tree build:")
+    message(STATUS "rm -f CMakeCache.txt && mkdir build && cd build; cmake .. && make")
+    message(FATAL_ERROR "In-tree-build detected!")
+endif (${CMAKE_SOURCE_DIR} MATCHES ${CMAKE_BINARY_DIR})
 
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_CURRENT_SOURCE_DIR}/CMakeModules/")
 
@@ -47,10 +47,10 @@ set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -Wall -ggdb")
 configure_file(src/config.h.in config.h)
 
 set(g19daemon_SRC
-  src/main.cpp
-  src/g19daemon.cpp
-  src/g19device.cpp
-  src/gscreen.cpp
+        src/main.cpp
+        src/g19daemon.cpp
+        src/g19device.cpp
+        src/gscreen.cpp
 )
 
 qt_add_resources(g19daemon_QRC src/g19daemon.qrc)
