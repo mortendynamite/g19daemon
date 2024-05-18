@@ -14,15 +14,11 @@ qt_standard_project_setup()
 
 include_directories(${Qt6Core_INCLUDE_DIRS} ${Qt6Gui_INCLUDE_DIRS} ${LIBUSB_1_INCLUDE_DIRS})
 
-# Instruct CMake to run moc automatically when needed.
-set(CMAKE_AUTOMOC ON)
-
 set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -Wall -ggdb")
 
 set(helloworld_SRC
   helloworld.cpp
-  ../../gscreen.hpp
-        ../../gscreen.cpp
+  ../../gscreen.cpp
   ../../plugininterface.hpp
 )
 

@@ -19,12 +19,10 @@
 
 #include "backlight.hpp"
 #include "../../g19daemon.hpp"
-#include "../../gscreen.hpp"
 #include <QImage>
 #include <QPainter>
 #include <QSettings>
 #include <QString>
-#include <QtCore>
 
 Backlight::Backlight() {
   Q_INIT_RESOURCE(backlight);

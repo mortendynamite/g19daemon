@@ -19,8 +19,6 @@
 
 #include "pavolume.hpp"
 #include "../../g19daemon.hpp"
-#include "../../gscreen.hpp"
-#include <QDebug>
 #include <QImage>
 #include <QPainter>
 #include <QSettings>

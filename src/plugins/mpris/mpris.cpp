@@ -19,11 +19,9 @@
 
 #include "mpris.hpp"
 #include "../../g19daemon.hpp"
-#include "../../gscreen.hpp"
 #include "mprisfetcher2.hpp"
 #include <QDebug>
 #include <QFont>
-#include <QFontMetrics>
 #include <QImage>
 #include <QList>
 #include <QNetworkAccessManager>
@@ -35,7 +33,6 @@
 #include <QUrl>
 #include <QtCore>
 #include <QtDBus/QtDBus>
-#include <QtDBus>
 #include <iostream>
 
 Mpris::Mpris() {

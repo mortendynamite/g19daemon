@@ -19,12 +19,10 @@
 
 #include "keybacklight.hpp"
 #include "../../g19daemon.hpp"
-#include "../../gscreen.hpp"
 #include <QImage>
 #include <QPainter>
 #include <QSettings>
 #include <QString>
-#include <QtCore>
 
 KeyBacklight::KeyBacklight() {
   Q_INIT_RESOURCE(keybacklight);

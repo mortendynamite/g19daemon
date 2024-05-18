@@ -41,15 +41,15 @@ public:
   pa_context *pa_ctx;
 
   PAVolume();
-  ~PAVolume();
-  void lKeys(int keys);
-  QString getName();
-  QImage getIcon();
-  void setActive(bool active);
+  ~PAVolume() override;
+  void lKeys(int keys) override;
+  QString getName() override;
+  QImage getIcon() override;
+  void setActive(bool active) override;
   void setVolume(int vol, bool mute);
-  bool isPopup();
-  QObject *getQObject();
-  void mKeys(int keys);
+  bool isPopup() override;
+  QObject *getQObject() override;
+  void mKeys(int keys) override;
   void eventThread();
 
 private:

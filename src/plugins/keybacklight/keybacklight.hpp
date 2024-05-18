@@ -17,11 +17,11 @@
  *
  */
 
-#ifndef HELLOWORLD_H
-#define HELLOWORLD_H
+#ifndef KEYBOARDLIGHT_H
+#define KEYBOARDLIGHT_H
 
-#include "../../gscreen.hpp"
 #include "../../plugininterface.hpp"
+#include "../../gscreen.hpp"
 #include <QObject>
 #include <QSettings>
 #include <QtCore>
@@ -67,4 +67,4 @@ signals:
   void doAction(gAction action, void *data); // Signal to draw img on screen
 };
 
-#endif // HELLOWORLD_H
+#endif // KEYBOARDLIGHT_H
