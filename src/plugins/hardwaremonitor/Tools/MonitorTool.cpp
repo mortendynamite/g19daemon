@@ -1,17 +1,17 @@
 #include "MonitorTool.h"
 
 MonitorTool::MonitorTool() {
-  // Nothing to be created
+    // Nothing to be created
 }
 
 MonitorTool::~MonitorTool() {
-  // nothing to destroy
+    // nothing to destroy
 }
 
 QVector<Query> MonitorTool::getAllSensors() {
-  QVector<Query> sensors;
+    QVector<Query> sensors;
 
-  return sensors;
+    return sensors;
 }
 
 /// <summary>

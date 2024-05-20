@@ -406,7 +406,7 @@ void G19daemon::menu() {
 
     // Some information to display to the user
     menuStart = page * 3;
-    menuEnd = min(menuStart + 3, activePlugins.count() - 1);
+    menuEnd = min(qsizetype(menuStart + 3), activePlugins.count() - 1);
 
     for (int i = menuStart; i <= menuEnd; i++) {
         name = activePlugins[i]->getName();
@@ -444,7 +444,7 @@ void G19daemon::menuSettings() {
 
     // Some information to display to the user
     menuStart = page * 3;
-    menuEnd = min(menuStart + 3, plugins.count() - 1);
+    menuEnd = min(qsizetype(menuStart + 3), plugins.count() - 1);
 
     for (int i = menuStart; i <= menuEnd; i++) {
         name = plugins[i]->getName();

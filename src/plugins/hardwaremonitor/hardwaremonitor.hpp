@@ -40,38 +40,52 @@
 #include <QtPlugin>
 
 class HardwareMonitor : public QObject, public PluginInterface {
-  Q_OBJECT
-  Q_INTERFACES(PluginInterface)
+Q_OBJECT
 
-  Q_PLUGIN_METADATA(IID "hardwaremonitor")
+    Q_INTERFACES(PluginInterface)
+
+    Q_PLUGIN_METADATA(IID "hardwaremonitor")
 
 public:
-  HardwareMonitor();
-  ~HardwareMonitor();
-  void lKeys(int keys);
-  QString getName();
-  QImage getIcon();
-  void setActive(bool active);
-  bool isPopup();
-  QObject *getQObject();
-  void mKeys(int keys);
-private:
-  void loadsettings();
-  Gscreen *screen;
-  Screen *currentScreen_;
-  Screen *currentMainScreen_;
-  bool isActive;
-  void paint();
+    HardwareMonitor();
 
-  QVector<Screen *> screens;
-  StartScreen *startScreen;
-  QFileSystemWatcher *watcher;
+    ~HardwareMonitor() override;
+
+    void lKeys(int keys) override;
+
+    QString getName() override;
+
+    QImage getIcon() override;
+
+    void setActive(bool active) override;
+
+    bool isPopup() override;
+
+    QObject *getQObject() override;
+
+    void mKeys(int keys) override;
+
+private:
+    void loadsettings();
+
+    Gscreen *screen;
+    Screen *currentScreen_;
+    Screen *currentMainScreen_;
+    bool isActive;
+
+    void paint();
+
+    QVector<Screen *> screens;
+    StartScreen *startScreen;
+    QFileSystemWatcher *watcher;
 
 private slots:
-  void reloadSettings();
+
+    void reloadSettings();
 
 signals:
-  void doAction(gAction action, void *data); // Signal to draw img on screen
+
+    void doAction(gAction action, void *data); // Signal to draw img on screen
 };
 
 #endif // HARDWAREMONITOR_H

@@ -19,140 +19,129 @@
 
 #include "backlight.hpp"
 #include "../../g19daemon.hpp"
-#include "../../gscreen.hpp"
 #include <QImage>
 #include <QPainter>
 #include <QSettings>
 #include <QString>
-#include <QtCore>
 
 Backlight::Backlight() {
-  Q_INIT_RESOURCE(backlight);
+    Q_INIT_RESOURCE(backlight);
 
-  isActive = false;
-  QImage icon(":/backlight/icon.png");
-  screen = new Gscreen(icon, tr("LCD Brightness"));
+    isActive = false;
+    QImage icon(":/backlight/icon.png");
+    screen = new Gscreen(icon, tr("LCD Brightness"));
 
-  settings = new QSettings("G19Daemon", "G19Daemon");
+    settings = new QSettings("G19Daemon", "G19Daemon");
 
-  Value = 127;
-  step = 10;
+    Value = 127;
+    step = 10;
 
-  selected = 1;
+    selected = 1;
 }
 
 Backlight::~Backlight() {
-  settings->sync();
+    settings->sync();
 
-  delete settings;
-  delete screen;
+    delete settings;
+    delete screen;
 }
 
 void Backlight::lKeys(int keys) {
-  if (keys & G19_KEY_LUP) {
-    Value += step;
-    if (Value > 127)
-      Value = 127;
-    paint();
-  }
-
-  if (keys & G19_KEY_LDOWN) {
-    Value -= step;
-    if (Value < 0)
-      Value = 0;
-    paint();
-  }
-
-  if (keys & G19_KEY_LCANCEL) {
-    switch (step) {
-    case 1:
-      step = 10;
-      break;
-    case 10:
-      step = 20;
-      break;
-    case 20:
-      step = 1;
-      break;
+    if (keys & G19_KEY_LUP) {
+        Value += step;
+        if (Value > 127)
+            Value = 127;
+        paint();
     }
-    paint();
-  }
 
-  if (keys & G19_KEY_LOK) {
-    settings->setValue(profile + "Brightness", Value);
-    emit doAction(setLcdBrightness, &Value);
-  }
+    if (keys & G19_KEY_LDOWN) {
+        Value -= step;
+        if (Value < 0)
+            Value = 0;
+        paint();
+    }
+
+    if (keys & G19_KEY_LCANCEL) {
+        switch (step) {
+            case 1:
+                step = 10;
+                break;
+            case 10:
+                step = 20;
+                break;
+            case 20:
+                step = 1;
+                break;
+        }
+        paint();
+    }
+
+    if (keys & G19_KEY_LOK) {
+        settings->setValue(profile + "Brightness", Value);
+        emit doAction(setLcdBrightness, &Value);
+    }
 }
 
-void Backlight::mKeys(int keys)
-{
-    if(keys & G19_KEY_M1)
-    {
+void Backlight::mKeys(int keys) {
+    if (keys & G19_KEY_M1) {
         profile = "m1";
-    }
-    else if(keys & G19_KEY_M2)
-    {
+    } else if (keys & G19_KEY_M2) {
         profile = "m2";
-    }
-    else if(keys & G19_KEY_M3)
-    {
+    } else if (keys & G19_KEY_M3) {
         profile = "m3";
-    }
-    else if(keys & G19_KEY_MR)
-    {
+    } else if (keys & G19_KEY_MR) {
         profile = "mr";
     }
 
     Value = settings->value(profile + "Brightness", 127).toInt();
 
-    if(isActive)
-    {
+    if (isActive) {
         paint();
     }
 }
 
 void Backlight::setActive(bool active) {
-  if (active) {
-    isActive = true;
-    paint();
-  } else {
-    isActive = false;
-  }
+    if (active) {
+        isActive = true;
+        paint();
+    } else {
+        isActive = false;
+    }
 }
 
 void Backlight::paint() {
-  QPainter *p;
-  QColor color;
-  QString text;
+    QPainter *p;
+    QColor color;
+    QString text;
 
-  p = screen->begin();
+    p = screen->begin();
 
-  drawGuage(132, 30, 40, 170, (Value * 100) / 127, qRgb(116, 119, 123), p);
+    drawGuage(132, 30, 40, 170, (Value * 100) / 127, qRgb(116, 119, 123), p);
 
-  text = "Current step: " + QString::number(step) +
-         ", Value: " + QString::number(Value);
+    text = "Current step: " + QString::number(step) +
+           ", Value: " + QString::number(Value);
 
-  p->setPen(Qt::white);
-  p->drawText(0, 0, 320, 30, Qt::AlignCenter, text);
+    p->setPen(Qt::white);
+    p->drawText(0, 0, 320, 30, Qt::AlignCenter, text);
 
-  p->end();
-  emit doAction(displayScreen, screen);
+    p->end();
+    emit doAction(displayScreen, screen);
 }
 
 void Backlight::drawGuage(int x, int y, int w, int h, int pos, QColor color,
                           QPainter *p) {
-  int cy1, cy2, cheight;
+    int cy1, cy2, cheight;
 
-  cheight = (h / 100.0) * pos;
-  cy1 = y + h - cheight;
-  cy2 = y + h - cy1;
+    cheight = (h / 100.0) * pos;
+    cy1 = y + h - cheight;
+    cy2 = y + h - cy1;
 
-  p->setPen(qRgb(183, 184, 187));
-  p->setBrush(QBrush(qRgb(183, 184, 187)));
-  p->drawRoundedRect(x, y, w, h, 8, 8);
-  p->setPen(color);
-  p->setBrush(color);
-  p->drawRoundedRect(x, cy1, w, cy2, 8, 8);
+    p->setPen(qRgb(183, 184, 187));
+    p->setBrush(QBrush(qRgb(183, 184, 187)));
+    p->drawRoundedRect(x, y, w, h, 8, 8);
+    p->setPen(color);
+    p->setBrush(color);
+    p->drawRoundedRect(x, cy1, w, cy2, 8, 8);
 }
 
 bool Backlight::isPopup() { return false; }

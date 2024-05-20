@@ -8,27 +8,31 @@
 #include <QDebug>
 #include <QMap>
 
-class InfluxDb : private QObject, public MonitorTool
-{
-    Q_OBJECT
+class InfluxDb : private QObject, public MonitorTool {
+Q_OBJECT
 
 public:
-    InfluxDb(QObject * parent = nullptr);
+    InfluxDb(QObject *parent = nullptr);
+
     ~InfluxDb();
 
     QVector<Query> getAllSensors();
+
     MonitorSystem getMonitorSystem();
+
     double getData(Query query);
 
 private:
-    QNetworkAccessManager * manager;
+    QNetworkAccessManager *manager;
 
     QUrl getUrl(QString query);
 
-    QVector<QString> readValues(QNetworkReply*);
-    double readQueryValue(QNetworkReply*);
+    QVector<QString> readValues(QNetworkReply *);
 
-    QNetworkReply * sendQuery(QString);
+    double readQueryValue(QNetworkReply *);
+
+    QNetworkReply *sendQuery(QString);
+
     QMap<QString, QString> parseQueryArguments(Query query);
 };
 

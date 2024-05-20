@@ -33,101 +33,142 @@ using namespace std;
   154112 //	154112 = 320x240 x 2 bytes/pixel + header of 512 bytes
 
 enum G19Keys {
-  G19_KEY_G1 = 1 << 0,
-  G19_KEY_G2 = 1 << 1,
-  G19_KEY_G3 = 1 << 2,
-  G19_KEY_G4 = 1 << 3,
-  G19_KEY_G5 = 1 << 4,
-  G19_KEY_G6 = 1 << 5,
-  G19_KEY_G7 = 1 << 6,
-  G19_KEY_G8 = 1 << 7,
-  G19_KEY_G9 = 1 << 8,
-  G19_KEY_G10 = 1 << 9,
-  G19_KEY_G11 = 1 << 10,
-  G19_KEY_G12 = 1 << 11,
+    G19_KEY_G1 = 1 << 0,
+    G19_KEY_G2 = 1 << 1,
+    G19_KEY_G3 = 1 << 2,
+    G19_KEY_G4 = 1 << 3,
+    G19_KEY_G5 = 1 << 4,
+    G19_KEY_G6 = 1 << 5,
+    G19_KEY_G7 = 1 << 6,
+    G19_KEY_G8 = 1 << 7,
+    G19_KEY_G9 = 1 << 8,
+    G19_KEY_G10 = 1 << 9,
+    G19_KEY_G11 = 1 << 10,
+    G19_KEY_G12 = 1 << 11,
 
-  G19_KEY_M1 = 1 << 12,
-  G19_KEY_M2 = 1 << 13,
-  G19_KEY_M3 = 1 << 14,
-  G19_KEY_MR = 1 << 15,
+    G19_KEY_M1 = 1 << 12,
+    G19_KEY_M2 = 1 << 13,
+    G19_KEY_M3 = 1 << 14,
+    G19_KEY_MR = 1 << 15,
 
-  G19_KEY_LHOME = 1 << 16,
-  G19_KEY_LCANCEL = 1 << 17,
-  G19_KEY_LMENU = 1 << 18,
-  G19_KEY_LOK = 1 << 19,
-  G19_KEY_LRIGHT = 1 << 20,
-  G19_KEY_LLEFT = 1 << 21,
-  G19_KEY_LDOWN = 1 << 22,
-  G19_KEY_LUP = 1 << 23,
-  G19_KEY_LIGHT = 1 << 24
+    G19_KEY_LHOME = 1 << 16,
+    G19_KEY_LCANCEL = 1 << 17,
+    G19_KEY_LMENU = 1 << 18,
+    G19_KEY_LOK = 1 << 19,
+    G19_KEY_LRIGHT = 1 << 20,
+    G19_KEY_LLEFT = 1 << 21,
+    G19_KEY_LDOWN = 1 << 22,
+    G19_KEY_LUP = 1 << 23,
+    G19_KEY_LIGHT = 1 << 24
 };
+
+enum Flags {
+    G19_HAS_G_KEYS,
+    G19_HAS_M_KEYS,
+    G19_HAS_BACKLIGHT_CONTROL,
+    G19_HAS_BRIGHTNESS_CONTROL
+};
+
+//#define G19_HAS_G_KEYS (1 << 0)
+//#define G19_HAS_M_KEYS (1 << 1)
+//#define G19_HAS_BACKLIGHT_CONTROL (1 << 2)
+//#define G19_HAS_BRIGHTNESS_CONTROL (1 << 3)
+
+
+typedef struct {
+    uint16_t vid;
+    uint16_t pid;
+    QList<Flags> flags;
+    int interface;
+} G19DeviceType;
 
 typedef void (*G19KeysCallback)(unsigned int keys);
 
 class G19Device : public QObject {
-  Q_OBJECT
+Q_OBJECT
+
 public:
-  int rawkey;
+    int rawkey{};
 
-  G19Device();
-  ~G19Device();
+    G19Device();
 
-  void initializeDevice();
-  void openDevice();
-  void closeDevice();
-  void eventThread();
+    ~G19Device() override;
 
-  void updateLcd(QImage *img);
-  void setKeysBacklight(QColor color);
-  QColor getKeysBacklight();
-  void setMKeys(bool m1, bool m2, bool m3, bool mr);
-  void setDisplayBrightness(unsigned char brightness);
+    void initialize();
 
-  void gKeyCallback(unsigned int keys);
-  void lKeyCallback(unsigned int keys);
+    void uninitialize();
 
-  G19Keys getActiveMKey();
+    void openDevice(libusb_device_handle *device);
 
-  unsigned int getKeys();
+    void closeDevice();
 
-  bool gKeysTransferCancelled;
-  bool lKeysTransferCancelled;
+    void eventThread();
+
+    bool probeDevice(libusb_device *device);
+
+    bool isDevice(libusb_device *device);
+
+    void updateLcd(QImage *image);
+
+    void setKeysBacklight(QColor color);
+
+    QColor getKeysBacklight();
+
+    void setMKeys(bool m1, bool m2, bool m3, bool mr);
+
+    void setDisplayBrightness(unsigned char brightness);
+
+    void gKeyCallback(unsigned int keys);
+
+    void lKeyCallback(unsigned int keys);
+
+    G19Keys getActiveMKey();
+
+    unsigned int getKeys();
+
+    bool gKeysTransferCancelled;
+    bool lKeysTransferCancelled;
+
+    G19DeviceType type{};
 
 private:
-  unsigned int lastkeys;
-  bool isDeviceConnected;
-  bool isInitialized;
-  bool enableEventThread;
-  bool isTransfering;
-  QString cstatus;
-  G19Keys activeMKey;
+    unsigned int lastkeys;
+    bool isDeviceConnected;
+    bool isInitialized;
+    bool enableEventThread;
+    bool isTransfering;
+    QString cstatus;
+    G19Keys activeMKey;
 
-  libusb_transfer *gKeysTransfer;
-  libusb_transfer *lKeysTransfer;
-  libusb_transfer *dataTransfer;
+    libusb_transfer *gKeysTransfer;
+    libusb_transfer *lKeysTransfer;
+    libusb_transfer *dataTransfer{};
 
-  unsigned char gKeysBuffer[4];
-  unsigned char lKeysBuffer[2];
+    unsigned char gKeysBuffer[4]{};
+    unsigned char lKeysBuffer[2]{};
 
-  libusb_context *context;
-  libusb_device_handle *deviceHandle;
-  libusb_device_descriptor deviceDesc;
-  libusb_device **devs;
-  libusb_device *dev;
-  //		int usbInterfaceNumber;
+    libusb_context *context;
+    libusb_device_handle *deviceHandle;
+    libusb_device_descriptor deviceDesc{};
+    libusb_hotplug_callback_handle hotplugCallback{};
 
-  QFuture<void> future;
+    bool probeDevices();
 
-  unsigned char *dataBuff;
+    QFuture<void> future;
 
-  QColor backLight;
+    unsigned char *dataBuff;
+
+    QColor backLight;
 
 signals:
-  void gKey();
-  void lKey();
+
+    void gKey();
+
+    void lKey();
 
 public slots:
-  void changeKeysBacklight(const QColor& color);
+
+    void changeKeysBacklight(const QColor &color);
 };
 
 #endif // G19_H

@@ -19,17 +19,16 @@
 
 #include "helloworld.hpp"
 #include "../../g19daemon.hpp"
-#include "../../gscreen.hpp"
 #include <QImage>
 #include <QPainter>
 #include <QString>
 #include <QtCore>
 
 HelloWorld::HelloWorld() {
-  Q_INIT_RESOURCE(helloworld);
+    Q_INIT_RESOURCE(helloworld);
 
-  isActive = false;
-  screen = new Gscreen(QImage(":/helloworld/icon.png"), tr("Hello World"));
+    isActive = false;
+    screen = new Gscreen(QImage(":/helloworld/icon.png"), tr("Hello World"));
 }
 
 HelloWorld::~HelloWorld() { delete screen; }
@@ -41,23 +40,23 @@ void HelloWorld::lKeys(int keys) {}
 void HelloWorld::mKeys(int keys) {}
 
 void HelloWorld::setActive(bool active) {
-  isActive = active;
+    isActive = active;
 
-  if (active) {
-    paint();
-  }
+    if (active) {
+        paint();
+    }
 }
 
 void HelloWorld::paint() {
-  QPainter *p;
+    QPainter *p;
 
-  if (!isActive)
-    return;
+    if (!isActive)
+        return;
 
-  p = screen->begin();
-  p->drawText(0, 0, 320, 206, Qt::AlignCenter, tr("Hello World!"));
-  screen->end();
-  emit doAction(displayScreen, screen);
+    p = screen->begin();
+    p->drawText(0, 0, 320, 206, Qt::AlignCenter, tr("Hello World!"));
+    screen->end();
+    emit doAction(displayScreen, screen);
 }
 
 bool HelloWorld::isPopup() { return false; }

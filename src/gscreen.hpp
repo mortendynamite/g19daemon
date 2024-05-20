@@ -26,51 +26,65 @@
 #include <QPainter>
 #include <QRgb>
 #include <QString>
+#include <QObject>
 
 class Gscreen : public QObject {
-  Q_OBJECT
+Q_OBJECT
 
 public:
-  Gscreen(const QImage &Icon, const QString &Name);
-  ~Gscreen();
+    Gscreen(const QImage &Icon, const QString &Name);
 
-  void setName(const QString &Name);
-  void setIcon(const QImage &Icon);
+    ~Gscreen();
 
-  QFont getTextFont();
-  QFontMetrics getTextFontMetrics();
-  QRgb getTextRgb();
-  QRgb getControlBackroundRgb();
-  QRgb getControlRgb();
+    void setName(const QString &Name);
 
-  QImage *getScreen();
+    void setIcon(const QImage &Icon);
 
-  QImage *draw();
-  QImage *drawFullScreen();
-  QPainter *begin();
-  QPainter *beginFullScreen();
+    QFont getTextFont();
 
-  void drawHGuage(int x, int y, int w, int h, int pos);
-  void drawHGuage(int x, int y, int w, int h, int pos, QColor color);
-  void drawVGuage(int x, int y, int w, int h, int pos);
-  void drawVGuage(int x, int y, int w, int h, int pos, QColor color);
-  void end();
+    QFontMetrics getTextFontMetrics();
 
-  void drawScrollbar(int pos, int max);
+    QRgb getTextRgb();
+
+    QRgb getControlBackroundRgb();
+
+    QRgb getControlRgb();
+
+    QImage *getScreen();
+
+    QImage *draw();
+
+    QImage *drawFullScreen();
+
+    QPainter *begin();
+
+    QPainter *beginFullScreen();
+
+    void drawHGuage(int x, int y, int w, int h, int pos);
+
+    void drawHGuage(int x, int y, int w, int h, int pos, QColor color);
+
+    void drawVGuage(int x, int y, int w, int h, int pos);
+
+    void drawVGuage(int x, int y, int w, int h, int pos, QColor color);
+
+    void end();
+
+    void drawScrollbar(int pos, int max);
 
 private:
-  QImage *screen;
-  QImage *userscreen;
-  QImage *icon;
-  QFont fontHeader;
-  QFont fontText;
-  QPainter *userPainter;
-  QRgb rgbText;
-  QRgb rgbHeaderText;
-  QRgb rgbControlBackground;
-  QRgb rgbControl;
-  QString fontName;
-  QString name;
+    QImage *screen;
+    QImage *userscreen;
+    QImage *icon;
+    QFont fontHeader;
+    QFont fontText;
+    QPainter *userPainter;
+    QRgb rgbText;
+    QRgb rgbHeaderText;
+    QRgb rgbControlBackground;
+    QRgb rgbControl;
+    QString fontName;
+    QString name;
 };
 
 #endif // GSCREEN_H

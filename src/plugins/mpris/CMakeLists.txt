@@ -1,26 +1,32 @@
-cmake_minimum_required(VERSION 3.1)
+cmake_minimum_required(VERSION 3.24)
 
 project(mpris)
 
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_AUTOMOC ON)
+set(CMAKE_AUTOUIC ON)
+
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_CURRENT_SOURCE_DIR}/CMakeModules/")
 
-find_package(Qt5Core)
-find_package(Qt5Gui)
-find_package(Qt5DBus)
-find_package(Qt5Network)
+find_package(Qt6 REQUIRED COMPONENTS Core Gui Network)
+qt_standard_project_setup()
 
-include_directories(${Qt5Core_INCLUDE_DIRS} ${Qt5Gui_INCLUDE_DIRS} ${Qt5DBus_INCLUDE_DIRS} ${Qt5Network_INCLUDE_DIRS} ${LIBUSB_1_INCLUDE_DIRS})
-
-# Instruct CMake to run moc automatically when needed.
-set(CMAKE_AUTOMOC ON)
+include_directories(${Qt6Core_INCLUDE_DIRS} ${Qt6Gui_INCLUDE_DIRS} ${LIBUSB_1_INCLUDE_DIRS})
 
 set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -Wall -ggdb")
 
-qt5_add_resources(mpris_QRC mpris.qrc)
+set(mpris_SRC
+        mpris.cpp
+        mprisfetcher2.cpp
+        ../../gscreen.cpp
+        ../../plugininterface.hpp
+)
 
-add_library(mpris SHARED mpris.cpp mprisfetcher2.cpp ${mpris_QRC})
-target_link_libraries(mpris ${Qt5Core_LIBRARIES} ${Qt5Gui_LIBRARIES} ${Qt5DBus_LIBRARIES} ${Qt5Network_LIBRARIES})
+qt_add_resources(mpris_QRC mpris.qrc)
 
-qt5_use_modules(mpris Core Gui DBus)
+qt_add_library(mpris SHARED ${mpris_SRC} ${mpris_QRC})
+target_link_libraries(mpris ${Qt6Core_LIBRARIES} ${Qt6Gui_LIBRARIES} Qt6::Network)
 
+message("Plugins dir ${PLUGINS_DIR}")
 install(TARGETS mpris LIBRARY DESTINATION ${PLUGINS_DIR})

@@ -26,29 +26,40 @@
 #include <QtPlugin>
 
 class HelloWorld : public QObject, public PluginInterface {
-  Q_OBJECT
-  Q_INTERFACES(PluginInterface)
+Q_OBJECT
 
-  Q_PLUGIN_METADATA(IID "your-string-here")
+    Q_INTERFACES(PluginInterface)
+
+    Q_PLUGIN_METADATA(IID "your-string-here")
 
 public:
-  HelloWorld();
-  ~HelloWorld();
-  void lKeys(int keys);
-  QString getName();
-  QImage getIcon();
-  void setActive(bool active);
-  bool isPopup();
-  QObject *getQObject();
-  void mKeys(int keys);
+    HelloWorld();
+
+    ~HelloWorld() override;
+
+    void lKeys(int keys) override;
+
+    QString getName() override;
+
+    QImage getIcon() override;
+
+    void setActive(bool active) override;
+
+    bool isPopup() override;
+
+    QObject *getQObject() override;
+
+    void mKeys(int keys) override;
 
 private:
-  Gscreen *screen;
-  bool isActive;
-  void paint();
+    Gscreen *screen;
+    bool isActive;
+
+    void paint();
 
 signals:
-  void doAction(gAction action, void *data); // Signal to draw img on screen
+
+    void doAction(gAction action, void *data); // Signal to draw img on screen
 };
 
 #endif // HELLOWORLD_H

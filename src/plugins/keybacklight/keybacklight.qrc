@@ -1,6 +1,7 @@
-<!DOCTYPE RCC><RCC version="1.0">
-<qresource prefix="/keybacklight">
-    <file alias="icon.png">images/icon.png</file>
-	<file alias="menu_icon.png">images/menu_icon.png</file>
-</qresource>
+<!DOCTYPE RCC>
+<RCC version="1.0">
+    <qresource prefix="/keybacklight">
+        <file alias="icon.png">images/icon.png</file>
+        <file alias="menu_icon.png">images/menu_icon.png</file>
+    </qresource>
 </RCC>

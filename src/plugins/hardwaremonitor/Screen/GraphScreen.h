@@ -5,40 +5,45 @@
 #include "../external/QCustomPlot/qcustomplot.h"
 #include "LegendScreen.h"
 
-class GraphScreen : public Screen
-{
+class GraphScreen : public Screen {
 public:
     GraphScreen(QString);
-	virtual ~GraphScreen();
+
+    virtual ~GraphScreen();
 
     void draw(Gscreen *screen);
-	void update();
 
-	ScreenType getScreenType();
+    void update();
 
-	void setData(QList<GraphLine>);
+    ScreenType getScreenType();
+
+    void setData(QList<GraphLine>);
+
     void okPressed();
-	QList<GraphLine> getData();
 
-	void setBackground(QString background);
+    QList<GraphLine> getData();
 
-	void cleanData();
-	void openCustomScreen();
-	void setSettings(GraphSettings settings);
+    void setBackground(QString background);
 
-	GraphSettings getGraphSettings();
+    void cleanData();
+
+    void openCustomScreen();
+
+    void setSettings(GraphSettings settings);
+
+    GraphSettings getGraphSettings();
 
 private:
-	void createPlot();
+    void createPlot();
 
-	QList<GraphLine> graphData_;
-	QCustomPlot * plot_;
-	int Xpos_;
+    QList<GraphLine> graphData_;
+    QCustomPlot *plot_;
+    int Xpos_;
 
-	LegendScreen * legendScreen_;
-	bool legendOpen_;
-	GraphSettings settings_;
-	
+    LegendScreen *legendScreen_;
+    bool legendOpen_;
+    GraphSettings settings_;
+
 };
 
 #endif

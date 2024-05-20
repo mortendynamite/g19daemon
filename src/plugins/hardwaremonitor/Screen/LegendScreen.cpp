@@ -1,8 +1,8 @@
 #include "LegendScreen.h"
 
 LegendScreen::LegendScreen(QString name)
-    : Screen(name), Xpos_(0), settings_({0}), firstrun_(true) {
-  // setBackground("");
+        : Screen(name), Xpos_(0), settings_({0}), firstrun_(true) {
+    // setBackground("");
 }
 
 LegendScreen::~LegendScreen() {}
@@ -10,37 +10,37 @@ LegendScreen::~LegendScreen() {}
 ScreenType LegendScreen::getScreenType() { return ScreenType::Legend; }
 
 void LegendScreen::draw(Gscreen *screen) {
-  QPainter *p = screen->beginFullScreen();
+    QPainter *p = screen->beginFullScreen();
 
-  QPixmap background(getBackground());
+    QPixmap background(getBackground());
 
-  p->drawPixmap(0, 0, 320, 240, background);
-
-  p->setFont(settings_.titleFont);
-  p->setPen(settings_.titleColor);
-  const QRect rectangle = QRect(0, 0, 320, 50);
-  QRect boundingRect;
-  p->drawText(rectangle, Qt::AlignCenter | Qt::AlignTop | Qt::TextSingleLine,
-              name_, &boundingRect);
-
-  QFontMetrics titleMetric(settings_.titleFont);
-
-  int textPosition = titleMetric.height() + settings_.titleFont.pointSize() + 5;
-
-  for (int i = 0; i < graphData_.size(); i++) {
-    const QRect rectangle = QRect(0, textPosition, 320, 50);
+    p->drawPixmap(0, 0, 320, 240, background);
 
     p->setFont(settings_.titleFont);
-    p->setPen(graphData_[i].color);
-    p->drawText(rectangle, Qt::AlignLeft | Qt::AlignTop | Qt::TextSingleLine,
-                graphData_[i].text + " (" + graphData_[i].query.unit + ")");
+    p->setPen(settings_.titleColor);
+    const QRect rectangle = QRect(0, 0, 320, 50);
+    QRect boundingRect;
+    p->drawText(rectangle, Qt::AlignCenter | Qt::AlignTop | Qt::TextSingleLine,
+                name_, &boundingRect);
 
-    QFontMetrics metric(settings_.titleFont);
+    QFontMetrics titleMetric(settings_.titleFont);
 
-    textPosition += metric.height() + 5;
-  }
+    int textPosition = titleMetric.height() + settings_.titleFont.pointSize() + 5;
 
-  screen->end();
+    for (int i = 0; i < graphData_.size(); i++) {
+        const QRect rectangle = QRect(0, textPosition, 320, 50);
+
+        p->setFont(settings_.titleFont);
+        p->setPen(graphData_[i].color);
+        p->drawText(rectangle, Qt::AlignLeft | Qt::AlignTop | Qt::TextSingleLine,
+                    graphData_[i].text + " (" + graphData_[i].query.unit + ")");
+
+        QFontMetrics metric(settings_.titleFont);
+
+        textPosition += metric.height() + 5;
+    }
+
+    screen->end();
 }
 
 void LegendScreen::update() {}

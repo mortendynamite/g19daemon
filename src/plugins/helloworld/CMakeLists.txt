@@ -1,29 +1,31 @@
-cmake_minimum_required(VERSION 3.1)
+cmake_minimum_required(VERSION 3.24)
 
 project(helloworld)
 
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_AUTOMOC ON)
+set(CMAKE_AUTOUIC ON)
+
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_CURRENT_SOURCE_DIR}/CMakeModules/")
 
-find_package(Qt5Core)
-find_package(Qt5Gui)
+find_package(Qt6 REQUIRED COMPONENTS Core Gui)
+qt_standard_project_setup()
 
-include_directories(${Qt5Core_INCLUDE_DIRS} ${Qt5Gui_INCLUDE_DIRS} ${LIBUSB_1_INCLUDE_DIRS})
-
-# Instruct CMake to run moc automatically when needed.
-set(CMAKE_AUTOMOC ON)
+include_directories(${Qt6Core_INCLUDE_DIRS} ${Qt6Gui_INCLUDE_DIRS} ${LIBUSB_1_INCLUDE_DIRS})
 
 set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -Wall -ggdb")
 
 set(helloworld_SRC
-  helloworld.cpp
+        helloworld.cpp
+        ../../gscreen.cpp
+        ../../plugininterface.hpp
 )
 
-qt5_add_resources(helloworld_QRC helloworld.qrc)
+qt_add_resources(helloworld_QRC helloworld.qrc)
 
-add_library(helloworld SHARED ${helloworld_SRC} ${helloworld_QRC})
-target_link_libraries(helloworld ${Qt5Core_LIBRARIES} ${Qt5Gui_LIBRARIES})
-
-qt5_use_modules(helloworld Core Gui)
+qt_add_library(helloworld SHARED ${helloworld_SRC} ${helloworld_QRC})
+target_link_libraries(helloworld ${Qt6Core_LIBRARIES} ${Qt6Gui_LIBRARIES})
 
 message("Plugins dir ${PLUGINS_DIR}")
 install(TARGETS helloworld LIBRARY DESTINATION ${PLUGINS_DIR})

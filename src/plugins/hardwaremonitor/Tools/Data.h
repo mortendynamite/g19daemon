@@ -9,31 +9,35 @@
 #include "MonitorTool.h"
 
 
-class Data
-{
+class Data {
 public:
-	static Data * Instance();
-	static void removeInstance();
+    static Data *Instance();
 
-	virtual ~Data();
+    static void removeInstance();
+
+    virtual ~Data();
 
     QVector<Query> getAllData(MonitorSystem system);
-	QStringList translateLines(QList<LineText>);
-	QList<double> translateLines(QList<GraphLine>);
+
+    QStringList translateLines(QList<LineText>);
+
+    QList<double> translateLines(QList<GraphLine>);
 
     double translateLine(Query);
 
 private:
 
-	Data();
+    Data();
 
-	QList<MonitorTool *> tools_;
-	GeneralSettings settings_;
+    QList<MonitorTool *> tools_;
+    GeneralSettings settings_;
 
-	QMap<QString, QString> queryMapData(QMap<QString, Query>);
-	MonitorTool * getMonitorTool(MonitorSystem);
+    QMap<QString, QString> queryMapData(QMap<QString, Query>);
 
-	static Data* dataInstance;
-	
+    MonitorTool *getMonitorTool(MonitorSystem);
+
+    static Data *dataInstance;
+
 };
+
 #endif

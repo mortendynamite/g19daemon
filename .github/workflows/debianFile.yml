@@ -23,7 +23,7 @@ jobs:
     - name: Install Qt
       uses: jurplel/install-qt-action@v2
       with:
-        version: '5.12.6'
+        version: '6.7'
     - name: Build deb file
       run: dpkg-buildpackage -b --no-sign
     - name: Move deb file

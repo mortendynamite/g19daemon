@@ -4,19 +4,21 @@
 #include "../Defines.h"
 
 
-class MonitorTool
-{
+class MonitorTool {
 public:
 
-	MonitorTool();
+    MonitorTool();
 
-	virtual ~MonitorTool();
+    virtual ~MonitorTool();
 
     virtual QVector<Query> getAllSensors();
-	virtual MonitorSystem getMonitorSystem();
+
+    virtual MonitorSystem getMonitorSystem();
+
     virtual double getData(Query);
 
 private:
 
 };
+
 #endif
