@@ -1,16 +1,21 @@
+g19daemon (0.6.0) stable; urgency=low
+  * Feature: Mirate to Qt6
+
+  -- JimmyD-be <Lonelobo0070@g19daemon.com>  Sun, 8 Dec 2024 13:16:51 +0200
+
 g19daemon (0.5.3) stable; urgency=low
-  * BufFix: Load background color when G19daemon is starting.
+  * BugFix: Load background color when G19daemon is starting.
 
   -- JimmyD-be <Lonelobo0070@g19daemon.com>  Sun, 2 Jan 2022 13:16:51 +0200
 
 g19daemon (0.5.2) stable; urgency=low
-  * BufFix: Changed way the application checks for already running
+  * BugFix: Changed way the application checks for already running
 
   -- JimmyD-be <Lonelobo0070@g19daemon.com>  Tue, 14 Sep 2021 19:28:51 +0200
 
 g19daemon (0.5) stable; urgency=low
   * Feature: Changed Hardware monitor plugin to support new features
-  * BufFix: Fixed some bugs in Hardware monitor plugin
+  * BugFix: Fixed some bugs in Hardware monitor plugin
 
   -- JimmyD-be <Lonelobo0070@g19daemon.com>  Sat, 7 Nov 2020 10:09:51 +0200
 

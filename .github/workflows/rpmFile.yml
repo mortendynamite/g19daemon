@@ -14,16 +14,6 @@ jobs:
         submodules: recursive
     - name: Install build dependencies
       run: sudo apt update && sudo apt install debhelper libusb-1.0-0-dev libpulse-dev rpm qt6-base-dev
-#    - name: Cache Qt
-#      id: cache-qt
-#      uses: actions/cache@v4
-#      with:
-#        path: ../Qt
-#        key: ${{ runner.os }}-QtCache
-#    - name: Install Qt
-#      uses: jurplel/install-qt-action@v4
-#      with:
-#        version: '6.7'
     - name: Build G19daemon
       run: mkdir build && cd build && cmake -DCMAKE_INSTALL_PREFIX:PATH=/usr .. && make
     - name: Build rpm file
