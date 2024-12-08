@@ -5,7 +5,7 @@ on: push
 jobs:
   build-deb:
 
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-24.04
 
     steps:
     - name: Checkout repository and submodules
@@ -13,23 +13,13 @@ jobs:
       with:
         submodules: recursive
     - name: Install build dependencies
-      run: sudo apt update && sudo apt install debhelper libusb-1.0-0-dev libpulse-dev
-    - name: Cache Qt
-      id: cache-qt
-      uses: actions/cache@v1
-      with:
-        path: ../Qt
-        key: ${{ runner.os }}-QtCache
-    - name: Install Qt
-      uses: jurplel/install-qt-action@v2
-      with:
-        version: '6.7'
+      run: sudo apt update && sudo apt install debhelper libusb-1.0-0-dev libpulse-dev qt6-base-dev build-essential
     - name: Build deb file
       run: dpkg-buildpackage -b --no-sign
     - name: Move deb file
       run: cp ../*deb ./
     - name: Upload artifact
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v4
       with:
         name: X64
         path: ${{ github.workspace }}/*.deb
