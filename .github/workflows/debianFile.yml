@@ -16,7 +16,7 @@ jobs:
       run: sudo apt update && sudo apt install debhelper libusb-1.0-0-dev libpulse-dev
     - name: Cache Qt
       id: cache-qt
-      uses: actions/cache@v1
+      uses: actions/cache@v4
       with:
         path: ../Qt
         key: ${{ runner.os }}-QtCache
