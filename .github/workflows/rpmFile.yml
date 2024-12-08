@@ -21,7 +21,7 @@ jobs:
         path: ../Qt
         key: ${{ runner.os }}-QtCache
     - name: Install Qt
-      uses: jurplel/install-qt-action@v2
+      uses: jurplel/install-qt-action@v4
       with:
         version: '6.7'
     - name: Build G19daemon
@@ -29,7 +29,7 @@ jobs:
     - name: Build rpm file
       run: cd build && sudo cpack -G RPM
     - name: Upload artifact
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v4
       with:
         name: X64
         path: ${{ github.workspace }}/build/*.rpm
