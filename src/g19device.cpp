@@ -31,8 +31,7 @@ using namespace std;
 static G19DeviceType deviceTypes[] =
         {
                 {0x046d, 0xc229, QList(
-                        {G19_HAS_G_KEYS, G19_HAS_BACKLIGHT_CONTROL, G19_HAS_BRIGHTNESS_CONTROL, G19_HAS_M_KEYS}), 1},
-                {0x046d, 0xc629, QList<Flags>(0),                                                                 0},
+                        {G19_HAS_G_KEYS, G19_HAS_BACKLIGHT_CONTROL, G19_HAS_BRIGHTNESS_CONTROL, G19_HAS_M_KEYS}), 1}
         };
 
 
