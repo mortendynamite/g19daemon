@@ -1,6 +1,8 @@
 name: Build + cppcheck
 
-on: push
+on:
+  push:
+  workflow_dispatch:
 
 jobs:
   build-cppcheck:

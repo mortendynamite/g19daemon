@@ -1,6 +1,8 @@
 name: Build deb file
 
-on: push
+on:
+  push:
+  workflow_dispatch:
 
 jobs:
   build-deb:
