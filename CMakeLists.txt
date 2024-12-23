@@ -8,14 +8,17 @@ set(CMAKE_INSTALL_PREFIX /usr)
 
 include(FetchContent)
 
-set(CPACK_RPM_PACKAGE_SUMMARY "G19daemon provides multiple virtual screens for the LCD on the Logitech G19 Keyboar")
+set(CPACK_RPM_PACKAGE_SUMMARY "G19daemon provides multiple virtual screens for the LCD on the Logitech G19 Keyboard")
 set(CPACK_RPM_PACKAGE_NAME "g19deamon")
-set(CPACK_RPM_PACKAGE_DESCRIPTION "G19daemon provides multiple virtual screens for the LCD on the Logitech G19 Keyboar")
+set(CPACK_RPM_PACKAGE_DESCRIPTION "G19daemon provides multiple virtual screens for the LCD on the Logitech G19 Keyboard")
+set(CPACK_PACKAGE_VERSION_MAJOR 0)
+set(CPACK_PACKAGE_VERSION_MINOR 6)
+set(CPACK_PACKAGE_VERSION_PATCH 1)
 include(CPack)
 
-set(VERSION_MAJOR 0 CACHE STRING "Major version" FORCE)
-set(VERSION_MINOR 1 CACHE STRING "Minor version" FORCE)
-set(VERSION_REVISION 2 CACHE STRING "Revison" FORCE)
+#set(VERSION_MAJOR 0 CACHE STRING "Major version" FORCE)
+#set(VERSION_MINOR 1 CACHE STRING "Minor version" FORCE)
+#set(VERSION_REVISION 2 CACHE STRING "Revison" FORCE)
 
 set(PLUGINS_DIR lib/g19daemon/plugins CACHE PATH "Path to installed plugins")
 set(THEMES_DIR lib/g19daemon/themes CACHE PATH "Path to installed themes")
