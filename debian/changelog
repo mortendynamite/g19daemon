@@ -1,3 +1,8 @@
+g19daemon (0.6.1) stable; urgency=low
+  * BugFix: Removed device class
+
+  -- JimmyD-be <Lonelobo0070@g19daemon.com>  Mon, 23 Dec 2024 08:32:00 +0200
+
 g19daemon (0.6.0) stable; urgency=low
   * Feature: Mirate to Qt6
 
