@@ -19,15 +19,13 @@
 
 #include "config.h"
 #include "g19daemon.hpp"
-#include <QApplication>
 #include <QtCore/QtCore>
-#include <singleapplication.h>
+#include <QApplication>
 
 
 int main(int argc, char **argv) {
 
-    //Create a application with only one instance
-    SingleApplication app(argc, argv);
+    QApplication app(argc, argv);
     QCoreApplication::setApplicationName("G19");
     QCoreApplication::setApplicationVersion(VERSION);
 

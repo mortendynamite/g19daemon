@@ -59,27 +59,11 @@ set(g19daemon_SRC
 
 qt_add_resources(g19daemon_QRC src/g19daemon.qrc)
 
-set(QAPPLICATION_CLASS QApplication CACHE STRING "Inheritance class for SingleApplication")
 # If using Qt6, override DEFAULT_MAJOR_VERSION
 set(QT_DEFAULT_MAJOR_VERSION 6 CACHE STRING "Qt version to use, defaults to 6")
 
-# Declare how is the source going to be obtained
-FetchContent_Declare(
-        SingleApplication
-        GIT_REPOSITORY https://github.com/itay-grudev/SingleApplication
-        GIT_TAG        master
-        #GIT_TAG        e22a6bc235281152b0041ce39d4827b961b66ea6
-)
-
-# Fetch the repository and make it available to the build
-FetchContent_MakeAvailable(SingleApplication)
-
-# Then simply use find_package as usual
-find_package(SingleApplication)
-
-
 add_executable(g19daemon ${g19daemon_SRC} ${g19daemon_QRC})
-target_link_libraries(g19daemon ${Qt6Core_LIBRARIES} ${Qt6Gui_LIBRARIES} ${Qt6Widgets_LIBRARIES} ${LIBUSB_1_LIBRARIES} ${PULSEAUDIO_LIBRARY} ${PULSEAUDIO_MAINLOOP_LIBRARY} SingleApplication::SingleApplication)
+target_link_libraries(g19daemon ${Qt6Core_LIBRARIES} ${Qt6Gui_LIBRARIES} ${Qt6Widgets_LIBRARIES} ${LIBUSB_1_LIBRARIES} ${PULSEAUDIO_LIBRARY} ${PULSEAUDIO_MAINLOOP_LIBRARY})
 
 install(TARGETS g19daemon RUNTIME DESTINATION bin)
 install(PROGRAMS src/g19daemon.desktop DESTINATION share/applications)
