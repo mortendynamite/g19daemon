@@ -26,4 +26,7 @@ _CPack_Packages/
 
 *.deb
 
+.idea/*
+cmake-build-debug/*
+
 *.autosave
