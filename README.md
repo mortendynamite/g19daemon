@@ -55,9 +55,6 @@ Before you can build G19daemon you need some packages installed:
 - Qt
 - Cmake
 
-The source is using a git submodule. You need to pull this to make a build. You can clone the submodule by running  
-```git submodule update --init --recursive```
-
 After installing all the above packages you can run 'sh ./mb.sh && sudo make install'. The script will build the code
 and install it on the system.
 
