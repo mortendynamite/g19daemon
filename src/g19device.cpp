@@ -62,14 +62,20 @@ extern "C" void LIBUSB_CALL GKeysCallback(libusb_transfer *transfer) {
     }
 
     if (status == LIBUSB_TRANSFER_COMPLETED) {
-        if (transfer->length < 3)
+        if (transfer->actual_length < 3) {
+            libusb_submit_transfer(transfer);
             return;
+        }
 
-        if (transfer->buffer[0] < 1)
+        if (transfer->buffer[0] != 0x02) {
+            libusb_submit_transfer(transfer);
             return;
+        }
 
-        if ((transfer->buffer[1] & 0x00) && (transfer->buffer[2] & 0x00))
+        if ((transfer->buffer[1] == 0x00) && (transfer->buffer[2] == 0x00)) {
+            cthis->gKeyCallback(0);
             return;
+        }
 
         if (transfer->buffer[1] & 0x01)
             keys |= G19_KEY_G1;
@@ -281,8 +287,8 @@ void G19Device::openDevice(libusb_device_handle *handle) {
         if (type.flags.contains(G19_HAS_G_KEYS)) {
             gKeysTransfer = libusb_alloc_transfer(0);
             libusb_fill_interrupt_transfer(gKeysTransfer, handle,
-                                           LIBUSB_ENDPOINT_IN | LIBUSB_RECIPIENT_OTHER,
-                                           gKeysBuffer, 4, GKeysCallback, this, 0);
+                                           0x83,
+                                           gKeysBuffer, 7, GKeysCallback, this, 0);
             libusb_submit_transfer(gKeysTransfer);
         }
 

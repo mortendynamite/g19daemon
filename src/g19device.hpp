@@ -144,7 +144,7 @@ private:
     libusb_transfer *lKeysTransfer;
     libusb_transfer *dataTransfer{};
 
-    unsigned char gKeysBuffer[4]{};
+    unsigned char gKeysBuffer[7]{};
     unsigned char lKeysBuffer[2]{};
 
     libusb_context *context;
