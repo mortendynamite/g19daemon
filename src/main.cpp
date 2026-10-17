@@ -26,6 +26,7 @@
 int main(int argc, char **argv) {
 
     QApplication app(argc, argv);
+    app.setQuitOnLastWindowClosed(false);
     QCoreApplication::setApplicationName("G19");
     QCoreApplication::setApplicationVersion(VERSION);
 

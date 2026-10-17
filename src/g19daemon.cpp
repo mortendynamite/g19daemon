@@ -61,6 +61,7 @@ G19daemon::G19daemon(QWidget *parent)
     connect(device, SIGNAL(lKey()), SLOT(lKeys()));
 
     connect(ui->actionSave_settings, SIGNAL(triggered()), SLOT(saveSettings()));
+    connect(ui->actionClose_settings, SIGNAL(triggered()), SLOT(closeSettings()));
 
     connect(ui->m1BackgroundColorButton, SIGNAL(clicked()), SLOT(changeBackgroundColor()));
     connect(ui->m2BackgroundColorButton, SIGNAL(clicked()), SLOT(changeBackgroundColor()));
@@ -85,7 +86,7 @@ G19daemon::G19daemon(QWidget *parent)
     device->setMKeys(true, false, false, false);
 
     trayIconMenu = new QMenu(this);
-    trayIconMenu->addAction(tr("Show"), this, SLOT(show()));
+    trayIconMenu->addAction(tr("Show"), this, SLOT(Show()));
     trayIconMenu->addAction(tr("Reset LCD Backlight"), this,
                             SLOT(resetLcdBacklight()));
     trayIconMenu->addAction(QIcon(":/off.png"), "&Quit", this, SLOT(quit()));
@@ -162,6 +163,7 @@ void G19daemon::loadSettings() {
     }
 
     for (QComboBox *button: {ui->m1DefaultPlugin, ui->m2DefaultPlugin, ui->m3DefaultPlugin, ui->mrDefaultPlugin}) {
+        button->clear();
         button->addItem("");
         for (PluginInterface *plugin: plugins) {
             button->addItem(plugin->getName());
@@ -182,10 +184,11 @@ void G19daemon::loadSettings() {
 }
 
 void G19daemon::Show() {
-    for (QLineEdit *lineEdit: ui->mKeyTabWidget->findChildren<QLineEdit *>()) {
-
-        lineEdit->setText(settings->value(lineEdit->objectName()).toString());
-    }
+    loadSettings();
+    disablePluginProfile();
+    unsavedSettings = false;
+    swithProfile(ui->mKeyTabWidget->currentIndex());
+    show();
 }
 
 void G19daemon::saveSettings() {
@@ -212,7 +215,20 @@ void G19daemon::saveSettings() {
         settings->setValue(button->objectName(), button->value());
     }
 
+    settings->sync();
     unsavedSettings = false;
+
+    // Apply the freshly saved configuration to the active profile.
+    swithProfile(ui->mKeyTabWidget->currentIndex());
+}
+
+void G19daemon::closeSettings() {
+    // Discard unsaved UI changes and restore the running configuration.
+    loadSettings();
+    disablePluginProfile();
+    unsavedSettings = false;
+    swithProfile(ui->mKeyTabWidget->currentIndex());
+    close();
 }
 
 void G19daemon::resetLcdBacklight() {

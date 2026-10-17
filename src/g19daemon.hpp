@@ -81,6 +81,8 @@ public slots:
 
     void saveSettings();
 
+    void closeSettings();
+
     void doAction(gAction, void *data);
 
 private:

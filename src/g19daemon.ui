@@ -1131,6 +1131,7 @@
                     <string>File</string>
                 </property>
                 <addaction name="actionSave_settings"/>
+                <addaction name="actionClose_settings"/>
             </widget>
             <widget class="QMenu" name="menuPlugins">
                 <property name="title">
@@ -1148,6 +1149,7 @@
                 <bool>false</bool>
             </attribute>
             <addaction name="actionSave_settings"/>
+            <addaction name="actionClose_settings"/>
             <addaction name="separator"/>
             <addaction name="actionDisable_plugin_profile"/>
         </widget>
@@ -1163,6 +1165,19 @@
             </property>
             <property name="shortcut">
                 <string>Ctrl+S</string>
+            </property>
+        </action>
+        <action name="actionClose_settings">
+            <property name="icon">
+                <iconset theme="window-close">
+                    <normaloff>.</normaloff>.
+                </iconset>
+            </property>
+            <property name="text">
+                <string>Close</string>
+            </property>
+            <property name="shortcut">
+                <string>Ctrl+W</string>
             </property>
         </action>
         <action name="actionDisable_plugin_profile">
