@@ -115,6 +115,7 @@ G19daemon::~G19daemon() {
     delete settings;
 
     device->closeDevice();
+    device->uninitialize();
     delete device;
 }
 
