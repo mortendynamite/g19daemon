@@ -707,7 +707,8 @@ void G19daemon::switchActivePlugin(G19Keys key) {
 
     if (!defaultPlugin.isEmpty() && settings->value(ui->actionDisable_plugin_profile->objectName(), true).toBool()) {
 
-        activePlugin->setActive(false);
+        if (activePlugin != nullptr)
+            activePlugin->setActive(false);
 
         for (int i = 0; i < getActivePlugins().size(); i++) {
             if (getActivePlugins()[i]->getName() == defaultPlugin) {
