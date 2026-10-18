@@ -254,7 +254,12 @@ void G19daemon::gKeys() {
                     settings->value(translateKey(device->getActiveMKey()) + "_" + gKey)
                             .toString();
             qDebug() << translateKey(device->getActiveMKey()) << ":" << gKey << " Pressed, Run command: " << command;
-            QProcess::startDetached(command);
+
+            QStringList arguments = QProcess::splitCommand(command);
+            if (!arguments.isEmpty()) {
+                QString program = arguments.takeFirst();
+                QProcess::startDetached(program, arguments);
+            }
         }
     }
 }
