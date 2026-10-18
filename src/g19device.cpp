@@ -38,15 +38,25 @@ static G19DeviceType deviceTypes[] =
 extern "C" int LIBUSB_CALL
 HotplugCallback(libusb_context *ctx, libusb_device *device, libusb_hotplug_event event, void *user_data) {
     auto *cthis = static_cast<G19Device *>(user_data);
-    if (event == LIBUSB_HOTPLUG_EVENT_DEVICE_ARRIVED) {
-        qDebug() << "New Logitech device detected." << Qt::endl;
-        cthis->probeDevice(device);
-    } else if (event == LIBUSB_HOTPLUG_EVENT_DEVICE_LEFT) {
-        if (cthis->isDevice(device)) {
-            qDebug() << "Our device was unplugged." << Qt::endl;
-            cthis->closeDevice();
+
+    // libusb invokes hotplug callbacks from the event thread.  Device open/close
+    // may wait for transfer callbacks, so doing that work here can deadlock the
+    // event thread itself.  Keep the device alive and defer the work to Qt's
+    // main thread instead.
+    libusb_ref_device(device);
+    QMetaObject::invokeMethod(cthis, [cthis, device, event]() {
+        if (event == LIBUSB_HOTPLUG_EVENT_DEVICE_ARRIVED) {
+            qDebug() << "New Logitech device detected." << Qt::endl;
+            cthis->probeDevice(device);
+        } else if (event == LIBUSB_HOTPLUG_EVENT_DEVICE_LEFT) {
+            if (cthis->isDevice(device)) {
+                qDebug() << "Our device was unplugged." << Qt::endl;
+                cthis->closeDevice();
+            }
         }
-    }
+        libusb_unref_device(device);
+    }, Qt::QueuedConnection);
+
     return 0;
 }
 
@@ -285,6 +295,7 @@ void G19Device::openDevice(libusb_device_handle *handle) {
         isDeviceConnected = true;
 
         if (type.flags.contains(G19_HAS_G_KEYS)) {
+            gKeysTransferCancelled = false;
             gKeysTransfer = libusb_alloc_transfer(0);
             libusb_fill_interrupt_transfer(gKeysTransfer, handle,
                                            0x83,
@@ -292,6 +303,7 @@ void G19Device::openDevice(libusb_device_handle *handle) {
             libusb_submit_transfer(gKeysTransfer);
         }
 
+        lKeysTransferCancelled = false;
         lKeysTransfer = libusb_alloc_transfer(0);
         libusb_fill_interrupt_transfer(lKeysTransfer, handle,
                                        LIBUSB_ENDPOINT_IN |
