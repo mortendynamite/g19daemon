@@ -32,6 +32,7 @@
 #include <QMenu>
 #include <QPainter>
 #include <QPluginLoader>
+#include <QRegularExpression>
 #include <QSettings>
 #include <QSystemTrayIcon>
 #include <QWidget>
@@ -44,6 +45,13 @@ G19daemon::G19daemon(QWidget *parent)
     QColor BackLight;
 
     ui->setupUi(this);
+
+    // Keep all G-key command fields aligned, including G10-G12.
+    const int gKeyLabelWidth = fontMetrics().horizontalAdvance("G12") + 4;
+    for (QLabel *label: ui->mKeyTabWidget->findChildren<QLabel *>()) {
+        if (QRegularExpression("^G(?:[1-9]|1[0-2])$").match(label->text()).hasMatch())
+            label->setFixedWidth(gKeyLabelWidth);
+    }
 
     qRegisterMetaType<gAction>("gAction");
 
