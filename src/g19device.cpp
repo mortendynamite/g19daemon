@@ -299,6 +299,7 @@ void G19Device::openDevice(libusb_device_handle *handle) {
                                        lKeysBuffer, 2, LKeysCallback, this, 0);
         libusb_submit_transfer(lKeysTransfer);
         deviceHandle = handle;
+        emit deviceConnected();
     } else {
         qDebug() << "Cannot claim Interface" << Qt::endl;
         isDeviceConnected = false;

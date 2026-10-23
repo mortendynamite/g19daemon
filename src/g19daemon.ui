@@ -212,6 +212,24 @@
                                         </property>
                                         <layout class="QVBoxLayout" name="verticalLayout_3">
                                             <item>
+                                                <layout class="QHBoxLayout" name="m1StartupProfileLayout">
+                                                    <item>
+                                                        <widget class="QLabel" name="m1StartupProfileLabel">
+                                                            <property name="text">
+                                                                <string>Startup profile:</string>
+                                                            </property>
+                                                        </widget>
+                                                    </item>
+                                                    <item>
+                                                        <widget class="QCheckBox" name="m1StartupProfile">
+                                                            <property name="text">
+                                                                <string/>
+                                                            </property>
+                                                        </widget>
+                                                    </item>
+                                                </layout>
+                                            </item>
+                                            <item>
                                                 <layout class="QHBoxLayout" name="horizontalLayout_51">
                                                     <item>
                                                         <widget class="QLabel" name="label_49">
@@ -485,6 +503,24 @@
                                             </size>
                                         </property>
                                         <layout class="QVBoxLayout" name="verticalLayout_6">
+                                            <item>
+                                                <layout class="QHBoxLayout" name="m2StartupProfileLayout">
+                                                    <item>
+                                                        <widget class="QLabel" name="m2StartupProfileLabel">
+                                                            <property name="text">
+                                                                <string>Startup profile:</string>
+                                                            </property>
+                                                        </widget>
+                                                    </item>
+                                                    <item>
+                                                        <widget class="QCheckBox" name="m2StartupProfile">
+                                                            <property name="text">
+                                                                <string/>
+                                                            </property>
+                                                        </widget>
+                                                    </item>
+                                                </layout>
+                                            </item>
                                             <item>
                                                 <layout class="QHBoxLayout" name="horizontalLayout_53">
                                                     <item>
@@ -760,6 +796,24 @@
                                         </property>
                                         <layout class="QVBoxLayout" name="verticalLayout_7">
                                             <item>
+                                                <layout class="QHBoxLayout" name="m3StartupProfileLayout">
+                                                    <item>
+                                                        <widget class="QLabel" name="m3StartupProfileLabel">
+                                                            <property name="text">
+                                                                <string>Startup profile:</string>
+                                                            </property>
+                                                        </widget>
+                                                    </item>
+                                                    <item>
+                                                        <widget class="QCheckBox" name="m3StartupProfile">
+                                                            <property name="text">
+                                                                <string/>
+                                                            </property>
+                                                        </widget>
+                                                    </item>
+                                                </layout>
+                                            </item>
+                                            <item>
                                                 <layout class="QHBoxLayout" name="horizontalLayout_56">
                                                     <item>
                                                         <widget class="QLabel" name="label_53">
@@ -1030,6 +1084,24 @@
                                             </size>
                                         </property>
                                         <layout class="QVBoxLayout" name="verticalLayout_4">
+                                            <item>
+                                                <layout class="QHBoxLayout" name="mrStartupProfileLayout">
+                                                    <item>
+                                                        <widget class="QLabel" name="mrStartupProfileLabel">
+                                                            <property name="text">
+                                                                <string>Startup profile:</string>
+                                                            </property>
+                                                        </widget>
+                                                    </item>
+                                                    <item>
+                                                        <widget class="QCheckBox" name="mrStartupProfile">
+                                                            <property name="text">
+                                                                <string/>
+                                                            </property>
+                                                        </widget>
+                                                    </item>
+                                                </layout>
+                                            </item>
                                             <item>
                                                 <layout class="QHBoxLayout" name="horizontalLayout_58">
                                                     <item>

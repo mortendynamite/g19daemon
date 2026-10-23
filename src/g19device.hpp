@@ -162,6 +162,8 @@ private:
 
 signals:
 
+    void deviceConnected();
+
     void gKey();
 
     void lKey();

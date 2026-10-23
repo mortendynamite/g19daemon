@@ -23,6 +23,8 @@
 #include "plugininterface.hpp"
 #include "ui_g19daemon.h"
 #include <QAction>
+#include <QButtonGroup>
+#include <QSignalBlocker>
 #include <QDir>
 #include <QErrorMessage>
 #include <QFile>
@@ -48,7 +50,6 @@ G19daemon::G19daemon(QWidget *parent)
     qRegisterMetaType<gAction>("gAction");
 
     device = new G19Device();
-    device->initialize();
 
     settings = new QSettings("G19Daemon", "G19Daemon");
 
@@ -59,6 +60,10 @@ G19daemon::G19daemon(QWidget *parent)
 
     connect(device, SIGNAL(gKey()), SLOT(gKeys()));
     connect(device, SIGNAL(lKey()), SLOT(lKeys()));
+    connect(device, &G19Device::deviceConnected, this, [this]() {
+        swithProfile(ui->mKeyTabWidget->currentIndex());
+    });
+    device->initialize();
 
     connect(ui->actionSave_settings, SIGNAL(triggered()), SLOT(saveSettings()));
 
@@ -67,6 +72,13 @@ G19daemon::G19daemon(QWidget *parent)
     connect(ui->m3BackgroundColorButton, SIGNAL(clicked()), SLOT(changeBackgroundColor()));
     connect(ui->mrBackgroundColorButton, SIGNAL(clicked()), SLOT(changeBackgroundColor()));
     connect(ui->actionDisable_plugin_profile, SIGNAL(changed()), SLOT(disablePluginProfile()));
+
+    auto *startupProfileGroup = new QButtonGroup(this);
+    startupProfileGroup->setExclusive(true);
+    startupProfileGroup->addButton(ui->m1StartupProfile, 0);
+    startupProfileGroup->addButton(ui->m2StartupProfile, 1);
+    startupProfileGroup->addButton(ui->m3StartupProfile, 2);
+    startupProfileGroup->addButton(ui->mrStartupProfile, 3);
 
     connect(ui->mKeyTabWidget, SIGNAL(currentChanged(int)), SLOT(swithProfile(int)));
 
@@ -81,8 +93,6 @@ G19daemon::G19daemon(QWidget *parent)
         menuActive = false;
     else
         menuActive = true;
-
-    device->setMKeys(true, false, false, false);
 
     trayIconMenu = new QMenu(this);
     trayIconMenu->addAction(tr("Show"), this, SLOT(show()));
@@ -99,7 +109,11 @@ G19daemon::G19daemon(QWidget *parent)
     loadPluginsIntoMenubar();
     loadSettings();
     disablePluginProfile();
-    sendProfileToPlugins(G19_KEY_M1);
+
+    const int startupProfile = qBound(0, settings->value("StartupProfile", 0).toInt(), 3);
+    QSignalBlocker tabSignalBlocker(ui->mKeyTabWidget);
+    ui->mKeyTabWidget->setCurrentIndex(startupProfile);
+    swithProfile(startupProfile);
 }
 
 G19daemon::~G19daemon() {
@@ -138,6 +152,11 @@ void G19daemon::loadSettings() {
 
     ui->actionDisable_plugin_profile->setChecked(
             settings->value(ui->actionDisable_plugin_profile->objectName(), false).toBool());
+
+    const int startupProfile = qBound(0, settings->value("StartupProfile", 0).toInt(), 3);
+    const QList<QCheckBox *> startupProfileButtons = {ui->m1StartupProfile, ui->m2StartupProfile,
+                                                       ui->m3StartupProfile, ui->mrStartupProfile};
+    startupProfileButtons[startupProfile]->setChecked(true);
 
     for (QLineEdit *lineEdit: ui->mKeyTabWidget->findChildren<QLineEdit *>()) {
 
@@ -210,6 +229,15 @@ void G19daemon::saveSettings() {
 
     for (QSpinBox *button: {ui->m1Brightness, ui->m2Brightness, ui->m3Brightness, ui->mrBrightness}) {
         settings->setValue(button->objectName(), button->value());
+    }
+
+    const QList<QCheckBox *> startupProfileButtons = {ui->m1StartupProfile, ui->m2StartupProfile,
+                                                       ui->m3StartupProfile, ui->mrStartupProfile};
+    for (int i = 0; i < startupProfileButtons.size(); i++) {
+        if (startupProfileButtons[i]->isChecked()) {
+            settings->setValue("StartupProfile", i);
+            break;
+        }
     }
 
     unsavedSettings = false;
